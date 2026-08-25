@@ -23,3 +23,5 @@ npm run dev
 npm run lint
 npm test
 ```
+
+CI menjalankan lint, production build, dan rendered-page test pada setiap pull request.
