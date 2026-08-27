@@ -24,7 +24,9 @@ test("renders Slivadoc Partners experience", async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /Slivadoc Partners — Grow the Pet Ecosystem/);
-  assert.match(html, /pet ecosystem network/);
+  assert.match(html, /Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care/);
+  assert.match(html, /Bisnis pet care Anda layak/);
+  assert.match(html, /Daftar jadi partner/);
+  assert.match(html, /Pet owner tetap menggunakan aplikasi khusus Pet Owner/);
   assert.doesNotMatch(html, /codex-preview/);
 });

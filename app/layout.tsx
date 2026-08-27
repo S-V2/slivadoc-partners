@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Slivadoc Partners — Grow the Pet Ecosystem",
-  description: "Portal partnership untuk brand, distributor, komunitas, dan mitra industri pet care Indonesia.",
+  title: "Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care",
+  description: "Daftar menjadi partner Slivadoc untuk menjangkau pet owner, merapikan operasional, dan bertumbuh bersama ekosistem pet care Indonesia.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
