@@ -197,7 +197,7 @@ export default function PartnerPortal() {
           <div className="hero-proof">
             <span><b>18</b><small>Kategori partner</small></span>
             <span><b>38</b><small>Provinsi terjangkau</small></span>
-            <span><b>Gratis</b><small>Untuk mulai bergabung</small></span>
+            <span><b>Full gratis</b><small>Seluruh fitur partner</small></span>
           </div>
         </div>
         <div className="hero-visual" aria-label="Kolaborasi partner pet care Slivadoc">
@@ -269,7 +269,7 @@ export default function PartnerPortal() {
           <div className="aside-checklist">
             <span><i>✓</i><b>Semua data tersimpan aman</b><small>Hanya digunakan untuk proses partnership.</small></span>
             <span><i>✓</i><b>Review langsung oleh Operations</b><small>Status masuk ke antrean dashboard Slivadoc.</small></span>
-            <span><i>✓</i><b>Tidak ada biaya pendaftaran</b><small>Anda dapat memulai tanpa biaya langganan dasar.</small></span>
+            <span><i>✓</i><b>Seluruh akses partner full gratis</b><small>Tanpa biaya pendaftaran, onboarding, fitur, atau langganan.</small></span>
           </div>
           <div className="aside-support"><Icon name="chat" /><span><small>Butuh bantuan?</small><b>support@slivadoc.com</b></span></div>
         </div>
@@ -350,7 +350,7 @@ export default function PartnerPortal() {
         <div className="section-heading compact"><span className="section-label">Pertanyaan umum</span><h2>Sebelum Anda <em>bergabung.</em></h2></div>
         <div className="faq-list">
           {[
-            ["Apakah mendaftar sebagai partner Slivadoc berbayar?", "Tidak. Pendaftaran dan akses dasar untuk memulai gratis. Kebutuhan kolaborasi khusus akan dibicarakan secara transparan saat onboarding."],
+            ["Apakah mendaftar sebagai partner Slivadoc berbayar?", "Tidak. Semua partner terdaftar mendapatkan akses full gratis: pendaftaran, onboarding, seluruh fitur, dan kolaborasi tanpa biaya langganan."],
             ["Siapa saja yang dapat mendaftar?", "Seluruh penyedia layanan, profesional, organisasi, brand, venue, instansi, dan pendukung ekosistem pet care dapat mendaftar. Pet owner menggunakan aplikasi khusus Pet Owner."],
             ["Apa yang terjadi setelah formulir dikirim?", "Data masuk langsung ke dashboard Operations Slivadoc untuk diperiksa. Tim dapat memulai review, meminta informasi tambahan, menyetujui, atau menolak pengajuan."],
             ["Apakah profil langsung tampil di Slivadoc?", "Tidak. Aktivasi dilakukan setelah verifikasi dan onboarding agar informasi layanan, standar, area, serta operasional partner tersusun dengan benar."],
