@@ -1,4 +1,4 @@
-export const DEFAULT_SLIVADOC_API_URL = "https://api.slivadoc.id";
+export const DEFAULT_SLIVADOC_API_URL = "https://api.slivadoc.xyz";
 
 export function resolveSlivadocAPIURL(configuredURL, environment = process.env.NODE_ENV) {
   const value = String(configuredURL || "").trim();

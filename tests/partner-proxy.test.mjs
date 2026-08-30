@@ -8,9 +8,9 @@ import {
 
 test("uses the public Slivadoc API in production and localhost only in development", () => {
   assert.equal(resolveSlivadocAPIURL(undefined, "production"), DEFAULT_SLIVADOC_API_URL);
-  assert.equal(DEFAULT_SLIVADOC_API_URL, "https://api.slivadoc.id");
+  assert.equal(DEFAULT_SLIVADOC_API_URL, "https://api.slivadoc.xyz");
   assert.equal(resolveSlivadocAPIURL(undefined, "development"), "http://127.0.0.1:8080");
-  assert.equal(resolveSlivadocAPIURL("https://staging-api.slivadoc.id/", "production"), "https://staging-api.slivadoc.id");
+  assert.equal(resolveSlivadocAPIURL("https://staging-api.slivadoc.xyz/", "production"), "https://staging-api.slivadoc.xyz");
 });
 
 function executionContext() {
