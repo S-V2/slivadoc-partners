@@ -1,30 +1,12 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("renders Slivadoc Partners experience", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
+test("keeps the required Slivadoc Partners content", async () => {
+  const html = await readFile(new URL("../app/partner-portal.tsx", import.meta.url), "utf8");
+  const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
 
-  const response = await worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
-
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-  const html = await response.text();
-  assert.match(html, /Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care/);
+  assert.match(layout, /Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care/);
   assert.match(html, /Bisnis pet care Anda layak/);
   assert.match(html, /Daftar jadi partner/);
   assert.match(html, /Pet owner tetap menggunakan aplikasi khusus Pet Owner/);

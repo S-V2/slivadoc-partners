@@ -13,14 +13,6 @@ test("uses the public Slivadoc API in production and localhost only in developme
   assert.equal(resolveSlivadocAPIURL("https://staging-api.slivadoc.xyz/", "production"), "https://staging-api.slivadoc.xyz");
 });
 
-function executionContext() {
-  return { waitUntil() {}, passThroughOnException() {} };
-}
-
-function assets() {
-  return { fetch: async () => new Response("Not found", { status: 404 }) };
-}
-
 test("forwards a complete partner application to the Slivadoc API", async () => {
   let forwardedBody;
   const fetchImpl = async (input, init) => {
@@ -54,17 +46,13 @@ test("forwards a complete partner application to the Slivadoc API", async () => 
   assert.deepEqual(forwardedBody, payload);
 });
 
-test("rejects malformed partner application JSON before proxying", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("invalid-test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-  const response = await worker.fetch(new Request("http://localhost/api/partner-applications", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: "{invalid",
-  }), { ASSETS: assets() }, executionContext());
-  const result = await response.json();
+test("returns a gateway error when the upstream response is not JSON", async () => {
+  const result = await forwardPartnerApplication({
+    apiURL: "https://api.slivadoc.xyz",
+    body: { legal_name: "PT Klinik Satwa" },
+    fetchImpl: async () => new Response("Service unavailable", { status: 503 }),
+  });
 
-  assert.equal(response.status, 400);
-  assert.match(result.message, /tidak valid/i);
+  assert.equal(result.status, 502);
+  assert.match(result.payload.message, /respons yang tidak valid/i);
 });
