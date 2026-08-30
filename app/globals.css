@@ -655,7 +655,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 @keyframes float-soft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 @keyframes status-pulse { 0%,65%,100% { box-shadow: 0 0 0 5px rgba(25,169,116,.11); } 82% { box-shadow: 0 0 0 10px rgba(25,169,116,0); } }
 @keyframes support-pulse { 0%,65%,100% { box-shadow: 0 0 0 0 rgba(33,189,125,.3); } 82% { box-shadow: 0 0 0 8px rgba(33,189,125,0); } }
-@keyframes section-reveal { from { opacity: .18; transform: translateY(34px) scale(.99); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
+/* Keep scroll motion crisp: foreground content must never enter a blurred or
+   faded state, including when a browser pauses a view-timeline animation. */
+@keyframes section-reveal { from { opacity: 1; transform: translateY(24px) scale(.995); } to { opacity: 1; transform: none; } }
 
 @supports (animation-timeline: view()) {
   .ecosystem-section .section-heading,
