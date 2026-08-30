@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { forwardPartnerApplication } from "../../partner-application-proxy.mjs";
-
-const DEFAULT_API_URL = "http://127.0.0.1:8080";
+import { forwardPartnerApplication, resolveSlivadocAPIURL } from "../../partner-application-proxy.mjs";
 
 export async function POST(request: NextRequest) {
-  const apiURL = (process.env.SLIVADOC_API_URL || DEFAULT_API_URL).replace(/\/$/, "");
+  const apiURL = resolveSlivadocAPIURL(process.env.SLIVADOC_API_URL);
   let body: unknown;
 
   try {
