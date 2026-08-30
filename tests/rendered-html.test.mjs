@@ -28,8 +28,12 @@ test("renders Slivadoc Partners experience", async () => {
   assert.match(html, /Bisnis pet care Anda layak/);
   assert.match(html, /Daftar jadi partner/);
   assert.match(html, /Pet owner tetap menggunakan aplikasi khusus Pet Owner/);
+  assert.match(html, /100% Gratis/);
   assert.match(html, /Semua partner terdaftar mendapatkan akses full gratis/);
   assert.match(html, /Tanpa biaya pendaftaran, onboarding, fitur, atau langganan/);
+  assert.match(html, /Apakah bergabung dan menggunakan Slivadoc benar-benar gratis/);
+  assert.match(html, /Chat WhatsApp Customer Support Slivadoc/);
+  assert.match(html, /wa\.me\/6281977388341/);
   assert.doesNotMatch(html, /akses dasar untuk memulai gratis/i);
   assert.doesNotMatch(html, /codex-preview/);
 });

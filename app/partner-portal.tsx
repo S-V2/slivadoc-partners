@@ -79,6 +79,86 @@ const initialForm: PartnerForm = {
 
 const steps = ["Profil partner", "PIC & kontak", "Lokasi & operasi", "Kebutuhan", "Konfirmasi"];
 
+const whatsappSupportMessage = encodeURIComponent(
+  "Halo Tim Slivadoc, saya tertarik bergabung sebagai partner Slivadoc. Saya ingin mendapatkan informasi dan bantuan mengenai proses pendaftaran serta kebutuhan bisnis saya. Terima kasih.",
+);
+const whatsappSupportURL = `https://wa.me/6281977388341?text=${whatsappSupportMessage}`;
+
+const faqItems = [
+  {
+    question: "Apakah bergabung dan menggunakan Slivadoc benar-benar gratis?",
+    answer: "Ya. Semua partner terdaftar mendapatkan akses full gratis. Pendaftaran, aktivasi akun, onboarding, penggunaan seluruh fitur aplikasi, dan pendampingan dari tim Slivadoc tidak dikenakan biaya pendaftaran, biaya aktivasi, biaya lisensi, atau biaya langganan.",
+  },
+  {
+    question: "Apakah ada biaya tersembunyi atau biaya aplikasi di kemudian hari?",
+    answer: "Tidak ada biaya tersembunyi untuk menggunakan aplikasi Slivadoc. Sebelum partner memakai layanan tambahan dari pihak ketiga di luar Slivadoc, tim kami akan menjelaskan kebutuhan dan ketentuannya secara terbuka agar tidak ada pengeluaran yang muncul tanpa persetujuan partner.",
+  },
+  {
+    question: "Apa maksudnya kebutuhan bisnis partner dibantu 100% oleh Slivadoc?",
+    answer: "Tim Slivadoc akan membantu memetakan kebutuhan bisnis, menyiapkan akun dan workspace, mengatur layanan atau katalog, membantu konfigurasi operasional, memberi panduan penggunaan, serta mendampingi proses onboarding. Partner tidak perlu memahami hal teknis atau membangun aplikasi sendiri.",
+  },
+  {
+    question: "Siapa saja yang dapat mendaftar sebagai partner?",
+    answer: "Klinik dan rumah sakit hewan, dokter hewan, pet shop, grooming, pet hotel, daycare, home service, trainer, apotek pet, laboratorium, shelter, komunitas, event organizer, pet-friendly venue, asuransi, brand, produsen, distributor, logistik, instansi, dan organisasi lain di ekosistem hewan dapat mendaftar.",
+  },
+  {
+    question: "Apakah usaha kecil, profesional individu, atau komunitas boleh bergabung?",
+    answer: "Boleh. Slivadoc terbuka untuk usaha yang baru berkembang, profesional individu, komunitas, yayasan, dan organisasi. Pilih bentuk usaha yang paling sesuai di formulir, lalu tim kami akan membantu proses berikutnya.",
+  },
+  {
+    question: "Apakah saya harus memiliki banyak cabang atau tim yang besar?",
+    answer: "Tidak. Partner dengan satu lokasi atau usaha yang dikelola sendiri tetap dapat mendaftar. Informasi jumlah cabang dan anggota tim digunakan agar Slivadoc dapat menyiapkan kebutuhan operasional yang sesuai.",
+  },
+  {
+    question: "Data dan dokumen apa yang perlu disiapkan?",
+    answer: "Siapkan identitas usaha atau organisasi, nomor dan tautan dokumen legalitas yang dapat dilihat, data PIC, alamat operasional, area layanan, jam operasional, daftar layanan atau produk, serta penjelasan singkat mengenai kebutuhan bisnis Anda.",
+  },
+  {
+    question: "Bagaimana jika dokumen legalitas saya belum lengkap?",
+    answer: "Hubungi Customer Support Slivadoc melalui WhatsApp sebelum mengirim formulir. Tim kami akan membantu mengecek dokumen yang sudah tersedia dan menjelaskan langkah yang perlu dilengkapi agar pendaftaran tidak membingungkan.",
+  },
+  {
+    question: "Apa yang terjadi setelah formulir dikirim?",
+    answer: "Pengajuan langsung masuk ke dashboard Operations Slivadoc. Tim akan memeriksa kelengkapan data, kesesuaian kategori, legalitas, dan kebutuhan bisnis. Jika ada informasi yang kurang jelas, tim Slivadoc akan menghubungi PIC melalui email atau WhatsApp yang didaftarkan.",
+  },
+  {
+    question: "Berapa lama proses pemeriksaan pengajuan?",
+    answer: "Waktu pemeriksaan bergantung pada kelengkapan dan kejelasan data yang dikirim. Pastikan nomor WhatsApp dan email PIC aktif agar tim dapat segera menghubungi Anda apabila diperlukan konfirmasi tambahan.",
+  },
+  {
+    question: "Apakah profil bisnis langsung tampil setelah mendaftar?",
+    answer: "Belum. Profil dan layanan baru diaktifkan setelah proses verifikasi dan onboarding selesai. Tahap ini memastikan informasi bisnis, layanan, area operasional, dan akses tim sudah tersusun dengan benar sebelum digunakan.",
+  },
+  {
+    question: "Apakah Slivadoc dapat digunakan untuk bisnis dengan beberapa cabang?",
+    answer: "Bisa. Slivadoc mendukung kebutuhan bisnis multi-cabang. Tim akan membantu menyiapkan struktur cabang, akses pengguna, serta alur operasional agar setiap cabang dapat dikelola dengan rapi.",
+  },
+  {
+    question: "Fitur apa saja yang akan disiapkan untuk partner?",
+    answer: "Fitur disesuaikan dengan kategori dan kebutuhan partner, misalnya profil bisnis, katalog, booking, pelanggan, transaksi, stok, layanan, jadwal, tim, laporan, promosi, serta integrasi dengan ekosistem Slivadoc. Tim kami membantu memilih dan menyiapkan fitur yang relevan.",
+  },
+  {
+    question: "Bagaimana jika saya masih memakai pencatatan manual atau aplikasi lain?",
+    answer: "Tidak masalah. Ceritakan sistem yang sedang digunakan di formulir. Tim Slivadoc akan membantu menyusun proses perpindahan yang paling mudah agar kegiatan bisnis tetap berjalan dan tim partner tidak kewalahan.",
+  },
+  {
+    question: "Apakah saya harus memiliki tim IT?",
+    answer: "Tidak perlu. Slivadoc dirancang agar dapat digunakan oleh pemilik bisnis dan tim operasional tanpa pengetahuan teknis khusus. Tim Customer Support akan membantu penyiapan, pelatihan, dan penggunaan sehari-hari.",
+  },
+  {
+    question: "Apakah data yang saya kirim langsung dipublikasikan?",
+    answer: "Tidak. Data pendaftaran digunakan untuk verifikasi, komunikasi, dan onboarding. Informasi bisnis tidak dipublikasikan otomatis sebelum proses review selesai dan partner siap diaktifkan.",
+  },
+  {
+    question: "Bagaimana jika pengajuan perlu diperbaiki atau belum disetujui?",
+    answer: "Tim Slivadoc akan menjelaskan bagian yang perlu dilengkapi atau diperbaiki. Partner dapat menyiapkan informasi tersebut dan melanjutkan proses tanpa perlu bingung memulai dari awal.",
+  },
+  {
+    question: "Bagaimana cara berbicara langsung dengan Customer Support Slivadoc?",
+    answer: "Klik tombol maskot Customer Support di kanan bawah halaman. WhatsApp akan terbuka dengan pesan awal yang sudah disiapkan. Anda juga dapat menghubungi Slivadoc di +62 819-7738-8341.",
+  },
+] as const;
+
 export default function PartnerPortal() {
   const [form, setForm] = useState<PartnerForm>(initialForm);
   const [step, setStep] = useState(0);
@@ -179,6 +259,7 @@ export default function PartnerPortal() {
           <a href="#ekosistem">Siapa yang bisa bergabung</a>
           <a href="#manfaat">Manfaat</a>
           <a href="#proses">Cara bergabung</a>
+          <a href="#faq">FAQ</a>
         </nav>
         <button className="header-cta" onClick={scrollToForm}>Daftar jadi partner</button>
       </header>
@@ -189,7 +270,7 @@ export default function PartnerPortal() {
         <div className="hero-copy">
           <span className="hero-kicker"><i /> Partner ecosystem untuk pet care Indonesia</span>
           <h1>Bisnis pet care Anda layak <em>tumbuh lebih jauh.</em></h1>
-          <p>Gabung ke ekosistem Slivadoc untuk ditemukan pet owner, mengelola operasional lebih rapi, dan membuka peluang kolaborasi baru—dalam satu platform yang terhubung.</p>
+          <p>Gabung ke ekosistem Slivadoc untuk ditemukan pet owner, mengelola operasional lebih rapi, dan membuka peluang kolaborasi baru. Seluruh kebutuhan aplikasi dan onboarding dibantu tim Slivadoc secara gratis.</p>
           <div className="hero-actions">
             <button className="button-primary" onClick={scrollToForm}>Mulai gratis sekarang <span>→</span></button>
             <a className="button-secondary" href="#ekosistem">Lihat kategori partner</a>
@@ -197,7 +278,7 @@ export default function PartnerPortal() {
           <div className="hero-proof">
             <span><b>18</b><small>Kategori partner</small></span>
             <span><b>38</b><small>Provinsi terjangkau</small></span>
-            <span><b>Full gratis</b><small>Seluruh fitur partner</small></span>
+            <span><b>100% Gratis</b><small>Seluruh fitur partner</small></span>
           </div>
         </div>
         <div className="hero-visual" aria-label="Kolaborasi partner pet care Slivadoc">
@@ -233,7 +314,8 @@ export default function PartnerPortal() {
         <div className="benefit-intro">
           <span className="section-label light">Kenapa bergabung</span>
           <h2>Bukan sekadar listing.<br /><em>Ini mesin pertumbuhan.</em></h2>
-          <p>Slivadoc membantu partner dari saat pertama ditemukan hingga layanan selesai—tanpa memisahkan discovery, booking, transaksi, dan hubungan pelanggan.</p>
+          <p>Slivadoc membantu partner dari saat pertama ditemukan hingga layanan selesai—tanpa memisahkan discovery, booking, transaksi, dan hubungan pelanggan. Seluruh fitur aplikasi, aktivasi, dan pendampingan onboarding diberikan gratis.</p>
+          <div className="free-support-callout"><span>✓</span><p><b>Gratis, dibantu dari awal.</b> Anda tidak perlu membangun aplikasi, menyiapkan tim IT, atau membayar biaya langganan Slivadoc.</p></div>
           <button className="button-white" onClick={scrollToForm}>Jadi bagian ekosistem <span>→</span></button>
         </div>
         <div className="benefit-grid">
@@ -269,9 +351,9 @@ export default function PartnerPortal() {
           <div className="aside-checklist">
             <span><i>✓</i><b>Semua data tersimpan aman</b><small>Hanya digunakan untuk proses partnership.</small></span>
             <span><i>✓</i><b>Review langsung oleh Operations</b><small>Status masuk ke antrean dashboard Slivadoc.</small></span>
-            <span><i>✓</i><b>Seluruh akses partner full gratis</b><small>Tanpa biaya pendaftaran, onboarding, fitur, atau langganan.</small></span>
+            <span><i>✓</i><b>Seluruh akses partner 100% gratis</b><small>Tanpa biaya pendaftaran, onboarding, fitur, atau langganan. Pendampingan dari Slivadoc juga gratis.</small></span>
           </div>
-          <div className="aside-support"><Icon name="chat" /><span><small>Butuh bantuan?</small><b>support@slivadoc.com</b></span></div>
+          <a className="aside-support" href={whatsappSupportURL} target="_blank" rel="noopener noreferrer"><Icon name="chat" /><span><small>Butuh bantuan?</small><b>Chat WhatsApp Customer Support</b></span></a>
         </div>
         <div className="registration-card">
           {applicationNumber ? (
@@ -346,15 +428,10 @@ export default function PartnerPortal() {
         </div>
       </section>
 
-      <section className="faq-section">
-        <div className="section-heading compact"><span className="section-label">Pertanyaan umum</span><h2>Sebelum Anda <em>bergabung.</em></h2></div>
+      <section className="faq-section" id="faq">
+        <div className="section-heading compact"><span className="section-label">Pertanyaan umum</span><h2>Jawaban yang jelas sebelum Anda <em>bergabung.</em></h2><p>Kami merangkum hal-hal yang paling sering ditanyakan calon partner dengan bahasa sederhana. Jika masih ada yang belum jelas, tim Slivadoc siap membantu melalui WhatsApp.</p></div>
         <div className="faq-list">
-          {[
-            ["Apakah mendaftar sebagai partner Slivadoc berbayar?", "Tidak. Semua partner terdaftar mendapatkan akses full gratis: pendaftaran, onboarding, seluruh fitur, dan kolaborasi tanpa biaya langganan."],
-            ["Siapa saja yang dapat mendaftar?", "Seluruh penyedia layanan, profesional, organisasi, brand, venue, instansi, dan pendukung ekosistem pet care dapat mendaftar. Pet owner menggunakan aplikasi khusus Pet Owner."],
-            ["Apa yang terjadi setelah formulir dikirim?", "Data masuk langsung ke dashboard Operations Slivadoc untuk diperiksa. Tim dapat memulai review, meminta informasi tambahan, menyetujui, atau menolak pengajuan."],
-            ["Apakah profil langsung tampil di Slivadoc?", "Tidak. Aktivasi dilakukan setelah verifikasi dan onboarding agar informasi layanan, standar, area, serta operasional partner tersusun dengan benar."],
-          ].map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}
+          {faqItems.map(({ question, answer }) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}
         </div>
       </section>
 
@@ -363,9 +440,14 @@ export default function PartnerPortal() {
       <footer className="partner-footer">
         <a className="partner-logo footer-logo" href="#beranda"><span className="logo-mark"><PawMark /></span><span>sliva<b>doc</b><small>partners</small></span></a>
         <p>Ekosistem pet care Indonesia yang menghubungkan layanan, operasional, komunitas, dan pertumbuhan.</p>
-        <div><a href="mailto:support@slivadoc.com">support@slivadoc.com</a><span>+62 819-7738-8341</span></div>
+        <div><a href="mailto:support@slivadoc.com">support@slivadoc.com</a><a href={whatsappSupportURL} target="_blank" rel="noopener noreferrer">+62 819-7738-8341</a></div>
         <small>© {new Date().getFullYear()} PT Sliva Technology Indonesia</small>
       </footer>
+
+      <a className="support-widget" href={whatsappSupportURL} target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Customer Support Slivadoc">
+        <span className="support-widget-copy"><small>Customer Support</small><strong>Butuh bantuan? Chat kami</strong></span>
+        <span className="support-mascot" aria-hidden="true"><PawMark /><i /></span>
+      </a>
     </main>
   );
 }
