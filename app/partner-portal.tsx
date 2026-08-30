@@ -252,7 +252,7 @@ export default function PartnerPortal() {
     <main className="partner-page">
       <header className="partner-header">
         <a className="partner-logo" href="#beranda" aria-label="Slivadoc Partners">
-          <span className="logo-mark"><PawMark /></span>
+          <Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} priority />
           <span>sliva<b>doc</b><small>partners</small></span>
         </a>
         <nav aria-label="Navigasi utama">
@@ -438,7 +438,7 @@ export default function PartnerPortal() {
       <section className="closing-cta"><span><PawMark /></span><div><small>Satu langkah untuk peluang yang lebih besar</small><h2>Mari tumbuh bersama Slivadoc.</h2></div><button className="button-white" onClick={scrollToForm}>Daftar jadi partner <span>→</span></button></section>
 
       <footer className="partner-footer">
-        <a className="partner-logo footer-logo" href="#beranda"><span className="logo-mark"><PawMark /></span><span>sliva<b>doc</b><small>partners</small></span></a>
+        <a className="partner-logo footer-logo" href="#beranda" aria-label="Slivadoc Partners"><Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></a>
         <p>Ekosistem pet care Indonesia yang menghubungkan layanan, operasional, komunitas, dan pertumbuhan.</p>
         <div><a href="mailto:support@slivadoc.com">support@slivadoc.com</a><a href={whatsappSupportURL} target="_blank" rel="noopener noreferrer">+62 819-7738-8341</a></div>
         <small>© {new Date().getFullYear()} PT Sliva Technology Indonesia</small>

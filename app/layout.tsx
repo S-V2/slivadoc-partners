@@ -5,8 +5,9 @@ export const metadata: Metadata = {
   title: "Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care",
   description: "Daftar menjadi partner Slivadoc untuk menjangkau pet owner, merapikan operasional, dan bertumbuh bersama ekosistem pet care Indonesia.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/brand/slivadoc-favicon.png",
+    shortcut: "/brand/slivadoc-favicon.png",
+    apple: "/brand/slivadoc-favicon.png",
   },
 };
 

@@ -35,8 +35,7 @@ a { color: inherit; }
 .partner-logo > span:last-child { display: flex; align-items: baseline; }
 .partner-logo b { color: var(--sky-500); }
 .partner-logo small { margin-left: 6px; color: #6f8998; font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
-.logo-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; color: white; background: linear-gradient(145deg, var(--sky-400), var(--sky-600)); box-shadow: 0 9px 22px rgba(11,159,225,.24); }
-.logo-mark svg { width: 24px; fill: currentColor; }
+.logo-mark { width: 38px; height: 38px; display: block; flex: none; object-fit: contain; border-radius: 12px; box-shadow: 0 9px 22px rgba(11,159,225,.24); }
 .partner-header nav { display: flex; align-items: center; gap: 25px; margin-left: auto; }
 .partner-header nav a { position: relative; text-decoration: none; color: #536f80; font-size: 14px; font-weight: 700; }
 .partner-header nav a:after { content: ""; position: absolute; right: 0; bottom: -7px; left: 0; height: 2px; transform: scaleX(0); border-radius: 99px; background: var(--sky-400); transition: transform .2s ease; }
