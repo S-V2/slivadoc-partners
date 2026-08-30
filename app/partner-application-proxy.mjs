@@ -1,3 +1,11 @@
+export const DEFAULT_SLIVADOC_API_URL = "https://api.slivadoc.id";
+
+export function resolveSlivadocAPIURL(configuredURL, environment = process.env.NODE_ENV) {
+  const value = String(configuredURL || "").trim();
+  if (value) return value.replace(/\/$/, "");
+  return environment === "production" ? DEFAULT_SLIVADOC_API_URL : "http://127.0.0.1:8080";
+}
+
 export async function forwardPartnerApplication({ apiURL, body, userAgent, clientIP, fetchImpl = fetch }) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12_000);
