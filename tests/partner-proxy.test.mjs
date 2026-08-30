@@ -1,6 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { forwardPartnerApplication } from "../app/partner-application-proxy.mjs";
+import {
+  DEFAULT_SLIVADOC_API_URL,
+  forwardPartnerApplication,
+  resolveSlivadocAPIURL,
+} from "../app/partner-application-proxy.mjs";
+
+test("uses the public Slivadoc API in production and localhost only in development", () => {
+  assert.equal(resolveSlivadocAPIURL(undefined, "production"), DEFAULT_SLIVADOC_API_URL);
+  assert.equal(DEFAULT_SLIVADOC_API_URL, "https://api.slivadoc.id");
+  assert.equal(resolveSlivadocAPIURL(undefined, "development"), "http://127.0.0.1:8080");
+  assert.equal(resolveSlivadocAPIURL("https://staging-api.slivadoc.id/", "production"), "https://staging-api.slivadoc.id");
+});
 
 function executionContext() {
   return { waitUntil() {}, passThroughOnException() {} };
