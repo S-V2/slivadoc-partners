@@ -279,7 +279,7 @@ export default function PartnerPortal() {
           </div>
           <div className="hero-proof">
             <span><b>18</b><small>Kategori partner</small></span>
-            <span><b>38</b><small>Provinsi terjangkau</small></span>
+            <span><b>38</b><small>Provinsi di Indonesia</small></span>
             <span><b>100% Gratis</b><small>Seluruh fitur partner</small></span>
           </div>
         </div>

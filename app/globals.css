@@ -771,6 +771,53 @@ html[dir="rtl"] .support-widget { right: auto; left: 24px; padding: 8px 16px 8px
   html[dir="rtl"] .language-menu { right: 10px; left: 10px; }
 }
 
+/* Keep translated copy readable without letting longer languages break the layout. */
+.partner-header { gap: clamp(12px,1.7vw,28px); }
+.partner-header nav { min-width: 0; gap: clamp(14px,1.6vw,25px); }
+.partner-header nav a, .header-cta { white-space: nowrap; }
+.language-menu { width: min(370px,calc(100vw - 24px)); }
+.language-menu-heading > span, .hero-copy, .section-heading, .benefit-intro, .registration-aside, .closing-cta > div { min-width: 0; }
+.language-menu-heading small { line-height: 1.4; }
+.language-option { grid-template-columns: 38px minmax(0,1fr) 30px; }
+.language-option b, .language-option small { overflow: visible; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; line-height: 1.35; }
+.hero-copy h1, .section-heading h2, .benefit-intro h2, .registration-aside h2, .closing-cta h2 { overflow-wrap: break-word; text-wrap: balance; hyphens: auto; }
+.hero-copy > p, .section-heading > p, .benefit-intro > p, .registration-aside > p, .category-card small, .benefit-grid p, .process-line p, .faq-list details p, .partner-footer p { overflow-wrap: anywhere; text-wrap: pretty; hyphens: auto; }
+.hero-actions .button-primary, .hero-actions .button-secondary, .button-white { height: auto; padding-top: 12px; padding-bottom: 12px; line-height: 1.3; text-align: center; white-space: normal; }
+.hero-proof { width: min(100%,600px); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; }
+.hero-proof span { min-width: 0; padding: 0 18px; }
+.hero-proof span:first-child { padding-left: 0; }
+.hero-proof span:last-child { padding-right: 0; }
+.hero-proof span:not(:last-child):after { top: 0; right: 0; height: 100%; }
+.hero-proof b { font-size: clamp(18px,1.8vw,22px); line-height: 1.2; overflow-wrap: anywhere; text-wrap: balance; }
+.hero-proof small { font-size: 11px; line-height: 1.4; letter-spacing: .04em; overflow-wrap: anywhere; text-wrap: balance; }
+
+@media (max-width: 1180px) {
+  .partner-header nav { display: none; }
+  .language-picker { margin-left: auto; }
+}
+
+@media (max-width: 780px) {
+  .language-menu { width: auto; }
+  .hero-proof { margin-right: auto; margin-left: auto; }
+  .hero-proof span { padding-right: 12px; padding-left: 12px; }
+  .hero-proof span:first-child { padding-left: 0; }
+  .hero-proof span:last-child { padding-right: 0; }
+}
+
+@media (max-width: 480px) {
+  .hero-proof { gap: 0; }
+  .hero-proof span { padding-right: 9px; padding-left: 9px; }
+  .hero-proof b { font-size: 18px; }
+  .hero-proof small { font-size: 11px; line-height: 1.35; letter-spacing: .025em; }
+}
+
+@media (max-width: 390px) {
+  .hero-proof { grid-template-columns: repeat(2,minmax(0,1fr)); row-gap: 18px; }
+  .hero-proof span:nth-child(2) { padding-right: 0; }
+  .hero-proof span:nth-child(2):after { display: none; }
+  .hero-proof span:last-child { grid-column: 1/-1; padding: 18px 0 0; border-top: 1px solid var(--line); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-copy, .hero-visual, .card-discovery, .card-growth, .floating-pill, .hero-kicker i, .support-mascot i, .form-panel, .form-alert, .faq-list details p { animation: none !important; }
   @supports (animation-timeline: view()) {

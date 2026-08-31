@@ -12,6 +12,8 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /brand\/slivadoc-logo\.png/);
   assert.match(html, /LanguageSwitcher/);
   assert.match(html, /Daftar jadi partner/);
+  assert.match(html, /<b>38<\/b><small>Provinsi di Indonesia<\/small>/);
+  assert.doesNotMatch(html, /Provinsi terjangkau/);
   assert.match(html, /Pet owner tetap menggunakan aplikasi khusus Pet Owner/);
   assert.match(html, /100% Gratis/);
   assert.match(html, /Semua partner terdaftar mendapatkan akses full gratis/);

@@ -45,3 +45,11 @@ test("language switcher persists preference and uses the custom translation laye
   assert.match(source, /window\.localStorage\.setItem/);
   assert.match(route, /private, no-store/);
 });
+
+test("translated copy remains responsive when labels become longer", async () => {
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /\.language-menu \{ width: min\(370px,calc\(100vw - 24px\)\); \}/);
+  assert.match(styles, /\.hero-proof \{ width: min\(100%,600px\); display: grid;/);
+  assert.match(styles, /text-wrap: balance/);
+  assert.match(styles, /@media \(max-width: 390px\)/);
+});
