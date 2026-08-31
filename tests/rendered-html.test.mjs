@@ -10,6 +10,7 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(layout, /brand\/slivadoc-favicon\.png/);
   assert.match(html, /Bisnis pet care Anda layak/);
   assert.match(html, /brand\/slivadoc-logo\.png/);
+  assert.match(html, /LanguageSwitcher/);
   assert.match(html, /Daftar jadi partner/);
   assert.match(html, /Pet owner tetap menggunakan aplikasi khusus Pet Owner/);
   assert.match(html, /100% Gratis/);

@@ -2,6 +2,7 @@
 
 import { FormEvent, ReactNode, useMemo, useState } from "react";
 import Image from "next/image";
+import LanguageSwitcher from "./language-switcher";
 
 type PartnerForm = {
   partner_type: string;
@@ -251,7 +252,7 @@ export default function PartnerPortal() {
   return (
     <main className="partner-page">
       <header className="partner-header">
-        <a className="partner-logo" href="#beranda" aria-label="Slivadoc Partners">
+        <a className="partner-logo notranslate" href="#beranda" aria-label="Slivadoc Partners" translate="no">
           <Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} priority />
           <span>sliva<b>doc</b><small>partners</small></span>
         </a>
@@ -261,7 +262,8 @@ export default function PartnerPortal() {
           <a href="#proses">Cara bergabung</a>
           <a href="#faq">FAQ</a>
         </nav>
-        <button className="header-cta" onClick={scrollToForm}>Daftar jadi partner</button>
+        <LanguageSwitcher />
+        <button className="header-cta" onClick={scrollToForm}><span className="header-cta-full">Daftar jadi partner</span><span className="header-cta-short">Daftar</span></button>
       </header>
 
       <section className="partner-hero" id="beranda">
@@ -438,7 +440,7 @@ export default function PartnerPortal() {
       <section className="closing-cta"><span><PawMark /></span><div><small>Satu langkah untuk peluang yang lebih besar</small><h2>Mari tumbuh bersama Slivadoc.</h2></div><button className="button-white" onClick={scrollToForm}>Daftar jadi partner <span>→</span></button></section>
 
       <footer className="partner-footer">
-        <a className="partner-logo footer-logo" href="#beranda" aria-label="Slivadoc Partners"><Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></a>
+        <a className="partner-logo footer-logo notranslate" href="#beranda" aria-label="Slivadoc Partners" translate="no"><Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></a>
         <p>Ekosistem pet care Indonesia yang menghubungkan layanan, operasional, komunitas, dan pertumbuhan.</p>
         <div><a href="mailto:support@slivadoc.com">support@slivadoc.com</a><a href={whatsappSupportURL} target="_blank" rel="noopener noreferrer">+62 819-7738-8341</a></div>
         <small>© {new Date().getFullYear()} PT Sliva Technology Indonesia</small>
