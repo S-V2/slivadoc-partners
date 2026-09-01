@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, ReactNode, useMemo, useState } from "react";
+import { FormEvent, KeyboardEvent, ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import LanguageSwitcher from "./language-switcher";
 
@@ -513,12 +513,194 @@ function TextAreaField({ label, name, value, onChange, error, placeholder, maxLe
   return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><textarea name={name} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} maxLength={maxLength} aria-invalid={Boolean(error)} required /> <small className={error ? "field-error field-counter" : "field-counter"}>{error || `${value.length}/${maxLength}`}</small></label>;
 }
 
-function SelectField({ label, name, value, onChange, error, options }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; options:Array<{value:string;label:string}> }) {
-  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><select name={name} value={value} onChange={(event)=>onChange(event.target.value)} aria-invalid={Boolean(error)} required><option value="" disabled>Pilih {label.toLowerCase()}</option>{options.map((option)=><option key={option.value} value={option.value}>{option.label}</option>)}</select>{error && <small className="field-error">{error}</small>}</label>;
+type SelectOption = { value:string; label:string };
+
+function SelectField({ label, name, value, onChange, error, options }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; options:Array<SelectOption> }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
+  const fieldId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const labelId = `${fieldId}-label`;
+  const listId = `${fieldId}-list`;
+  const errorId = `${fieldId}-error`;
+  const searchable = options.length >= 10;
+  const selectedOption = options.find((option) => option.value === value);
+  const normalizedQuery = query.trim().toLocaleLowerCase("id");
+  const filteredOptions = normalizedQuery
+    ? options.filter((option) => option.label.toLocaleLowerCase("id").includes(normalizedQuery))
+    : options;
+  const activeOption = filteredOptions[activeIndex];
+  const activeOptionValue = activeOption?.value;
+
+  useEffect(() => {
+    if (!open) return;
+
+    function closeWhenClickingOutside(event: PointerEvent) {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    }
+
+    document.addEventListener("pointerdown", closeWhenClickingOutside);
+    return () => document.removeEventListener("pointerdown", closeWhenClickingOutside);
+  }, [open]);
+
+  useEffect(() => {
+    if (open && searchable) window.requestAnimationFrame(() => searchRef.current?.focus());
+  }, [open, searchable]);
+
+  useEffect(() => {
+    if (!open || !activeOptionValue) return;
+    document.getElementById(`${fieldId}-option-${activeOptionValue}`)?.scrollIntoView({ block: "nearest" });
+  }, [activeOptionValue, fieldId, open]);
+
+  function openMenu() {
+    const selectedIndex = options.findIndex((option) => option.value === value);
+    setQuery("");
+    setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    setOpen(true);
+  }
+
+  function closeAndFocus() {
+    setOpen(false);
+    setQuery("");
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }
+
+  function choose(option: SelectOption) {
+    onChange(option.value);
+    closeAndFocus();
+  }
+
+  function moveActive(direction: 1 | -1) {
+    if (!filteredOptions.length) return;
+    setActiveIndex((current) => {
+      const next = current + direction;
+      if (next < 0) return filteredOptions.length - 1;
+      if (next >= filteredOptions.length) return 0;
+      return next;
+    });
+  }
+
+  function handleListKeyboard(event: KeyboardEvent<HTMLElement>) {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      moveActive(1);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      moveActive(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      setActiveIndex(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      setActiveIndex(Math.max(filteredOptions.length - 1, 0));
+    } else if (event.key === "Enter" && activeOption) {
+      event.preventDefault();
+      choose(activeOption);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      closeAndFocus();
+    } else if (event.key === "Tab") {
+      setOpen(false);
+      setQuery("");
+    }
+  }
+
+  function handleTriggerKeyboard(event: KeyboardEvent<HTMLButtonElement>) {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      if (!open) openMenu();
+      else moveActive(event.key === "ArrowDown" ? 1 : -1);
+    } else if (open) {
+      handleListKeyboard(event);
+    }
+  }
+
+  return (
+    <div className={`${error ? "form-field select-field invalid" : "form-field select-field"}${open ? " open" : ""}`} ref={rootRef}>
+      <span id={labelId}>{label}<b>*</b></span>
+      <input type="hidden" name={name} value={value} />
+      <button
+        ref={triggerRef}
+        id={`${fieldId}-trigger`}
+        className="custom-select-trigger"
+        type="button"
+        role="combobox"
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-controls={listId}
+        aria-labelledby={`${labelId} ${fieldId}-trigger`}
+        aria-describedby={error ? errorId : undefined}
+        aria-invalid={Boolean(error)}
+        aria-required="true"
+        aria-activedescendant={open && activeOption ? `${fieldId}-option-${activeOption.value}` : undefined}
+        onClick={() => open ? closeAndFocus() : openMenu()}
+        onKeyDown={handleTriggerKeyboard}
+      >
+        <span className={selectedOption ? "custom-select-value" : "custom-select-value placeholder"}>{selectedOption?.label || `Pilih ${label.toLowerCase()}`}</span>
+        <span className="custom-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m5 7.5 5 5 5-5" /></svg></span>
+      </button>
+
+      {open && (
+        <>
+          <button className="custom-select-overlay" type="button" tabIndex={-1} aria-label={`Tutup pilihan ${label.toLowerCase()}`} onClick={closeAndFocus} />
+          <div className="custom-select-popover">
+            <div className="custom-select-heading"><span><b>Pilih {label.toLowerCase()}</b><small>{options.length} pilihan tersedia</small></span><button type="button" onClick={closeAndFocus} aria-label="Tutup dropdown">×</button></div>
+            {searchable && (
+              <label className="custom-select-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
+                <input
+                  ref={searchRef}
+                  type="search"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setActiveIndex(0);
+                  }}
+                  onKeyDown={handleListKeyboard}
+                  placeholder={`Cari ${label.toLowerCase()}...`}
+                  role="combobox"
+                  aria-label={`Cari ${label.toLowerCase()}`}
+                  aria-expanded="true"
+                  aria-controls={listId}
+                  aria-autocomplete="list"
+                  aria-activedescendant={activeOption ? `${fieldId}-option-${activeOption.value}` : undefined}
+                />
+              </label>
+            )}
+            <div id={listId} className="custom-select-list" role="listbox" aria-labelledby={labelId} onKeyDown={searchable ? undefined : handleListKeyboard}>
+              {filteredOptions.length ? filteredOptions.map((option, index) => {
+                const selected = option.value === value;
+                const active = index === activeIndex;
+                return (
+                  <button
+                    id={`${fieldId}-option-${option.value}`}
+                    className={`custom-select-option${selected ? " selected" : ""}${active ? " active" : ""}`}
+                    type="button"
+                    role="option"
+                    aria-selected={selected}
+                    tabIndex={-1}
+                    key={option.value}
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onClick={() => choose(option)}
+                  >
+                    <span>{option.label}</span><i aria-hidden="true">{selected ? "✓" : ""}</i>
+                  </button>
+                );
+              }) : <div className="custom-select-empty"><span>⌕</span><b>Pilihan tidak ditemukan</b><small>Coba gunakan kata pencarian lain.</small></div>}
+            </div>
+          </div>
+        </>
+      )}
+      {error && <small id={errorId} className="field-error">{error}</small>}
+    </div>
+  );
 }
 
 function CheckField({ checked, onChange, error, label }: { checked:boolean; onChange:(value:boolean)=>void; error?:string; label:string }) {
-  return <label className={error ? "check-field invalid" : "check-field"}><input type="checkbox" checked={checked} onChange={(event)=>onChange(event.target.checked)} /><span><b>{label}</b>{error && <small>{error}</small>}</span></label>;
+  return <label className={error ? "check-field invalid" : "check-field"}><input className="check-input" type="checkbox" checked={checked} onChange={(event)=>onChange(event.target.checked)} /><span className="check-control" aria-hidden="true">✓</span><span className="check-copy"><b>{label}</b>{error && <small>{error}</small>}</span></label>;
 }
 
 function PawMark() {
