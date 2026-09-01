@@ -25,6 +25,10 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /role="listbox"/);
   assert.match(html, /Cari \$\{label\.toLowerCase\(\)\}/);
   assert.match(html, /className="check-control"/);
+  assert.match(html, /key="partner-confirmation-step"/);
+  assert.match(html, /className="submit-content" hidden=\{submitting\}/);
+  assert.match(html, /className="submit-content notranslate" translate="no" hidden=\{!submitting\}/);
+  assert.doesNotMatch(html, /submitting \? <><i className="spinner"/);
   assert.doesNotMatch(html, /<select name=/);
   assert.doesNotMatch(html, /akses dasar untuk memulai gratis/i);
   assert.doesNotMatch(html, /codex-preview/);

@@ -273,6 +273,8 @@ body { top: 0 !important; }
 .form-navigation .button-primary, .form-navigation .button-back { min-width: 130px; }
 .submit-button { min-width: 180px !important; }
 .submit-button:disabled { cursor: wait; opacity: .7; }
+.submit-content { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px !important; }
+.submit-content[hidden] { display: none !important; }
 .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.4); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .success-state { min-height: 520px; display: grid; justify-items: center; align-content: center; text-align: center; }
