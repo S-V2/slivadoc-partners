@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import GoogleAnalytics from "./google-analytics";
 
 export const metadata: Metadata = {
   title: "Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care",
@@ -18,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        {children}
+        <GoogleAnalytics />
+      </body>
     </html>
   );
 }

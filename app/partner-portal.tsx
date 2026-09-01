@@ -2,6 +2,7 @@
 
 import { FormEvent, KeyboardEvent, ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { trackEvent } from "./analytics";
 import LanguageSwitcher from "./language-switcher";
 
 type PartnerForm = {
@@ -167,6 +168,7 @@ export default function PartnerPortal() {
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
   const [applicationNumber, setApplicationNumber] = useState("");
+  const formStarted = useRef(false);
   const selectedCategory = useMemo(() => partnerCategories.find((item) => item.value === form.partner_type), [form.partner_type]);
 
   function update<K extends keyof PartnerForm>(name: K, value: PartnerForm[K]) {
@@ -179,19 +181,43 @@ export default function PartnerPortal() {
     });
   }
 
-  function scrollToForm() {
+  function trackFormStart(source: string) {
+    if (formStarted.current) return;
+    formStarted.current = true;
+    trackEvent("form_start", {
+      form_id: "partner_application",
+      form_name: "Slivadoc Partner Application",
+      source,
+    });
+  }
+
+  function scrollToForm(source?: string) {
+    if (source) trackFormStart(source);
     document.getElementById("daftar")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function chooseCategory(value: string, continueToForm = false) {
     update("partner_type", value);
-    if (continueToForm) scrollToForm();
+    trackEvent("select_partner_category", { partner_type: value });
+    if (continueToForm) scrollToForm("category_card");
   }
 
   function nextStep() {
     const stepErrors = validatePartnerForm(form, step);
     setErrors(stepErrors);
-    if (Object.keys(stepErrors).length) return;
+    if (Object.keys(stepErrors).length) {
+      trackEvent("form_validation_error", {
+        form_id: "partner_application",
+        invalid_field_count: Object.keys(stepErrors).length,
+        step_number: step + 1,
+      });
+      return;
+    }
+    trackEvent("form_step_complete", {
+      form_id: "partner_application",
+      step_number: step + 1,
+      step_name: steps[step],
+    });
     setStep((current) => Math.min(current + 1, steps.length - 1));
     setServerError("");
     scrollToForm();
@@ -211,11 +237,17 @@ export default function PartnerPortal() {
       const firstStep = firstInvalidStep(allErrors);
       setStep(firstStep);
       setServerError("Masih ada data yang perlu dilengkapi. Periksa kolom bertanda merah.");
+      trackEvent("form_validation_error", {
+        form_id: "partner_application",
+        invalid_field_count: Object.keys(allErrors).length,
+        step_number: firstStep + 1,
+      });
       scrollToForm();
       return;
     }
     setSubmitting(true);
     setServerError("");
+    let responseStatus = 0;
     try {
       const response = await fetch("/api/partner-applications", {
         method: "POST",
@@ -228,14 +260,29 @@ export default function PartnerPortal() {
           services_offered: form.services_offered.split(",").map((item) => item.trim()).filter(Boolean),
         }),
       });
+      responseStatus = response.status;
       const result = await response.json() as { application_number?: string; message?: string; fields?: FieldErrors };
       if (!response.ok) {
         if (result.fields) setErrors(result.fields);
         throw new Error(result.message || "Pendaftaran belum dapat dikirim.");
       }
       setApplicationNumber(result.application_number || "PTR-SLIVADOC");
+      trackEvent("generate_lead", {
+        form_id: "partner_application",
+        lead_type: form.partner_type,
+        referral_source: form.referral_source,
+      });
+      trackEvent("form_submit", {
+        form_id: "partner_application",
+        form_name: "Slivadoc Partner Application",
+      });
     } catch (error) {
       setServerError(error instanceof Error ? error.message : "Pendaftaran belum dapat dikirim. Coba kembali beberapa saat lagi.");
+      trackEvent("form_submit_error", {
+        form_id: "partner_application",
+        status_code: responseStatus,
+        error_type: responseStatus ? "server" : "network",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -247,6 +294,7 @@ export default function PartnerPortal() {
     setErrors({});
     setApplicationNumber("");
     setServerError("");
+    formStarted.current = false;
   }
 
   return (
@@ -263,7 +311,7 @@ export default function PartnerPortal() {
           <a href="#faq">FAQ</a>
         </nav>
         <LanguageSwitcher />
-        <button className="header-cta" onClick={scrollToForm}><span className="header-cta-full">Daftar jadi partner</span><span className="header-cta-short">Daftar</span></button>
+        <button className="header-cta" onClick={() => scrollToForm("header_cta")}><span className="header-cta-full">Daftar jadi partner</span><span className="header-cta-short">Daftar</span></button>
       </header>
 
       <section className="partner-hero" id="beranda">
@@ -274,7 +322,7 @@ export default function PartnerPortal() {
           <h1>Bisnis pet care Anda layak <em>tumbuh lebih jauh.</em></h1>
           <p>Gabung ke ekosistem Slivadoc untuk ditemukan pet owner, mengelola operasional lebih rapi, dan membuka peluang kolaborasi baru. Seluruh kebutuhan aplikasi dan onboarding dibantu tim Slivadoc secara gratis.</p>
           <div className="hero-actions">
-            <button className="button-primary" onClick={scrollToForm}>Mulai gratis sekarang <span>→</span></button>
+            <button className="button-primary" onClick={() => scrollToForm("hero_cta")}>Mulai gratis sekarang <span>→</span></button>
             <a className="button-secondary" href="#ekosistem">Lihat kategori partner</a>
           </div>
           <div className="hero-proof">
@@ -318,7 +366,7 @@ export default function PartnerPortal() {
           <h2>Bukan sekadar listing.<br /><em>Ini mesin pertumbuhan.</em></h2>
           <p>Slivadoc membantu partner dari saat pertama ditemukan hingga layanan selesai—tanpa memisahkan discovery, booking, transaksi, dan hubungan pelanggan. Seluruh fitur aplikasi, aktivasi, dan pendampingan onboarding diberikan gratis.</p>
           <div className="free-support-callout"><span>✓</span><p><b>Gratis, dibantu dari awal.</b> Anda tidak perlu membangun aplikasi, menyiapkan tim IT, atau membayar biaya langganan Slivadoc.</p></div>
-          <button className="button-white" onClick={scrollToForm}>Jadi bagian ekosistem <span>→</span></button>
+          <button className="button-white" onClick={() => scrollToForm("benefit_cta")}>Jadi bagian ekosistem <span>→</span></button>
         </div>
         <div className="benefit-grid">
           {[
@@ -368,7 +416,7 @@ export default function PartnerPortal() {
               <div><button className="button-primary" onClick={resetForm}>Daftarkan partner lain</button><a className="button-secondary" href="#beranda">Kembali ke atas</a></div>
             </div>
           ) : (
-            <form onSubmit={submit} noValidate>
+            <form onSubmit={submit} onFocusCapture={() => trackFormStart("form_interaction")} noValidate>
               <div className="form-heading">
                 <div>
                   <small>Langkah <span className="notranslate" translate="no">{step + 1}</span> dari <span className="notranslate" translate="no">{steps.length}</span></small>
@@ -447,7 +495,7 @@ export default function PartnerPortal() {
         </div>
       </section>
 
-      <section className="closing-cta"><span><PawMark /></span><div><small>Satu langkah untuk peluang yang lebih besar</small><h2>Mari tumbuh bersama Slivadoc.</h2></div><button className="button-white" onClick={scrollToForm}>Daftar jadi partner <span>→</span></button></section>
+      <section className="closing-cta"><span><PawMark /></span><div><small>Satu langkah untuk peluang yang lebih besar</small><h2>Mari tumbuh bersama Slivadoc.</h2></div><button className="button-white" onClick={() => scrollToForm("closing_cta")}>Daftar jadi partner <span>→</span></button></section>
 
       <footer className="partner-footer">
         <a className="partner-logo footer-logo notranslate" href="#beranda" aria-label="Slivadoc Partners" translate="no"><Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></a>
