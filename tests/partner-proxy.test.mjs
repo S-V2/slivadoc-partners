@@ -56,3 +56,32 @@ test("returns a gateway error when the upstream response is not JSON", async () 
   assert.equal(result.status, 502);
   assert.match(result.payload.message, /respons yang tidak valid/i);
 });
+
+test("preserves rate-limit headers from a rejected partner application", async () => {
+  const result = await forwardPartnerApplication({
+    apiURL: "https://api.slivadoc.xyz",
+    body: { legal_name: "PT Klinik Satwa" },
+    fetchImpl: async () => Response.json(
+      { message: "Setiap IP hanya dapat mengirim maksimal 3 pendaftaran dalam 6 jam" },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": "14400",
+          "X-RateLimit-Limit": "3",
+          "X-RateLimit-Remaining": "0",
+          "X-RateLimit-Reset": "1788285600",
+          "X-Internal-Header": "must-not-leak",
+        },
+      },
+    ),
+  });
+
+  assert.equal(result.status, 429);
+  assert.deepEqual(result.headers, {
+    "retry-after": "14400",
+    "x-ratelimit-limit": "3",
+    "x-ratelimit-remaining": "0",
+    "x-ratelimit-reset": "1788285600",
+  });
+  assert.equal(result.headers["x-internal-header"], undefined);
+});

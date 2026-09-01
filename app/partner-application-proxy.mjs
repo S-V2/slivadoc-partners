@@ -1,5 +1,12 @@
 export const DEFAULT_SLIVADOC_API_URL = "https://api.slivadoc.xyz";
 
+const FORWARDED_RESPONSE_HEADERS = [
+  "retry-after",
+  "x-ratelimit-limit",
+  "x-ratelimit-remaining",
+  "x-ratelimit-reset",
+];
+
 export function resolveSlivadocAPIURL(configuredURL, environment = process.env.NODE_ENV) {
   const value = String(configuredURL || "").trim();
   if (value) return value.replace(/\/$/, "");
@@ -23,11 +30,17 @@ export async function forwardPartnerApplication({ apiURL, body, userAgent, clien
       cache: "no-store",
       signal: controller.signal,
     });
+    const headers = Object.fromEntries(
+      FORWARDED_RESPONSE_HEADERS.flatMap((name) => {
+        const value = response.headers.get(name);
+        return value ? [[name, value]] : [];
+      }),
+    );
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
-      return { status: 502, payload: { message: "Layanan pendaftaran mengembalikan respons yang tidak valid." } };
+      return { status: 502, payload: { message: "Layanan pendaftaran mengembalikan respons yang tidak valid." }, headers };
     }
-    return { status: response.status, payload: await response.json() };
+    return { status: response.status, payload: await response.json(), headers };
   } finally {
     clearTimeout(timeout);
   }
