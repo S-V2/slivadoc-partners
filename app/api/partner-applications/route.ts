@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       userAgent: request.headers.get("user-agent"),
       clientIP,
     });
-    return NextResponse.json(result.payload, { status: result.status });
+    return NextResponse.json(result.payload, { status: result.status, headers: result.headers });
   } catch (error) {
     const timedOut = error instanceof Error && error.name === "AbortError";
     return NextResponse.json(
