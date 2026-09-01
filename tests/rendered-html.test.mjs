@@ -21,6 +21,11 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /Apakah bergabung dan menggunakan Slivadoc benar-benar gratis/);
   assert.match(html, /Chat WhatsApp Customer Support Slivadoc/);
   assert.match(html, /wa\.me\/6281977388341/);
+  assert.match(html, /className="custom-select-trigger"/);
+  assert.match(html, /role="listbox"/);
+  assert.match(html, /Cari \$\{label\.toLowerCase\(\)\}/);
+  assert.match(html, /className="check-control"/);
+  assert.doesNotMatch(html, /<select name=/);
   assert.doesNotMatch(html, /akses dasar untuk memulai gratis/i);
   assert.doesNotMatch(html, /codex-preview/);
 });
