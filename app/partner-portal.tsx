@@ -370,16 +370,19 @@ export default function PartnerPortal() {
           ) : (
             <form onSubmit={submit} noValidate>
               <div className="form-heading">
-                <div><small>Langkah {step + 1} dari {steps.length}</small><h3>{steps[step]}</h3></div>
-                <span>{Math.round(((step + 1) / steps.length) * 100)}%</span>
+                <div>
+                  <small>Langkah <span className="notranslate" translate="no">{step + 1}</span> dari <span className="notranslate" translate="no">{steps.length}</span></small>
+                  <h3 key={`step-heading-${step}`}>{steps[step]}</h3>
+                </div>
+                <span className="notranslate" translate="no">{Math.round(((step + 1) / steps.length) * 100)}%</span>
               </div>
               <div className="form-progress"><i style={{ width: `${((step + 1) / steps.length) * 100}%` }} /></div>
               <ol className="form-steps" aria-label="Tahapan pendaftaran">
-                {steps.map((item, index) => <li className={index === step ? "active" : index < step ? "done" : ""} key={item}><button type="button" onClick={() => index < step && setStep(index)}><span>{index < step ? "✓" : index + 1}</span><small>{item}</small></button></li>)}
+                {steps.map((item, index) => <li className={index === step ? "active" : index < step ? "done" : ""} key={item}><button type="button" onClick={() => index < step && setStep(index)}><span className="notranslate" translate="no">{index < step ? "✓" : index + 1}</span><small>{item}</small></button></li>)}
               </ol>
-              {serverError && <div className="form-alert" role="alert"><span>!</span>{serverError}</div>}
+              {serverError && <div className="form-alert notranslate" role="alert" translate="no"><span>!</span>{serverError}</div>}
 
-              {step === 0 && <div className="form-panel">
+              {step === 0 && <div className="form-panel" key="partner-profile-step">
                 <SelectField label="Kategori partner" name="partner_type" value={form.partner_type} onChange={(value) => update("partner_type", value)} error={errors.partner_type} options={partnerCategories.map((item) => ({ value: item.value, label: item.label }))} />
                 {selectedCategory && <div className="selected-partner"><span><Icon name={selectedCategory.icon} /></span><div><b>{selectedCategory.label}</b><small>{selectedCategory.description}</small></div></div>}
                 <div className="field-grid two"><TextField label="Nama legal badan/usaha" name="legal_name" value={form.legal_name} onChange={(value) => update("legal_name", value)} error={errors.legal_name} placeholder="Contoh: PT Sahabat Satwa Indonesia" /><TextField label="Nama brand/publik" name="brand_name" value={form.brand_name} onChange={(value) => update("brand_name", value)} error={errors.brand_name} placeholder="Contoh: Sahabat Satwa" /></div>
@@ -388,14 +391,14 @@ export default function PartnerPortal() {
                 <TextField label="Tautan dokumen legalitas" name="legal_document_url" type="url" value={form.legal_document_url} onChange={(value) => update("legal_document_url", value)} error={errors.legal_document_url} placeholder="https://drive.google.com/... (pastikan dapat dilihat)" hint="Gunakan tautan berizin lihat; jangan cantumkan password." />
               </div>}
 
-              {step === 1 && <div className="form-panel">
+              {step === 1 && <div className="form-panel" key="partner-contact-step">
                 <div className="field-grid two"><TextField label="Nama lengkap PIC" name="pic_name" value={form.pic_name} onChange={(value) => update("pic_name", value)} error={errors.pic_name} placeholder="Nama penanggung jawab" /><TextField label="Jabatan PIC" name="pic_position" value={form.pic_position} onChange={(value) => update("pic_position", value)} error={errors.pic_position} placeholder="Owner / Business Development" /></div>
                 <TextField label="Email bisnis" name="email" type="email" value={form.email} onChange={(value) => update("email", value)} error={errors.email} placeholder="partner@bisnis.com" />
                 <div className="field-grid two"><TextField label="Nomor WhatsApp aktif" name="whatsapp" type="tel" value={form.whatsapp} onChange={(value) => update("whatsapp", value)} error={errors.whatsapp} placeholder="081234567890" /><TextField label="Nomor kontak alternatif" name="alternate_phone" type="tel" value={form.alternate_phone} onChange={(value) => update("alternate_phone", value)} error={errors.alternate_phone} placeholder="081112223333" /></div>
                 <TextField label="Website atau profil bisnis" name="digital_profile_url" type="url" value={form.digital_profile_url} onChange={(value) => update("digital_profile_url", value)} error={errors.digital_profile_url} placeholder="https://instagram.com/brand atau website resmi" />
               </div>}
 
-              {step === 2 && <div className="form-panel">
+              {step === 2 && <div className="form-panel" key="partner-location-step">
                 <TextAreaField label="Alamat operasional lengkap" name="address" value={form.address} onChange={(value) => update("address", value)} error={errors.address} placeholder="Nama jalan, nomor, gedung, RT/RW, dan kelurahan" />
                 <div className="field-grid two"><SelectField label="Provinsi" name="province" value={form.province} onChange={(value) => update("province", value)} error={errors.province} options={provinces.map((item) => ({value:item,label:item}))} /><TextField label="Kabupaten/kota" name="city" value={form.city} onChange={(value) => update("city", value)} error={errors.city} placeholder="Jakarta Selatan" /></div>
                 <div className="field-grid two"><TextField label="Kecamatan" name="district" value={form.district} onChange={(value) => update("district", value)} error={errors.district} placeholder="Kebayoran Baru" /><TextField label="Kode pos" name="postal_code" inputMode="numeric" maxLength={5} value={form.postal_code} onChange={(value) => update("postal_code", value.replace(/\D/g, ""))} error={errors.postal_code} placeholder="12120" /></div>
@@ -404,7 +407,7 @@ export default function PartnerPortal() {
                 <TextField label="Jam operasional" name="operation_hours" value={form.operation_hours} onChange={(value) => update("operation_hours", value)} error={errors.operation_hours} placeholder="Senin–Minggu, 08.00–21.00" />
               </div>}
 
-              {step === 3 && <div className="form-panel">
+              {step === 3 && <div className="form-panel" key="partner-needs-step">
                 <TextField label="Layanan/produk utama" name="services_offered" value={form.services_offered} onChange={(value) => update("services_offered", value)} error={errors.services_offered} placeholder="Konsultasi, vaksinasi, grooming (pisahkan dengan koma)" />
                 <TextAreaField label="Ceritakan bisnis atau organisasi Anda" name="business_description" value={form.business_description} onChange={(value) => update("business_description", value)} error={errors.business_description} placeholder="Jelaskan fokus, pelanggan, keunggulan, dan layanan utama (minimal 30 karakter)." maxLength={2000} />
                 <TextAreaField label="Apa tujuan bergabung dengan Slivadoc?" name="partnership_goal" value={form.partnership_goal} onChange={(value) => update("partnership_goal", value)} error={errors.partnership_goal} placeholder="Jelaskan target, kendala, dan bentuk kolaborasi yang Anda harapkan (minimal 30 karakter)." maxLength={2000} />
@@ -412,7 +415,7 @@ export default function PartnerPortal() {
                 <div className="field-grid two"><TextField label="Sistem yang digunakan saat ini" name="existing_software" value={form.existing_software} onChange={(value) => update("existing_software", value)} error={errors.existing_software} placeholder="Belum ada / spreadsheet / POS lain" /><SelectField label="Mengetahui Slivadoc dari" name="referral_source" value={form.referral_source} onChange={(value) => update("referral_source", value)} error={errors.referral_source} options={["Instagram","TikTok","Google","Teman/partner","Event","Tim Slivadoc","Media lain"].map((item)=>({value:item,label:item}))} /></div>
               </div>}
 
-              {step === 4 && <div className="form-panel confirmation-panel">
+              {step === 4 && <div className="form-panel confirmation-panel" key="partner-confirmation-step">
                 <div className="confirmation-summary"><span><Icon name={selectedCategory?.icon || "paw"} /></span><div><small>Kategori terpilih</small><b>{selectedCategory?.label || "Belum dipilih"}</b><p>{form.brand_name || "Nama partner"} · {form.city || "Lokasi"}</p></div></div>
                 <h4>Konfirmasi & persetujuan</h4>
                 <CheckField checked={form.terms_accepted} onChange={(value) => update("terms_accepted", value)} error={errors.terms_accepted} label="Saya menyetujui syarat pendaftaran dan proses kemitraan Slivadoc." />
@@ -422,8 +425,15 @@ export default function PartnerPortal() {
               </div>}
 
               <div className="form-navigation">
-                {step > 0 ? <button className="button-back" type="button" onClick={previousStep}>← Kembali</button> : <span />}
-                {step < steps.length - 1 ? <button className="button-primary" type="button" onClick={nextStep}>Lanjutkan <span>→</span></button> : <button className="button-primary submit-button" type="submit" disabled={submitting}>{submitting ? <><i className="spinner" /> Mengirim data…</> : <>Kirim pendaftaran <span>→</span></>}</button>}
+                {step > 0 ? <button className="button-back" type="button" onClick={previousStep} key="back-button">← Kembali</button> : <span key="back-button-placeholder" />}
+                {step < steps.length - 1 ? (
+                  <button className="button-primary" type="button" onClick={nextStep} key="continue-button">Lanjutkan <span>→</span></button>
+                ) : (
+                  <button className="button-primary submit-button" type="submit" disabled={submitting} aria-busy={submitting} key="submit-button">
+                    <span className="submit-content" hidden={submitting}>Kirim pendaftaran <span>→</span></span>
+                    <span className="submit-content notranslate" translate="no" hidden={!submitting}><i className="spinner" /> Mengirim data…</span>
+                  </button>
+                )}
               </div>
             </form>
           )}
@@ -506,11 +516,11 @@ function firstInvalidStep(errors: FieldErrors) {
 }
 
 function TextField({ label, name, value, onChange, error, placeholder, type = "text", hint, inputMode, maxLength }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; placeholder:string; type?:string; hint?:string; inputMode?:"text"|"numeric"|"tel"|"email"|"url"; maxLength?:number }) {
-  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><input name={name} type={type} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} inputMode={inputMode || (type === "tel" ? "tel" : type === "email" ? "email" : type === "url" ? "url" : undefined)} maxLength={maxLength} aria-invalid={Boolean(error)} aria-describedby={error ? `${name}-error` : undefined} required />{hint && !error && <small>{hint}</small>}{error && <small id={`${name}-error`} className="field-error">{error}</small>}</label>;
+  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><input name={name} type={type} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} inputMode={inputMode || (type === "tel" ? "tel" : type === "email" ? "email" : type === "url" ? "url" : undefined)} maxLength={maxLength} aria-invalid={Boolean(error)} aria-describedby={error ? `${name}-error` : undefined} required />{hint && <small hidden={Boolean(error)}>{hint}</small>}<small id={`${name}-error`} className="field-error notranslate" translate="no" hidden={!error}>{error || ""}</small></label>;
 }
 
 function TextAreaField({ label, name, value, onChange, error, placeholder, maxLength = 1000 }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; placeholder:string; maxLength?:number }) {
-  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><textarea name={name} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} maxLength={maxLength} aria-invalid={Boolean(error)} required /> <small className={error ? "field-error field-counter" : "field-counter"}>{error || `${value.length}/${maxLength}`}</small></label>;
+  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><textarea name={name} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} maxLength={maxLength} aria-invalid={Boolean(error)} required /> <small className={error ? "field-error field-counter notranslate" : "field-counter notranslate"} translate="no">{error || `${value.length}/${maxLength}`}</small></label>;
 }
 
 type SelectOption = { value:string; label:string };
@@ -639,7 +649,7 @@ function SelectField({ label, name, value, onChange, error, options }: { label:s
         onClick={() => open ? closeAndFocus() : openMenu()}
         onKeyDown={handleTriggerKeyboard}
       >
-        <span className={selectedOption ? "custom-select-value" : "custom-select-value placeholder"}>{selectedOption?.label || `Pilih ${label.toLowerCase()}`}</span>
+        <span className={selectedOption ? "custom-select-value" : "custom-select-value placeholder"} key={selectedOption?.value || "placeholder"}>{selectedOption?.label || `Pilih ${label.toLowerCase()}`}</span>
         <span className="custom-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m5 7.5 5 5 5-5" /></svg></span>
       </button>
 
@@ -694,13 +704,13 @@ function SelectField({ label, name, value, onChange, error, options }: { label:s
           </div>
         </>
       )}
-      {error && <small id={errorId} className="field-error">{error}</small>}
+      <small id={errorId} className="field-error notranslate" translate="no" hidden={!error}>{error || ""}</small>
     </div>
   );
 }
 
 function CheckField({ checked, onChange, error, label }: { checked:boolean; onChange:(value:boolean)=>void; error?:string; label:string }) {
-  return <label className={error ? "check-field invalid" : "check-field"}><input className="check-input" type="checkbox" checked={checked} onChange={(event)=>onChange(event.target.checked)} /><span className="check-control" aria-hidden="true">✓</span><span className="check-copy"><b>{label}</b>{error && <small>{error}</small>}</span></label>;
+  return <label className={error ? "check-field invalid" : "check-field"}><input className="check-input" type="checkbox" checked={checked} onChange={(event)=>onChange(event.target.checked)} /><span className="check-control" aria-hidden="true">✓</span><span className="check-copy"><b>{label}</b><small className="notranslate" translate="no" hidden={!error}>{error || ""}</small></span></label>;
 }
 
 function PawMark() {
