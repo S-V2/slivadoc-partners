@@ -5,9 +5,19 @@ import test from "node:test";
 test("keeps the required Slivadoc Partners content", async () => {
   const html = await readFile(new URL("../app/partner-portal.tsx", import.meta.url), "utf8");
   const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
+  const analytics = await readFile(new URL("../app/google-analytics.tsx", import.meta.url), "utf8");
+  const consent = await readFile(new URL("../app/analytics-consent.tsx", import.meta.url), "utf8");
 
   assert.match(layout, /Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care/);
   assert.match(layout, /brand\/slivadoc-favicon\.png/);
+  assert.match(layout, /<GoogleAnalytics \/>/);
+  assert.match(analytics, /G-1HBZTWHBPN/);
+  assert.match(analytics, /<AnalyticsConsent measurementId=\{measurementId\} \/>/);
+  assert.match(consent, /analytics_storage: "granted"/);
+  assert.match(consent, /ad_storage: "denied"/);
+  assert.match(consent, /googletagmanager\.com\/gtag\/js/);
+  assert.match(consent, /Tolak analitik/);
+  assert.match(consent, /Izinkan analitik/);
   assert.match(html, /Bisnis pet care Anda layak/);
   assert.match(html, /brand\/slivadoc-logo\.png/);
   assert.match(html, /LanguageSwitcher/);
@@ -28,6 +38,9 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /key="partner-confirmation-step"/);
   assert.match(html, /className="submit-content" hidden=\{submitting\}/);
   assert.match(html, /className="submit-content notranslate" translate="no" hidden=\{!submitting\}/);
+  assert.match(html, /trackEvent\("generate_lead"/);
+  assert.match(html, /trackEvent\("form_step_complete"/);
+  assert.doesNotMatch(html, /trackEvent\([^)]*(email|whatsapp|pic_name|legal_name)/s);
   assert.doesNotMatch(html, /submitting \? <><i className="spinner"/);
   assert.doesNotMatch(html, /<select name=/);
   assert.doesNotMatch(html, /akses dasar untuk memulai gratis/i);

@@ -8,6 +8,8 @@ Portal akuisisi partner untuk seluruh ekosistem pet care Slivadoc selain Pet Own
 - formulir pendaftaran wajib lima tahap dengan validasi client dan server
 - penyimpanan pengajuan melalui API backend Slivadoc
 - nomor aplikasi dan penanganan duplikasi pengajuan
+- Google Analytics 4 untuk page view, funnel formulir, dan konversi partner
+- Consent Mode dengan analytics opt-in serta penyimpanan iklan selalu dinonaktifkan
 - responsive desktop dan mobile
 
 ## Menjalankan aplikasi
@@ -18,6 +20,8 @@ npm run dev
 ```
 
 Salin `.env.example` menjadi `.env.local`, lalu arahkan `SLIVADOC_API_URL` ke backend Slivadoc. Variabel ini hanya dibaca server oleh route proxy; browser tidak mengakses URL backend secara langsung.
+
+`NEXT_PUBLIC_GA_MEASUREMENT_ID` menggunakan Web Stream resmi Slivadoc (`G-1HBZTWHBPN`). Nilai ini dapat diganti per environment bila Slivadoc membuat stream terpisah di kemudian hari. Event analitik tidak memuat nama, email, nomor WhatsApp, dokumen, alamat, atau isi formulir partner.
 
 ## Deployment Vercel
 
