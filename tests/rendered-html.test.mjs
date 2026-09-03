@@ -5,10 +5,18 @@ import test from "node:test";
 test("keeps the required Slivadoc Partners content", async () => {
   const html = await readFile(new URL("../app/partner-portal.tsx", import.meta.url), "utf8");
   const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
+  const robots = await readFile(new URL("../app/robots.ts", import.meta.url), "utf8");
+  const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
   const analytics = await readFile(new URL("../app/google-analytics.tsx", import.meta.url), "utf8");
   const consent = await readFile(new URL("../app/analytics-consent.tsx", import.meta.url), "utf8");
 
-  assert.match(layout, /Slivadoc Partners — Tumbuh Bersama Ekosistem Pet Care/);
+  assert.match(layout, /Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis/);
+  assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
+  assert.match(layout, /canonical: "\/"/);
+  assert.match(layout, /aplikasi kasir petshop gratis/);
+  assert.match(layout, /"@type": "SoftwareApplication"/);
+  assert.match(robots, /partners\.slivadoc\.com\/sitemap\.xml/);
+  assert.match(sitemap, /https:\/\/partners\.slivadoc\.com/);
   assert.match(layout, /brand\/slivadoc-favicon\.png/);
   assert.match(layout, /<GoogleAnalytics \/>/);
   assert.match(analytics, /G-1HBZTWHBPN/);
@@ -19,6 +27,8 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(consent, /Tolak analitik/);
   assert.match(consent, /Izinkan analitik/);
   assert.match(html, /Bisnis pet care Anda layak/);
+  assert.match(html, /aplikasi POS petshop, klinik hewan, grooming/);
+  assert.match(html, /Apakah Slivadoc menyediakan aplikasi POS untuk petshop dan klinik hewan/);
   assert.match(html, /brand\/slivadoc-logo\.png/);
   assert.match(html, /LanguageSwitcher/);
   assert.match(html, /Daftar jadi partner/);

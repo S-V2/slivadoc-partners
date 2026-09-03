@@ -88,6 +88,10 @@ const whatsappSupportURL = `https://wa.me/6281977388341?text=${whatsappSupportMe
 
 const faqItems = [
   {
+    question: "Apakah Slivadoc menyediakan aplikasi POS untuk petshop dan klinik hewan?",
+    answer: "Ya. Slivadoc menyediakan aplikasi POS atau kasir terintegrasi untuk petshop, klinik hewan, grooming, dan bisnis pet care. Partner dapat mengelola transaksi, stok, pelanggan, booking, layanan, serta laporan operasional dari sistem yang saling terhubung.",
+  },
+  {
     question: "Apakah bergabung dan menggunakan Slivadoc benar-benar gratis?",
     answer: "Ya. Semua partner terdaftar mendapatkan akses full gratis. Pendaftaran, aktivasi akun, onboarding, penggunaan seluruh fitur aplikasi, dan pendampingan dari tim Slivadoc tidak dikenakan biaya pendaftaran, biaya aktivasi, biaya lisensi, atau biaya langganan.",
   },
@@ -320,7 +324,7 @@ export default function PartnerPortal() {
         <div className="hero-copy">
           <span className="hero-kicker"><i /> Partner ecosystem untuk pet care Indonesia</span>
           <h1>Bisnis pet care Anda layak <em>tumbuh lebih jauh.</em></h1>
-          <p>Gabung ke ekosistem Slivadoc untuk ditemukan pet owner, mengelola operasional lebih rapi, dan membuka peluang kolaborasi baru. Seluruh kebutuhan aplikasi dan onboarding dibantu tim Slivadoc secara gratis.</p>
+          <p>Gabung ke ekosistem Slivadoc dan gunakan aplikasi POS petshop, klinik hewan, grooming, serta bisnis pet care secara gratis. Kelola kasir, stok, booking, transaksi, dan pelanggan dalam operasional yang saling terhubung.</p>
           <div className="hero-actions">
             <button className="button-primary" onClick={() => scrollToForm("hero_cta")}>Mulai gratis sekarang <span>→</span></button>
             <a className="button-secondary" href="#ekosistem">Lihat kategori partner</a>
@@ -364,7 +368,7 @@ export default function PartnerPortal() {
         <div className="benefit-intro">
           <span className="section-label light">Kenapa bergabung</span>
           <h2>Bukan sekadar listing.<br /><em>Ini mesin pertumbuhan.</em></h2>
-          <p>Slivadoc membantu partner dari saat pertama ditemukan hingga layanan selesai—tanpa memisahkan discovery, booking, transaksi, dan hubungan pelanggan. Seluruh fitur aplikasi, aktivasi, dan pendampingan onboarding diberikan gratis.</p>
+          <p>Slivadoc membantu partner dari saat pertama ditemukan hingga layanan selesai—mulai dari aplikasi kasir/POS, booking, stok, transaksi, hingga hubungan pelanggan. Seluruh fitur aplikasi, aktivasi, dan pendampingan onboarding diberikan gratis.</p>
           <div className="free-support-callout"><span>✓</span><p><b>Gratis, dibantu dari awal.</b> Anda tidak perlu membangun aplikasi, menyiapkan tim IT, atau membayar biaya langganan Slivadoc.</p></div>
           <button className="button-white" onClick={() => scrollToForm("benefit_cta")}>Jadi bagian ekosistem <span>→</span></button>
         </div>
