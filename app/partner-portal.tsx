@@ -336,7 +336,7 @@ export default function PartnerPortal() {
           </div>
         </div>
         <div className="hero-visual" aria-label="Kolaborasi partner pet care Slivadoc">
-          <div className="hero-image-frame"><Image src="/partner-hero.png" alt="Profesional pet care Indonesia berkolaborasi bersama Slivadoc" width={1448} height={1086} priority unoptimized sizes="(max-width: 900px) 92vw, 46vw" /></div>
+          <div className="hero-image-frame"><Image src="/partner-hero.webp" alt="Profesional pet care Indonesia berkolaborasi bersama Slivadoc" width={1448} height={1086} priority unoptimized sizes="(max-width: 900px) 92vw, 46vw" /></div>
           <div className="floating-card card-discovery"><span><Icon name="pin" /></span><div><b>Lebih mudah ditemukan</b><small>Tampil di discovery Slivadoc</small></div></div>
           <div className="floating-card card-growth"><span><Icon name="trend" /></span><div><b>Growth ready</b><small>Data, campaign, operasional</small></div></div>
           <div className="floating-pill"><i /> Partner onboarding terbuka</div>
