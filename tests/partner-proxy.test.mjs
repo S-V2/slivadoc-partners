@@ -8,9 +8,9 @@ import {
 
 test("uses the public Slivadoc API in production and localhost only in development", () => {
   assert.equal(resolveSlivadocAPIURL(undefined, "production"), DEFAULT_SLIVADOC_API_URL);
-  assert.equal(DEFAULT_SLIVADOC_API_URL, "https://api.slivadoc.xyz");
+  assert.equal(DEFAULT_SLIVADOC_API_URL, "https://api.slivadoc.com");
   assert.equal(resolveSlivadocAPIURL(undefined, "development"), "http://127.0.0.1:8080");
-  assert.equal(resolveSlivadocAPIURL("https://staging-api.slivadoc.xyz/", "production"), "https://staging-api.slivadoc.xyz");
+  assert.equal(resolveSlivadocAPIURL("https://staging-api.slivadoc.com/", "production"), "https://staging-api.slivadoc.com");
 });
 
 test("forwards a complete partner application to the Slivadoc API", async () => {
@@ -48,7 +48,7 @@ test("forwards a complete partner application to the Slivadoc API", async () => 
 
 test("returns a gateway error when the upstream response is not JSON", async () => {
   const result = await forwardPartnerApplication({
-    apiURL: "https://api.slivadoc.xyz",
+    apiURL: "https://api.slivadoc.com",
     body: { legal_name: "PT Klinik Satwa" },
     fetchImpl: async () => new Response("Service unavailable", { status: 503 }),
   });
@@ -59,7 +59,7 @@ test("returns a gateway error when the upstream response is not JSON", async () 
 
 test("preserves rate-limit headers from a rejected partner application", async () => {
   const result = await forwardPartnerApplication({
-    apiURL: "https://api.slivadoc.xyz",
+    apiURL: "https://api.slivadoc.com",
     body: { legal_name: "PT Klinik Satwa" },
     fetchImpl: async () => Response.json(
       { message: "Setiap IP hanya dapat mengirim maksimal 3 pendaftaran dalam 6 jam" },
