@@ -1,4 +1,7 @@
-export const DEFAULT_SLIVADOC_API_URL = "https://api.slivadoc.xyz";
+// Production fallback when SLIVADOC_API_URL is unset; must stay in step with the deployed
+// domain. Pointing at retired hosts (e.g. api.slivadoc.xyz) causes partner submissions to 502
+// while the form still appears healthy.
+export const DEFAULT_SLIVADOC_API_URL = "https://api.slivadoc.com";
 
 const FORWARDED_RESPONSE_HEADERS = [
   "retry-after",
