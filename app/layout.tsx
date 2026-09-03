@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import GoogleAnalytics from "./google-analytics";
 import { seoKeywords } from "./seo-keywords.mjs";
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   },
   description,
   applicationName: "Slivadoc Partners",
+  manifest: "/manifest.webmanifest",
   authors: [{ name: "Slivadoc", url: "https://slivadoc.com" }],
   creator: "Slivadoc",
   publisher: "PT Sliva Technology Indonesia",
@@ -49,10 +50,25 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/brand/slivadoc-favicon.png",
-    shortcut: "/brand/slivadoc-favicon.png",
-    apple: "/brand/slivadoc-favicon.png",
+    icon: [
+      { url: "/favicon.ico?v=3", type: "image/x-icon" },
+      { url: "/favicon-16x16.png?v=3", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png?v=3", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48x48.png?v=3", sizes: "48x48", type: "image/png" },
+      { url: "/brand/slivadoc-favicon.png?v=3", sizes: "128x128", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico?v=3",
+    apple: [{ url: "/apple-touch-icon.png?v=3", sizes: "180x180", type: "image/png" }],
   },
+  other: {
+    "msapplication-TileColor": "#ffffff",
+    "msapplication-TileImage": "/mstile-150x150.png?v=3",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
