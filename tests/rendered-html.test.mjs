@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { seoKeywords } from "../app/seo-keywords.mjs";
 
 test("keeps the required Slivadoc Partners content", async () => {
   const html = await readFile(new URL("../app/partner-portal.tsx", import.meta.url), "utf8");
@@ -13,7 +14,12 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(layout, /Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis/);
   assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
   assert.match(layout, /canonical: "\/"/);
-  assert.match(layout, /aplikasi kasir petshop gratis/);
+  assert.match(layout, /keywords: seoKeywords/);
+  assert.equal(seoKeywords.length, 500);
+  assert.equal(new Set(seoKeywords).size, 500);
+  assert.ok(seoKeywords.includes("aplikasi kasir petshop gratis"));
+  assert.ok(seoKeywords.includes("aplikasi POS klinik hewan Indonesia"));
+  assert.ok(seoKeywords.includes("aplikasi barcode petshop terintegrasi"));
   assert.match(layout, /"@type": "SoftwareApplication"/);
   assert.match(robots, /partners\.slivadoc\.com\/sitemap\.xml/);
   assert.match(sitemap, /https:\/\/partners\.slivadoc\.com/);
