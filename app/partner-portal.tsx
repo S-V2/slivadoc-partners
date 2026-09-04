@@ -344,6 +344,15 @@ export default function PartnerPortal() {
       </section>
 
       <section className="brand-strip" aria-label="Nilai utama Slivadoc Partners">
+        <div className="pet-runway" aria-hidden="true">
+          <div className="pet-journey">
+            <span className="pet-speed-lines"><i /><i /><i /></span>
+            <span className="pet-runner-shadow" />
+            <span className="pet-runner">
+              <Image src="/brand/pet-runner.webp" alt="" width={480} height={221} sizes="(max-width: 480px) 112px, 148px" />
+            </span>
+          </div>
+        </div>
         {["Satu ekosistem", "Operasional terhubung", "Jangkauan lebih luas", "Partner terverifikasi"].map((item) => <span key={item}><i>✓</i>{item}</span>)}
       </section>
 
