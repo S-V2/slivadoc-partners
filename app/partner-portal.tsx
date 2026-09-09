@@ -64,18 +64,18 @@ const partnerCategories = [
 ] as const;
 
 const deliveryPartners = [
-  { name: "Lion Parcel", mark: "LP", slug: "lion-parcel" },
-  { name: "JNE", mark: "JNE", slug: "jne" },
-  { name: "J&T Cargo", mark: "J&T", slug: "jnt-cargo" },
-  { name: "SiCepat Express", mark: "SC", slug: "sicepat" },
-  { name: "IDExpress", mark: "ID", slug: "idexpress" },
+  { name: "Lion Parcel", slug: "lion-parcel", logo: "/partners/lion-parcel.svg", width: 170, height: 32 },
+  { name: "JNE", slug: "jne", logo: "/partners/jne.svg", width: 116, height: 48 },
+  { name: "J&T Cargo", slug: "jnt-cargo", logo: "/partners/jnt-cargo.png", width: 320, height: 320 },
+  { name: "SiCepat Express", slug: "sicepat", logo: "/partners/sicepat.svg", width: 120, height: 32 },
+  { name: "IDExpress", slug: "idexpress", logo: "/partners/idexpress.svg", width: 1599, height: 1335 },
 ] as const;
 
 const paymentPartners = [
-  { name: "BatPay", mark: "B", slug: "batpay" },
-  { name: "OCBC", mark: "O", slug: "ocbc" },
-  { name: "CIMB", mark: "C", slug: "cimb" },
-  { name: "Mandiri", mark: "M", slug: "mandiri" },
+  { name: "BatPay", slug: "batpay", logo: "/partners/batpay.webp", width: 1024, height: 353 },
+  { name: "OCBC", slug: "ocbc", logo: "/partners/ocbc.png", width: 1452, height: 392 },
+  { name: "CIMB Niaga", slug: "cimb", logo: "/partners/cimb.svg", width: 1445, height: 221 },
+  { name: "Mandiri", slug: "mandiri", logo: "/partners/mandiri.png", width: 400, height: 117 },
 ] as const;
 
 const ecosystemPillars = [
@@ -510,7 +510,17 @@ export default function PartnerPortal() {
             <ul className="partner-brand-list delivery-brand-list" aria-label="Daftar partner pengiriman Slivadoc">
               {deliveryPartners.map((partner) => (
                 <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no">
-                  <span className="partner-brand-mark" aria-hidden="true">{partner.mark}</span>
+                  <span className="partner-brand-logo-shell">
+                    <Image
+                      className="partner-brand-logo"
+                      src={partner.logo}
+                      alt=""
+                      aria-hidden="true"
+                      width={partner.width}
+                      height={partner.height}
+                      sizes="150px"
+                    />
+                  </span>
                   <strong>{partner.name}</strong>
                 </li>
               ))}
@@ -524,7 +534,17 @@ export default function PartnerPortal() {
             <ul className="partner-brand-list payment-brand-list" aria-label="Daftar partner pembayaran Slivadoc">
               {paymentPartners.map((partner) => (
                 <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no">
-                  <span className="partner-brand-mark" aria-hidden="true">{partner.mark}</span>
+                  <span className="partner-brand-logo-shell">
+                    <Image
+                      className="partner-brand-logo"
+                      src={partner.logo}
+                      alt=""
+                      aria-hidden="true"
+                      width={partner.width}
+                      height={partner.height}
+                      sizes="150px"
+                    />
+                  </span>
                   <strong>{partner.name}</strong>
                 </li>
               ))}
@@ -543,7 +563,6 @@ export default function PartnerPortal() {
             <article><span><Icon name="route" /></span><div><b>Armada beridentitas Slivadoc</b><p>Mobil box sendiri untuk mendukung pengiriman yang konsisten dan mudah dikenali.</p></div></article>
             <article><span><Icon name="trend" /></span><div><b>Siap bertumbuh nasional</b><p>Fondasi logistik untuk membantu ekosistem pet care menjangkau pasar yang lebih luas.</p></div></article>
           </div>
-          <small className="warehouse-note"><i aria-hidden="true">i</i> Ilustrasi menggambarkan rencana pengembangan infrastruktur Slivadoc.</small>
         </div>
         <div className="warehouse-visual">
           <div className="warehouse-image-frame">

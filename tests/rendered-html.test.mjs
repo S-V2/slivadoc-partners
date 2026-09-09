@@ -15,6 +15,17 @@ test("keeps the required Slivadoc Partners content", async () => {
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   const warehouseAsset = await readFile(new URL("../public/brand/slivadoc-warehouse.webp", import.meta.url));
   const ecosystemHeroAsset = await readFile(new URL("../public/brand/slivadoc-ecosystem-hero.webp", import.meta.url));
+  const partnerLogoAssets = await Promise.all([
+    "lion-parcel.svg",
+    "jne.svg",
+    "jnt-cargo.png",
+    "sicepat.svg",
+    "idexpress.svg",
+    "batpay.webp",
+    "ocbc.png",
+    "cimb.svg",
+    "mandiri.png",
+  ].map((name) => readFile(new URL(`../public/partners/${name}`, import.meta.url))));
 
   assert.match(layout, /Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis/);
   assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
@@ -78,7 +89,18 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /OCBC/);
   assert.match(html, /CIMB/);
   assert.match(html, /Mandiri/);
+  assert.match(html, /partners\/lion-parcel\.svg/);
+  assert.match(html, /partners\/jne\.svg/);
+  assert.match(html, /partners\/jnt-cargo\.png/);
+  assert.match(html, /partners\/sicepat\.svg/);
+  assert.match(html, /partners\/idexpress\.svg/);
+  assert.match(html, /partners\/batpay\.webp/);
+  assert.match(html, /partners\/ocbc\.png/);
+  assert.match(html, /partners\/cimb\.svg/);
+  assert.match(html, /partners\/mandiri\.png/);
+  assert.ok(partnerLogoAssets.every((asset) => asset.length > 2_000));
   assert.match(html, /Visi infrastruktur Slivadoc/);
+  assert.doesNotMatch(html, /Ilustrasi menggambarkan rencana pengembangan infrastruktur Slivadoc/);
   assert.match(html, /slivadoc-warehouse\.webp/);
   assert.match(html, /slivadoc-ecosystem-hero\.webp/);
   assert.match(html, /The connected pet-care economy/);
@@ -89,6 +111,8 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(styles, /\.warehouse-section/);
   assert.match(styles, /\.ecosystem-map-section/);
   assert.match(styles, /\.value-flow-section/);
+  assert.match(styles, /Final blue-sky brand polish/);
+  assert.match(styles, /\.partner-brand-logo-shell/);
   assert.ok(warehouseAsset.length > 50_000);
   assert.ok(ecosystemHeroAsset.length > 100_000);
   assert.match(html, /className="custom-select-trigger"/);
