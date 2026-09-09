@@ -78,6 +78,59 @@ const paymentPartners = [
   { name: "Mandiri", mark: "M", slug: "mandiri" },
 ] as const;
 
+const ecosystemPillars = [
+  {
+    label: "Health & Clinical",
+    title: "Kesehatan & klinis",
+    description: "Klinik, dokter hewan, laboratorium, dan apotek terhubung dalam perjalanan perawatan yang lebih utuh.",
+    icon: "stethoscope",
+    meta: "Klinik · Dokter · Lab · Apotek",
+  },
+  {
+    label: "Care & Hospitality",
+    title: "Perawatan & hospitality",
+    description: "Grooming, pet hotel, daycare, trainer, dan home service bertemu pet owner di saat yang tepat.",
+    icon: "sparkle",
+    meta: "Grooming · Hotel · Trainer",
+  },
+  {
+    label: "Commerce & Supply",
+    title: "Commerce & brand",
+    description: "Pet shop, brand, produsen, dan distributor bergerak dalam rantai pasok yang saling mendukung.",
+    icon: "bag",
+    meta: "Retail · Brand · Supplier",
+  },
+  {
+    label: "Community & Impact",
+    title: "Komunitas & dampak",
+    description: "Komunitas, event, shelter, dan asosiasi membangun edukasi, engagement, dan dampak yang lebih luas.",
+    icon: "users",
+    meta: "Community · Event · Rescue",
+  },
+  {
+    label: "Trust & Protection",
+    title: "Proteksi & kepercayaan",
+    description: "Verifikasi partner, asuransi, dan standar ekosistem membantu setiap interaksi terasa lebih aman.",
+    icon: "shield",
+    meta: "Verified · Insurance · Standard",
+  },
+  {
+    label: "Payment & Logistics",
+    title: "Pembayaran & logistik",
+    description: "Transaksi, pengiriman, dan pemenuhan pesanan menjadi penghubung dari kebutuhan ke pengalaman nyata.",
+    icon: "truck",
+    meta: "Payment · Delivery · Fulfillment",
+  },
+] as const;
+
+const valueFlow = [
+  { number: "01", title: "Ditemukan", description: "Pet owner menemukan partner dan layanan yang relevan.", icon: "pin" },
+  { number: "02", title: "Dipilih", description: "Profil, katalog, jadwal, dan kredibilitas membantu keputusan.", icon: "calendar" },
+  { number: "03", title: "Dibayar", description: "Transaksi masuk melalui alur pembayaran yang terhubung.", icon: "card" },
+  { number: "04", title: "Dipenuhi", description: "Layanan atau produk diselesaikan dengan dukungan operasional.", icon: "truck" },
+  { number: "05", title: "Bertumbuh", description: "Data dan relasi pelanggan membuka peluang berikutnya.", icon: "trend" },
+] as const;
+
 const provinces = [
   "Aceh", "Sumatera Utara", "Sumatera Barat", "Riau", "Kepulauan Riau", "Jambi", "Sumatera Selatan", "Kepulauan Bangka Belitung", "Bengkulu", "Lampung",
   "DKI Jakarta", "Jawa Barat", "Banten", "Jawa Tengah", "DI Yogyakarta", "Jawa Timur", "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur",
@@ -325,25 +378,25 @@ export default function PartnerPortal() {
         </a>
         <nav aria-label="Navigasi utama">
           <a href="#ekosistem">Ekosistem</a>
+          <a href="#kategori-partner">Kategori</a>
+          <a href="#manfaat">Alur nilai</a>
           <a href="#partner-strategis">Partner strategis</a>
-          <a href="#manfaat">Manfaat</a>
           <a href="#proses">Cara bergabung</a>
-          <a href="#faq">FAQ</a>
         </nav>
         <LanguageSwitcher />
-        <button className="header-cta" onClick={() => scrollToForm("header_cta")}><span className="header-cta-full">Daftar jadi partner</span><span className="header-cta-short">Daftar</span></button>
+        <button className="header-cta" onClick={() => scrollToForm("header_cta")}><span className="header-cta-full">Gabung ekosistem</span><span className="header-cta-short">Gabung</span></button>
       </header>
 
       <section className="partner-hero" id="beranda">
         <div className="hero-orb hero-orb-one" />
         <div className="hero-orb hero-orb-two" />
         <div className="hero-copy">
-          <span className="hero-kicker"><i /> Partner ecosystem untuk pet care Indonesia</span>
-          <h1>Bisnis pet care Anda layak <em>tumbuh lebih jauh.</em></h1>
-          <p>Gabung ke ekosistem Slivadoc dan gunakan aplikasi POS petshop, klinik hewan, grooming, serta bisnis pet care secara gratis. Kelola kasir, stok, booking, transaksi, dan pelanggan dalam operasional yang saling terhubung.</p>
+          <span className="hero-kicker"><i /> Ekosistem partner pet care Indonesia</span>
+          <h1>Dari bisnis lokal menjadi bagian dari <em>ekosistem besar.</em></h1>
+          <p>Slivadoc menghubungkan pet owner, layanan, commerce, komunitas, pembayaran, dan pengiriman dalam satu perjalanan. Gunakan aplikasi POS petshop, klinik hewan, grooming, serta bisnis pet care secara gratis untuk lebih mudah ditemukan, dipilih, dan bertumbuh.</p>
           <div className="hero-actions">
-            <button className="button-primary" onClick={() => scrollToForm("hero_cta")}>Mulai gratis sekarang <span>→</span></button>
-            <a className="button-secondary" href="#ekosistem">Lihat kategori partner</a>
+            <button className="button-primary" onClick={() => scrollToForm("hero_cta")}>Gabung ke ekosistem <span>→</span></button>
+            <a className="button-secondary" href="#ekosistem">Jelajahi cara kerjanya</a>
           </div>
           <div className="hero-proof">
             <span><b>18</b><small>Kategori partner</small></span>
@@ -351,11 +404,11 @@ export default function PartnerPortal() {
             <span><b>100% Gratis</b><small>Seluruh fitur partner</small></span>
           </div>
         </div>
-        <div className="hero-visual" aria-label="Kolaborasi partner pet care Slivadoc">
-          <div className="hero-image-frame"><Image src="/partner-hero.webp" alt="Profesional pet care Indonesia berkolaborasi bersama Slivadoc" width={1448} height={1086} priority unoptimized sizes="(max-width: 900px) 92vw, 46vw" /></div>
-          <div className="floating-card card-discovery"><span><Icon name="pin" /></span><div><b>Lebih mudah ditemukan</b><small>Tampil di discovery Slivadoc</small></div></div>
-          <div className="floating-card card-growth"><span><Icon name="trend" /></span><div><b>Growth ready</b><small>Data, campaign, operasional</small></div></div>
-          <div className="floating-pill"><i /> Partner onboarding terbuka</div>
+        <div className="hero-visual" aria-label="Gambaran ekosistem pet care Slivadoc">
+          <div className="hero-image-frame"><Image src="/brand/slivadoc-ecosystem-hero.webp" alt="Ilustrasi Slivadoc sebagai pusat ekosistem yang menghubungkan klinik hewan, pet shop, grooming, komunitas, pembayaran, dan logistik" width={1536} height={1024} priority sizes="(max-width: 900px) 94vw, 54vw" /></div>
+          <div className="floating-card card-discovery"><span><Icon name="paw" /></span><div><b>Satu jaringan</b><small>Care · Commerce · Community</small></div></div>
+          <div className="floating-card card-growth"><span><Icon name="trend" /></span><div><b>Alur end-to-end</b><small>Payment · Delivery · Growth</small></div></div>
+          <div className="floating-pill"><i /> Partner onboarding sedang dibuka</div>
         </div>
       </section>
 
@@ -369,14 +422,43 @@ export default function PartnerPortal() {
             </span>
           </div>
         </div>
-        {["Satu ekosistem", "Operasional terhubung", "Jangkauan lebih luas", "Partner terverifikasi"].map((item) => <span key={item}><i>✓</i>{item}</span>)}
+        {["Health & Care", "Commerce & Brand", "Community & Impact", "Payment & Delivery"].map((item) => <span key={item}><i>✓</i>{item}</span>)}
       </section>
 
-      <section className="ecosystem-section" id="ekosistem">
+      <section className="ecosystem-map-section" id="ekosistem">
+        <div className="ecosystem-map-intro">
+          <span className="section-label light">The connected pet-care economy</span>
+          <h2>Banyak pemain.<br /><em>Satu ekosistem.</em></h2>
+          <p>Slivadoc dirancang sebagai lapisan penghubung agar setiap partner tidak berjalan sendiri. Layanan, transaksi, data, komunitas, dan distribusi bertemu dalam jaringan yang memberi nilai ke seluruh ekosistem.</p>
+          <a href="#kategori-partner">Temukan posisi bisnis Anda <span>↓</span></a>
+        </div>
+        <div className="ecosystem-map-board">
+          <div className="ecosystem-core">
+            <span className="ecosystem-core-logo"><Image src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={58} height={58} /></span>
+            <small className="notranslate" translate="no">Slivadoc Ecosystem</small>
+            <h3>Satu pusat.<br />Semua terhubung.</h3>
+            <p>Discovery, operasional, transaksi, relasi, dan pertumbuhan.</p>
+            <div><span>18 kategori</span><span>38 provinsi</span></div>
+          </div>
+          {ecosystemPillars.map((pillar, index) => (
+            <article className={`ecosystem-pillar ecosystem-pillar-${index + 1}`} key={pillar.title}>
+              <span className="ecosystem-pillar-icon"><Icon name={pillar.icon} /></span>
+              <div>
+                <small className="notranslate" translate="no">{pillar.label}</small>
+                <h3>{pillar.title}</h3>
+                <p>{pillar.description}</p>
+                <em className="notranslate" translate="no">{pillar.meta}</em>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="ecosystem-section" id="kategori-partner">
         <div className="section-heading">
-          <span className="section-label">Terbuka untuk seluruh ekosistem</span>
-          <h2>Apa pun peran bisnis Anda,<br />ada ruang untuk <em>bertumbuh.</em></h2>
-          <p>Semua penyedia layanan, profesional, organisasi, brand, dan pendukung ekosistem yang tampil di fitur Slivadoc dapat mendaftar. Pet owner tetap menggunakan aplikasi khusus Pet Owner.</p>
+          <span className="section-label">18 pintu masuk ke ekosistem</span>
+          <h2>Temukan posisi Anda.<br /><em>Bangun dampak bersama.</em></h2>
+          <p>Semua penyedia layanan, profesional, organisasi, brand, dan pendukung ekosistem dapat mendaftar. Pilih kategori untuk langsung membawanya ke formulir. Pet owner tetap menggunakan aplikasi khusus Pet Owner.</p>
         </div>
         <div className="category-grid">
           {partnerCategories.map((item) => (
@@ -389,11 +471,35 @@ export default function PartnerPortal() {
         </div>
       </section>
 
+      <section className="value-flow-section" id="manfaat">
+        <div className="value-flow-heading">
+          <div>
+            <span className="section-label">Nilai yang terus bergerak</span>
+            <h2>Satu perjalanan dari kebutuhan menjadi <em>pertumbuhan.</em></h2>
+          </div>
+          <p>Slivadoc bukan sekadar tempat listing. Ekosistem ini membantu partner hadir di sepanjang perjalanan pet owner—dari pencarian pertama sampai relasi yang berulang.</p>
+        </div>
+        <ol className="value-flow">
+          {valueFlow.map((item) => (
+            <li key={item.number}>
+              <span className="value-flow-number">{item.number}</span>
+              <span className="value-flow-icon"><Icon name={item.icon} /></span>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="value-flow-callout">
+          <div><span><Icon name="paw" /></span><p><small>Nilai untuk partner</small><b>Ditemukan lebih mudah. Dioperasikan lebih rapi. Bertumbuh lebih terukur.</b></p></div>
+          <button className="button-primary" onClick={() => scrollToForm("value_flow_cta")}>Ambil bagian sekarang <span>→</span></button>
+        </div>
+      </section>
+
       <section className="partner-network-section" id="partner-strategis">
         <div className="section-heading partner-network-heading">
           <span className="section-label">Partner strategis</span>
-          <h2>Distribusi dan transaksi dalam satu <em>ekosistem.</em></h2>
-          <p>Slivadoc menghubungkan partner dengan jaringan pengiriman dan pembayaran agar alur transaksi hingga produk tiba di tujuan menjadi lebih praktis.</p>
+          <h2>Ekosistem besar butuh penggerak yang <em>bisa diandalkan.</em></h2>
+          <p>Jaringan pengiriman dan pembayaran membantu alur dari transaksi sampai produk tiba di tujuan tetap bergerak praktis di dalam ekosistem Slivadoc.</p>
         </div>
         <div className="partner-network-grid">
           <article className="partner-group-card delivery-partner-card">
@@ -430,7 +536,7 @@ export default function PartnerPortal() {
       <section className="warehouse-section" aria-labelledby="warehouse-title">
         <div className="warehouse-copy">
           <span className="section-label">Visi infrastruktur Slivadoc</span>
-          <h2 id="warehouse-title">Warehouse dan armada sendiri untuk distribusi yang <em>lebih terhubung.</em></h2>
+          <h2 id="warehouse-title">Membangun fondasi fisik untuk ekosistem yang <em>lebih besar.</em></h2>
           <p>Ke depan, Slivadoc dirancang memiliki warehouse dan mobil box pengiriman sendiri untuk mendukung distribusi produk pet care dari partner ke berbagai wilayah Indonesia dengan alur yang lebih terkontrol.</p>
           <div className="warehouse-points">
             <article><span><Icon name="cube" /></span><div><b>Warehouse terintegrasi</b><p>Pengelolaan stok, pemenuhan pesanan, dan distribusi dalam satu alur Slivadoc.</p></div></article>
@@ -450,28 +556,11 @@ export default function PartnerPortal() {
         </div>
       </section>
 
-      <section className="benefit-section" id="manfaat">
-        <div className="benefit-intro">
-          <span className="section-label light">Kenapa bergabung</span>
-          <h2>Bukan sekadar listing.<br /><em>Ini mesin pertumbuhan.</em></h2>
-          <p>Slivadoc membantu partner dari saat pertama ditemukan hingga layanan selesai—mulai dari aplikasi kasir/POS, booking, stok, transaksi, hingga hubungan pelanggan. Seluruh fitur aplikasi, aktivasi, dan pendampingan onboarding diberikan gratis.</p>
-          <div className="free-support-callout"><span>✓</span><p><b>Gratis, dibantu dari awal.</b> Anda tidak perlu membangun aplikasi, menyiapkan tim IT, atau membayar biaya langganan Slivadoc.</p></div>
-          <button className="button-white" onClick={() => scrollToForm("benefit_cta")}>Jadi bagian ekosistem <span>→</span></button>
-        </div>
-        <div className="benefit-grid">
-          {[
-            ["01", "Jangkauan yang relevan", "Hadir di titik pencarian pet owner saat mereka benar-benar membutuhkan layanan atau produk."],
-            ["02", "Operasional lebih rapi", "Kelola booking, katalog, transaksi, stok, data layanan, dan follow-up dari workflow yang terhubung."],
-            ["03", "Kepercayaan lebih kuat", "Profil, legalitas, layanan, dan standar partner direview agar pet owner lebih yakin memilih."],
-            ["04", "Peluang kolaborasi", "Buka akses ke campaign, event, komunitas, distribusi, dan program lintas partner Slivadoc."],
-          ].map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
-        </div>
-      </section>
-
       <section className="process-section" id="proses">
         <div className="section-heading compact">
-          <span className="section-label">Proses yang transparan</span>
-          <h2>Dari daftar hingga <em>siap tumbuh.</em></h2>
+          <span className="section-label">Masuk ke ekosistem</span>
+          <h2>Empat langkah menuju <em>peluang yang lebih luas.</em></h2>
+          <p>Tim Slivadoc mendampingi dari pemetaan kebutuhan hingga workspace dan layanan partner siap digunakan.</p>
         </div>
         <div className="process-line">
           {[
@@ -485,9 +574,9 @@ export default function PartnerPortal() {
 
       <section className="registration-section" id="daftar">
         <div className="registration-aside">
-          <span className="section-label light">Partner application</span>
-          <h2>Siap membuka peluang baru?</h2>
-          <p>Lengkapi semua data agar tim Operations dapat menilai dan menghubungi Anda dengan konteks yang tepat.</p>
+          <span className="section-label light">Your place in the ecosystem</span>
+          <h2>Ambil posisi Anda di ekosistem yang sedang dibangun.</h2>
+          <p>Ceritakan bisnis dan tujuan Anda. Tim Operations akan memetakan peran, kebutuhan, serta peluang kolaborasi yang paling relevan.</p>
           <div className="aside-checklist">
             <span><i>✓</i><b>Semua data tersimpan aman</b><small>Hanya digunakan untuk proses partnership.</small></span>
             <span><i>✓</i><b>Review langsung oleh Operations</b><small>Status masuk ke antrean dashboard Slivadoc.</small></span>
@@ -585,7 +674,7 @@ export default function PartnerPortal() {
         </div>
       </section>
 
-      <section className="closing-cta"><span><PawMark /></span><div><small>Satu langkah untuk peluang yang lebih besar</small><h2>Mari tumbuh bersama Slivadoc.</h2></div><button className="button-white" onClick={() => scrollToForm("closing_cta")}>Daftar jadi partner <span>→</span></button></section>
+      <section className="closing-cta"><span><PawMark /></span><div><small>Ekosistemnya sedang tumbuh</small><h2>Pastikan bisnis Anda ada di dalamnya.</h2></div><button className="button-white" onClick={() => scrollToForm("closing_cta")}>Gabung ke Slivadoc <span>→</span></button></section>
 
       <footer className="partner-footer">
         <a className="partner-logo footer-logo notranslate" href="#beranda" aria-label="Slivadoc Partners" translate="no"><Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></a>

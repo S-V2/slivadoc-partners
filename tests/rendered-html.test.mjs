@@ -14,11 +14,14 @@ test("keeps the required Slivadoc Partners content", async () => {
   const consent = await readFile(new URL("../app/analytics-consent.tsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   const warehouseAsset = await readFile(new URL("../public/brand/slivadoc-warehouse.webp", import.meta.url));
+  const ecosystemHeroAsset = await readFile(new URL("../public/brand/slivadoc-ecosystem-hero.webp", import.meta.url));
 
   assert.match(layout, /Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis/);
   assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
   assert.match(layout, /canonical: "\/"/);
   assert.match(layout, /keywords: seoKeywords/);
+  assert.match(layout, /summary_large_image/);
+  assert.match(layout, /slivadoc-ecosystem-hero\.webp/);
   assert.equal(seoKeywords.length, 500);
   assert.equal(new Set(seoKeywords).size, 500);
   assert.ok(seoKeywords.includes("aplikasi kasir petshop gratis"));
@@ -50,12 +53,12 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(consent, /googletagmanager\.com\/gtag\/js/);
   assert.match(consent, /Tolak analitik/);
   assert.match(consent, /Izinkan analitik/);
-  assert.match(html, /Bisnis pet care Anda layak/);
+  assert.match(html, /Dari bisnis lokal menjadi bagian dari/);
   assert.match(html, /aplikasi POS petshop, klinik hewan, grooming/);
   assert.match(html, /Apakah Slivadoc menyediakan aplikasi POS untuk petshop dan klinik hewan/);
   assert.match(html, /brand\/slivadoc-logo\.png/);
   assert.match(html, /LanguageSwitcher/);
-  assert.match(html, /Daftar jadi partner/);
+  assert.match(html, /Gabung ke ekosistem/);
   assert.match(html, /<b>38<\/b><small>Provinsi di Indonesia<\/small>/);
   assert.doesNotMatch(html, /Provinsi terjangkau/);
   assert.match(html, /Pet owner tetap menggunakan aplikasi khusus Pet Owner/);
@@ -77,9 +80,17 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /Mandiri/);
   assert.match(html, /Visi infrastruktur Slivadoc/);
   assert.match(html, /slivadoc-warehouse\.webp/);
+  assert.match(html, /slivadoc-ecosystem-hero\.webp/);
+  assert.match(html, /The connected pet-care economy/);
+  assert.match(html, /Satu pusat\.<br \/>Semua terhubung/);
+  assert.match(html, /Ditemukan/);
+  assert.match(html, /Dipenuhi/);
   assert.match(styles, /\.partner-network-section/);
   assert.match(styles, /\.warehouse-section/);
+  assert.match(styles, /\.ecosystem-map-section/);
+  assert.match(styles, /\.value-flow-section/);
   assert.ok(warehouseAsset.length > 50_000);
+  assert.ok(ecosystemHeroAsset.length > 100_000);
   assert.match(html, /className="custom-select-trigger"/);
   assert.match(html, /role="listbox"/);
   assert.match(html, /Cari \$\{label\.toLowerCase\(\)\}/);

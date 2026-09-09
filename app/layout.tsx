@@ -6,7 +6,8 @@ import { seoKeywords } from "./seo-keywords.mjs";
 const siteUrl = "https://partners.slivadoc.com";
 const title = "Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis";
 const description =
-  "Slivadoc adalah aplikasi POS dan manajemen bisnis hewan gratis untuk petshop, petclinic, grooming, dokter hewan, stok, booking, dan transaksi.";
+  "Gabung ke ekosistem Slivadoc yang menghubungkan pet owner, bisnis pet care, brand, pembayaran, dan logistik dengan aplikasi POS serta operasional partner gratis.";
+const ecosystemHero = `${siteUrl}/brand/slivadoc-ecosystem-hero.webp`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -32,11 +33,13 @@ export const metadata: Metadata = {
     siteName: "Slivadoc Partners",
     title,
     description,
+    images: [{ url: ecosystemHero, width: 1536, height: 1024, alt: "Ekosistem pet care Slivadoc Partners" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title,
     description,
+    images: [ecosystemHero],
   },
   robots: {
     index: true,
