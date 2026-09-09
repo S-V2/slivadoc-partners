@@ -66,7 +66,7 @@ const partnerCategories = [
 const deliveryPartners = [
   { name: "Lion Parcel", slug: "lion-parcel", logo: "/partners/lion-parcel.svg", width: 170, height: 32 },
   { name: "JNE", slug: "jne", logo: "/partners/jne.svg", width: 116, height: 48 },
-  { name: "J&T Cargo", slug: "jnt-cargo", logo: "/partners/jnt-cargo.png", width: 320, height: 320 },
+  { name: "J&T Cargo", slug: "jnt-cargo", logo: "/partners/jnt-cargo.svg", width: 223, height: 52 },
   { name: "SiCepat Express", slug: "sicepat", logo: "/partners/sicepat.svg", width: 120, height: 32 },
   { name: "IDExpress", slug: "idexpress", logo: "/partners/idexpress.svg", width: 1599, height: 1335 },
 ] as const;
@@ -509,19 +509,17 @@ export default function PartnerPortal() {
             </div>
             <ul className="partner-brand-list delivery-brand-list" aria-label="Daftar partner pengiriman Slivadoc">
               {deliveryPartners.map((partner) => (
-                <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no">
+                <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no" title={partner.name}>
                   <span className="partner-brand-logo-shell">
                     <Image
                       className="partner-brand-logo"
                       src={partner.logo}
-                      alt=""
-                      aria-hidden="true"
+                      alt={`Logo ${partner.name}`}
                       width={partner.width}
                       height={partner.height}
                       sizes="150px"
                     />
                   </span>
-                  <strong>{partner.name}</strong>
                 </li>
               ))}
             </ul>
@@ -533,19 +531,17 @@ export default function PartnerPortal() {
             </div>
             <ul className="partner-brand-list payment-brand-list" aria-label="Daftar partner pembayaran Slivadoc">
               {paymentPartners.map((partner) => (
-                <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no">
+                <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no" title={partner.name}>
                   <span className="partner-brand-logo-shell">
                     <Image
                       className="partner-brand-logo"
                       src={partner.logo}
-                      alt=""
-                      aria-hidden="true"
+                      alt={`Logo ${partner.name}`}
                       width={partner.width}
                       height={partner.height}
                       sizes="150px"
                     />
                   </span>
-                  <strong>{partner.name}</strong>
                 </li>
               ))}
             </ul>

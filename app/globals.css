@@ -234,16 +234,14 @@ body { top: 0 !important; }
 .partner-group-heading small { color: var(--sky-600); font-size: 12px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
 .partner-group-heading h3 { margin-top: 2px; color: var(--navy); font-size: 21px; letter-spacing: -.03em; }
 .partner-brand-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(108px,1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
-.partner-brand { --partner-accent: var(--sky-500); --partner-soft: var(--sky-50); min-width: 0; min-height: 96px; display: grid; place-items: center; align-content: center; gap: 8px; padding: 13px 9px; overflow: hidden; border: 1px solid #e0edf3; border-radius: 17px; background: linear-gradient(145deg,#fff,#f9fdff); box-shadow: inset 0 1px rgba(255,255,255,.95); text-align: center; transition: transform .4s var(--ease-spring), border-color .3s ease, box-shadow .4s ease; }
+.partner-brand { --partner-accent: var(--sky-500); --partner-soft: var(--sky-50); min-width: 0; min-height: 100px; display: grid; place-items: center; align-content: center; padding: 18px 12px; overflow: hidden; border: 1px solid #e0edf3; border-radius: 17px; background: linear-gradient(145deg,#fff,#f9fdff); box-shadow: inset 0 1px rgba(255,255,255,.95); text-align: center; transition: transform .4s var(--ease-spring), border-color .3s ease, box-shadow .4s ease; }
 .partner-brand:hover { transform: translateY(-4px); border-color: color-mix(in srgb,var(--partner-accent) 38%,#dcebf2); box-shadow: 0 14px 30px color-mix(in srgb,var(--partner-accent) 10%,transparent); }
-.partner-brand-logo-shell { width: 100%; height: 49px; display: grid; place-items: center; overflow: hidden; }
-.partner-brand-logo { width: auto; max-width: min(145px, 100%); height: auto; max-height: 46px; display: block; object-fit: contain; }
-.partner-brand-jnt-cargo .partner-brand-logo { width: 138px; max-width: none; height: 138px; max-height: none; }
+.partner-brand-logo-shell { width: 100%; height: 60px; display: grid; place-items: center; overflow: hidden; }
+.partner-brand-logo { width: auto; max-width: min(156px, 100%); height: auto; max-height: 52px; display: block; object-fit: contain; }
 .partner-brand-idexpress .partner-brand-logo { max-width: 67px; max-height: 56px; }
-.partner-brand strong { max-width: 100%; color: #1d4054; font-size: 13px; font-weight: 850; line-height: 1.25; overflow-wrap: anywhere; }
 .partner-brand-lion-parcel { --partner-accent: #f36f21; --partner-soft: #fff3eb; }
 .partner-brand-jne { --partner-accent: #17479e; --partner-soft: #eef4ff; }
-.partner-brand-jnt-cargo { --partner-accent: #d71920; --partner-soft: #fff0f0; }
+.partner-brand-jnt-cargo { --partner-accent: #00b075; --partner-soft: #eafaf4; }
 .partner-brand-sicepat { --partner-accent: #ed1c24; --partner-soft: #fff1f2; }
 .partner-brand-idexpress { --partner-accent: #f58220; --partner-soft: #fff5e9; }
 .partner-brand-batpay { --partner-accent: #1686df; --partner-soft: #edf7ff; }

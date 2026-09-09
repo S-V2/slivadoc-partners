@@ -18,7 +18,7 @@ test("keeps the required Slivadoc Partners content", async () => {
   const partnerLogoAssets = await Promise.all([
     "lion-parcel.svg",
     "jne.svg",
-    "jnt-cargo.png",
+    "jnt-cargo.svg",
     "sicepat.svg",
     "idexpress.svg",
     "batpay.webp",
@@ -91,13 +91,14 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /Mandiri/);
   assert.match(html, /partners\/lion-parcel\.svg/);
   assert.match(html, /partners\/jne\.svg/);
-  assert.match(html, /partners\/jnt-cargo\.png/);
+  assert.match(html, /partners\/jnt-cargo\.svg/);
   assert.match(html, /partners\/sicepat\.svg/);
   assert.match(html, /partners\/idexpress\.svg/);
   assert.match(html, /partners\/batpay\.webp/);
   assert.match(html, /partners\/ocbc\.png/);
   assert.match(html, /partners\/cimb\.svg/);
   assert.match(html, /partners\/mandiri\.png/);
+  assert.doesNotMatch(html, /<strong>\{partner\.name\}<\/strong>/);
   assert.ok(partnerLogoAssets.every((asset) => asset.length > 2_000));
   assert.match(html, /Visi infrastruktur Slivadoc/);
   assert.doesNotMatch(html, /Ilustrasi menggambarkan rencana pengembangan infrastruktur Slivadoc/);
