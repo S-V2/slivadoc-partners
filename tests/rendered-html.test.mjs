@@ -12,6 +12,8 @@ test("keeps the required Slivadoc Partners content", async () => {
   const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
   const analytics = await readFile(new URL("../app/google-analytics.tsx", import.meta.url), "utf8");
   const consent = await readFile(new URL("../app/analytics-consent.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  const warehouseAsset = await readFile(new URL("../public/brand/slivadoc-warehouse.webp", import.meta.url));
 
   assert.match(layout, /Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis/);
   assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
@@ -63,6 +65,21 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /Apakah bergabung dan menggunakan Slivadoc benar-benar gratis/);
   assert.match(html, /Chat WhatsApp Customer Support Slivadoc/);
   assert.match(html, /wa\.me\/6281977388341/);
+  assert.match(html, /Partner Pengiriman/);
+  assert.match(html, /Lion Parcel/);
+  assert.match(html, /J&T Cargo/);
+  assert.match(html, /SiCepat Express/);
+  assert.match(html, /IDExpress/);
+  assert.match(html, /Partner Pembayaran/);
+  assert.match(html, /BatPay/);
+  assert.match(html, /OCBC/);
+  assert.match(html, /CIMB/);
+  assert.match(html, /Mandiri/);
+  assert.match(html, /Visi infrastruktur Slivadoc/);
+  assert.match(html, /slivadoc-warehouse\.webp/);
+  assert.match(styles, /\.partner-network-section/);
+  assert.match(styles, /\.warehouse-section/);
+  assert.ok(warehouseAsset.length > 50_000);
   assert.match(html, /className="custom-select-trigger"/);
   assert.match(html, /role="listbox"/);
   assert.match(html, /Cari \$\{label\.toLowerCase\(\)\}/);

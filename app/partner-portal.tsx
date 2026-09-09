@@ -63,6 +63,21 @@ const partnerCategories = [
   { value: "government_association", label: "Instansi & Asosiasi", description: "Standar, edukasi, dan program", icon: "building" },
 ] as const;
 
+const deliveryPartners = [
+  { name: "Lion Parcel", mark: "LP", slug: "lion-parcel" },
+  { name: "JNE", mark: "JNE", slug: "jne" },
+  { name: "J&T Cargo", mark: "J&T", slug: "jnt-cargo" },
+  { name: "SiCepat Express", mark: "SC", slug: "sicepat" },
+  { name: "IDExpress", mark: "ID", slug: "idexpress" },
+] as const;
+
+const paymentPartners = [
+  { name: "BatPay", mark: "B", slug: "batpay" },
+  { name: "OCBC", mark: "O", slug: "ocbc" },
+  { name: "CIMB", mark: "C", slug: "cimb" },
+  { name: "Mandiri", mark: "M", slug: "mandiri" },
+] as const;
+
 const provinces = [
   "Aceh", "Sumatera Utara", "Sumatera Barat", "Riau", "Kepulauan Riau", "Jambi", "Sumatera Selatan", "Kepulauan Bangka Belitung", "Bengkulu", "Lampung",
   "DKI Jakarta", "Jawa Barat", "Banten", "Jawa Tengah", "DI Yogyakarta", "Jawa Timur", "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur",
@@ -309,7 +324,8 @@ export default function PartnerPortal() {
           <span>sliva<b>doc</b><small>partners</small></span>
         </a>
         <nav aria-label="Navigasi utama">
-          <a href="#ekosistem">Siapa yang bisa bergabung</a>
+          <a href="#ekosistem">Ekosistem</a>
+          <a href="#partner-strategis">Partner strategis</a>
           <a href="#manfaat">Manfaat</a>
           <a href="#proses">Cara bergabung</a>
           <a href="#faq">FAQ</a>
@@ -370,6 +386,67 @@ export default function PartnerPortal() {
               <i className="category-arrow">→</i>
             </button>
           ))}
+        </div>
+      </section>
+
+      <section className="partner-network-section" id="partner-strategis">
+        <div className="section-heading partner-network-heading">
+          <span className="section-label">Partner strategis</span>
+          <h2>Distribusi dan transaksi dalam satu <em>ekosistem.</em></h2>
+          <p>Slivadoc menghubungkan partner dengan jaringan pengiriman dan pembayaran agar alur transaksi hingga produk tiba di tujuan menjadi lebih praktis.</p>
+        </div>
+        <div className="partner-network-grid">
+          <article className="partner-group-card delivery-partner-card">
+            <div className="partner-group-heading">
+              <span className="partner-group-icon"><Icon name="truck" /></span>
+              <div><small>Dukungan distribusi</small><h3>Partner Pengiriman</h3></div>
+            </div>
+            <ul className="partner-brand-list delivery-brand-list" aria-label="Daftar partner pengiriman Slivadoc">
+              {deliveryPartners.map((partner) => (
+                <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no">
+                  <span className="partner-brand-mark" aria-hidden="true">{partner.mark}</span>
+                  <strong>{partner.name}</strong>
+                </li>
+              ))}
+            </ul>
+          </article>
+          <article className="partner-group-card payment-partner-card">
+            <div className="partner-group-heading">
+              <span className="partner-group-icon"><Icon name="card" /></span>
+              <div><small>Dukungan transaksi</small><h3>Partner Pembayaran</h3></div>
+            </div>
+            <ul className="partner-brand-list payment-brand-list" aria-label="Daftar partner pembayaran Slivadoc">
+              {paymentPartners.map((partner) => (
+                <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no">
+                  <span className="partner-brand-mark" aria-hidden="true">{partner.mark}</span>
+                  <strong>{partner.name}</strong>
+                </li>
+              ))}
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section className="warehouse-section" aria-labelledby="warehouse-title">
+        <div className="warehouse-copy">
+          <span className="section-label">Visi infrastruktur Slivadoc</span>
+          <h2 id="warehouse-title">Warehouse dan armada sendiri untuk distribusi yang <em>lebih terhubung.</em></h2>
+          <p>Ke depan, Slivadoc dirancang memiliki warehouse dan mobil box pengiriman sendiri untuk mendukung distribusi produk pet care dari partner ke berbagai wilayah Indonesia dengan alur yang lebih terkontrol.</p>
+          <div className="warehouse-points">
+            <article><span><Icon name="cube" /></span><div><b>Warehouse terintegrasi</b><p>Pengelolaan stok, pemenuhan pesanan, dan distribusi dalam satu alur Slivadoc.</p></div></article>
+            <article><span><Icon name="route" /></span><div><b>Armada beridentitas Slivadoc</b><p>Mobil box sendiri untuk mendukung pengiriman yang konsisten dan mudah dikenali.</p></div></article>
+            <article><span><Icon name="trend" /></span><div><b>Siap bertumbuh nasional</b><p>Fondasi logistik untuk membantu ekosistem pet care menjangkau pasar yang lebih luas.</p></div></article>
+          </div>
+          <small className="warehouse-note"><i aria-hidden="true">i</i> Ilustrasi menggambarkan rencana pengembangan infrastruktur Slivadoc.</small>
+        </div>
+        <div className="warehouse-visual">
+          <div className="warehouse-image-frame">
+            <Image src="/brand/slivadoc-warehouse.webp" alt="Ilustrasi rencana warehouse dan mobil box pengiriman dengan stiker logo Slivadoc" width={1536} height={1024} sizes="(max-width: 780px) calc(100vw - 40px), 54vw" />
+          </div>
+          <div className="warehouse-status-card">
+            <span><Image src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={34} height={34} /></span>
+            <div><small>Rencana pengembangan</small><b>Slivadoc Warehouse & Delivery</b></div>
+          </div>
         </div>
       </section>
 
@@ -781,7 +858,7 @@ function PawMark() {
 function Icon({ name }: { name:string }) {
   const common = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
   const paths: Record<string, ReactNode> = {
-    plus:<><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></>, stethoscope:<><path d="M6 3v5a4 4 0 0 0 8 0V3"/><path d="M10 12v2a5 5 0 0 0 10 0v-1"/><circle cx="20" cy="10.5" r="2"/></>, bag:<><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></>, sparkle:<><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3Z"/><path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></>, home:<><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></>, route:<><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M8.5 16.5 15.5 7.5"/></>, award:<><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1 9 4.5-2 4.5 2-1-9"/></>, pill:<><path d="M8.5 19.5a5 5 0 0 1-7-7l7-7a5 5 0 0 1 7 7l-7 7Z"/><path d="m5 9 7 7"/></>, lab:<><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 15h9"/></>, heart:<path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/>, users:<><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></>, calendar:<><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></>, pin:<><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></>, shield:<><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></>, cube:<><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/></>, truck:<><path d="M3 5h11v11H3zM14 9h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></>, send:<><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></>, building:<><path d="M3 21h18M6 21V7l6-4 6 4v14M9 10h.01M9 14h.01M15 10h.01M15 14h.01M10 21v-3h4v3"/></>, trend:<><path d="m3 17 6-6 4 4 8-9"/><path d="M15 6h6v6"/></>, chat:<><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/><path d="M8 9h8M8 13h5"/></>, lock:<><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>, paw:<><circle cx="12" cy="14" r="4"/><circle cx="6" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><circle cx="9" cy="5" r="2"/><circle cx="15" cy="5" r="2"/></>,
+    plus:<><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></>, stethoscope:<><path d="M6 3v5a4 4 0 0 0 8 0V3"/><path d="M10 12v2a5 5 0 0 0 10 0v-1"/><circle cx="20" cy="10.5" r="2"/></>, bag:<><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></>, sparkle:<><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3Z"/><path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></>, home:<><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></>, route:<><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M8.5 16.5 15.5 7.5"/></>, award:<><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1 9 4.5-2 4.5 2-1-9"/></>, pill:<><path d="M8.5 19.5a5 5 0 0 1-7-7l7-7a5 5 0 0 1 7 7l-7 7Z"/><path d="m5 9 7 7"/></>, lab:<><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 15h9"/></>, heart:<path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/>, users:<><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></>, calendar:<><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></>, pin:<><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></>, shield:<><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></>, cube:<><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/></>, truck:<><path d="M3 5h11v11H3zM14 9h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></>, card:<><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></>, send:<><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></>, building:<><path d="M3 21h18M6 21V7l6-4 6 4v14M9 10h.01M9 14h.01M15 10h.01M15 14h.01M10 21v-3h4v3"/></>, trend:<><path d="m3 17 6-6 4 4 8-9"/><path d="M15 6h6v6"/></>, chat:<><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/><path d="M8 9h8M8 13h5"/></>, lock:<><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>, paw:<><circle cx="12" cy="14" r="4"/><circle cx="6" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><circle cx="9" cy="5" r="2"/><circle cx="15" cy="5" r="2"/></>,
   };
   return <svg {...common}>{paths[name] || paths.paw}</svg>;
 }
