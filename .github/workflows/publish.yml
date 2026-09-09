@@ -46,6 +46,8 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -197,6 +199,7 @@ jobs:
       # Pushes the exact bytes that were just smoke-tested. No rebuild.
       - name: Push
         if: github.event_name != 'pull_request'
+        id: push
         run: |
           set -euo pipefail
           docker push "${IMAGE}:${GITHUB_SHA}"
@@ -204,5 +207,51 @@ jobs:
           DIGEST="$(docker image inspect "${IMAGE}:${GITHUB_SHA}" \
                      --format '{{index .RepoDigests 0}}')"
           echo "pushed ${DIGEST}" | tee -a "$GITHUB_STEP_SUMMARY"
-          echo "Repin PARTNERS_REF in the VM .env to @${DIGEST#*@}" \
+          SHA_DIGEST="@${DIGEST#*@}"
+          echo "digest=${SHA_DIGEST}" >> "$GITHUB_OUTPUT"
+          echo "Repin PARTNERS_REF in the VM .env to ${SHA_DIGEST}" \
             | tee -a "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: Deploy to VM
+    needs: publish
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Deploy to production VM
+        env:
+          SSH_HOST: ${{ secrets.VM_SSH_HOST }}
+          SSH_USER: ${{ secrets.VM_SSH_USER }}
+          SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+          PARTNERS_DIGEST: ${{ needs.publish.outputs.digest }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SSH_HOST:-}" ] || [ -z "${SSH_KEY:-}" ]; then
+            echo "::error::VM_SSH_HOST or VM_SSH_KEY secret is not set"
+            exit 1
+          fi
+
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          SSH_CMD="ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o BatchMode=yes ${SSH_USER:-ubuntu}@${SSH_HOST}"
+
+          echo "Deploying slivadoc-partners (${PARTNERS_DIGEST}) to ${SSH_HOST}..."
+          $SSH_CMD bash <<EOF
+            set -euo pipefail
+            cd /opt/slivadoc
+
+            # Update pin in .env
+            sed -i.bak -E "s|^PARTNERS_REF=.*|PARTNERS_REF=${PARTNERS_DIGEST}|" .env
+
+            # Pull image and recreate service
+            docker compose pull slivadoc-partners
+            docker compose up -d --force-recreate slivadoc-partners
+
+            # Verify container running matches .env specification
+            ./scripts/verify-pins.sh
+          EOF
+          echo "Deployment successful."
