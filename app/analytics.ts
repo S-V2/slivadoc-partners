@@ -1,5 +1,3 @@
-export const analyticsConsentKey = "slivadoc-analytics-consent";
-
 type AnalyticsValue = string | number | boolean;
 type AnalyticsParameters = Record<string, AnalyticsValue | null | undefined>;
 

@@ -11,7 +11,6 @@ test("keeps the required Slivadoc Partners content", async () => {
   const robots = await readFile(new URL("../app/robots.ts", import.meta.url), "utf8");
   const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
   const analytics = await readFile(new URL("../app/google-analytics.tsx", import.meta.url), "utf8");
-  const consent = await readFile(new URL("../app/analytics-consent.tsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   const warehouseAsset = await readFile(new URL("../public/brand/slivadoc-warehouse.webp", import.meta.url));
   const ecosystemHeroAsset = await readFile(new URL("../public/brand/slivadoc-ecosystem-hero.webp", import.meta.url));
@@ -58,12 +57,14 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.doesNotMatch(svgFavicon, /M22 19\.2727/);
   assert.match(layout, /<GoogleAnalytics \/>/);
   assert.match(analytics, /G-1HBZTWHBPN/);
-  assert.match(analytics, /<AnalyticsConsent measurementId=\{measurementId\} \/>/);
-  assert.match(consent, /analytics_storage: "granted"/);
-  assert.match(consent, /ad_storage: "denied"/);
-  assert.match(consent, /googletagmanager\.com\/gtag\/js/);
-  assert.match(consent, /Tolak analitik/);
-  assert.match(consent, /Izinkan analitik/);
+  assert.match(analytics, /analytics_storage: "granted"/);
+  assert.match(analytics, /ad_storage: "denied"/);
+  assert.match(analytics, /allow_google_signals: false/);
+  assert.match(analytics, /allow_ad_personalization_signals: false/);
+  assert.match(analytics, /send_page_view: true/);
+  assert.match(analytics, /googletagmanager\.com\/gtag\/js/);
+  assert.doesNotMatch(analytics, /Tolak analitik|Izinkan analitik|localStorage|role="dialog"/);
+  assert.doesNotMatch(styles, /\.analytics-consent/);
   assert.match(html, /Dari bisnis lokal menjadi bagian dari/);
   assert.match(html, /aplikasi POS petshop, klinik hewan, grooming/);
   assert.match(html, /Apakah Slivadoc menyediakan aplikasi POS untuk petshop dan klinik hewan/);
