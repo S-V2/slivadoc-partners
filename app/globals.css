@@ -244,7 +244,9 @@ body { top: 0 !important; }
 .form-steps li.active span { border-color: var(--sky-500); color: white; background: var(--sky-500); box-shadow: 0 5px 14px rgba(11,159,225,.2); }
 .form-steps li.active small { color: var(--sky-600); }
 .form-steps li.done span { border-color: #9be2c7; color: var(--green); background: #ecfbf5; }
-.form-panel { display: grid; gap: 16px; min-height: 355px; align-content: start; }
+.form-panel { position: relative; z-index: 1; display: grid; gap: 16px; min-height: 355px; align-content: start; }
+.form-panel:has(.select-field.open) { animation: none; }
+.registration-card:has(.select-field.open) { animation: none; }
 .field-grid { display: grid; gap: 13px; }
 .field-grid.two { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .form-field { display: grid; gap: 7px; min-width: 0; }
