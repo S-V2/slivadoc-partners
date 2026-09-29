@@ -1,67 +1,10 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
+import { ReactNode } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { trackEvent } from "./analytics";
+import { partnershipCategories, partnershipCategoryPath } from "./partnership-categories";
 import LanguageSwitcher from "./language-switcher";
-
-type PartnerForm = {
-  partner_type: string;
-  legal_name: string;
-  brand_name: string;
-  entity_type: string;
-  legal_document_number: string;
-  legal_document_url: string;
-  established_year: string;
-  branch_count: string;
-  employee_count: string;
-  pic_name: string;
-  pic_position: string;
-  email: string;
-  whatsapp: string;
-  alternate_phone: string;
-  digital_profile_url: string;
-  address: string;
-  province: string;
-  city: string;
-  district: string;
-  postal_code: string;
-  service_coverage: string;
-  services_offered: string;
-  operation_hours: string;
-  business_description: string;
-  partnership_goal: string;
-  expected_timeline: string;
-  monthly_customer_volume: string;
-  existing_software: string;
-  referral_source: string;
-  terms_accepted: boolean;
-  data_consent: boolean;
-  truth_declaration: boolean;
-};
-
-type FieldErrors = Record<string, string>;
-
-const partnerCategories = [
-  { value: "veterinary_clinic", label: "Klinik & RS Hewan", description: "Booking, medical record, POS, dan stok", icon: "plus" },
-  { value: "independent_veterinarian", label: "Dokter Hewan", description: "Konsultasi online dan home visit", icon: "stethoscope" },
-  { value: "pet_shop", label: "Pet Shop", description: "Marketplace, inventory, dan member", icon: "bag" },
-  { value: "pet_grooming", label: "Grooming & Salon", description: "Booking, groomer, dan paket layanan", icon: "sparkle" },
-  { value: "pet_hotel_daycare", label: "Pet Hotel & Daycare", description: "Kamar, reservasi, dan care log", icon: "home" },
-  { value: "home_service", label: "Home Service", description: "Dispatch, driver, dan bukti layanan", icon: "route" },
-  { value: "pet_academy_trainer", label: "Academy & Trainer", description: "Kelas, enrollment, dan progres", icon: "award" },
-  { value: "pet_pharmacy", label: "Apotek Pet", description: "Produk kesehatan, stok, dan order", icon: "pill" },
-  { value: "diagnostic_laboratory", label: "Laboratorium", description: "Lab order, hasil, dan rekam medis", icon: "lab" },
-  { value: "shelter_rescue", label: "Shelter & Rescue", description: "Adopsi, moderasi, dan screening", icon: "heart" },
-  { value: "pet_community", label: "Komunitas Pet", description: "Community, PetHub, dan campaign", icon: "users" },
-  { value: "pet_event_organizer", label: "Pet Event", description: "Event, ticketing, dan analytics", icon: "calendar" },
-  { value: "pet_friendly_venue", label: "Pet-Friendly Venue", description: "PetSpot, discovery, dan traffic", icon: "pin" },
-  { value: "pet_insurance", label: "Asuransi Pet", description: "Proteksi dan partner offer", icon: "shield" },
-  { value: "brand_manufacturer", label: "Brand & Produsen", description: "Commerce, campaign, dan insight", icon: "cube" },
-  { value: "distributor_supplier", label: "Distributor & Supplier", description: "Supply, purchase order, dan coverage", icon: "truck" },
-  { value: "logistics_pet_transport", label: "Logistik & Transport", description: "Delivery, pet travel, dan tracking", icon: "send" },
-  { value: "government_association", label: "Instansi & Asosiasi", description: "Standar, edukasi, dan program", icon: "building" },
-] as const;
 
 const deliveryPartners = [
   { name: "Lion Parcel", slug: "lion-parcel", logo: "/partners/lion-parcel.svg", width: 170, height: 32 },
@@ -131,24 +74,6 @@ const valueFlow = [
   { number: "05", title: "Bertumbuh", description: "Data dan relasi pelanggan membuka peluang berikutnya.", icon: "trend" },
 ] as const;
 
-const provinces = [
-  "Aceh", "Sumatera Utara", "Sumatera Barat", "Riau", "Kepulauan Riau", "Jambi", "Sumatera Selatan", "Kepulauan Bangka Belitung", "Bengkulu", "Lampung",
-  "DKI Jakarta", "Jawa Barat", "Banten", "Jawa Tengah", "DI Yogyakarta", "Jawa Timur", "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur",
-  "Kalimantan Barat", "Kalimantan Tengah", "Kalimantan Selatan", "Kalimantan Timur", "Kalimantan Utara", "Sulawesi Utara", "Gorontalo", "Sulawesi Tengah",
-  "Sulawesi Barat", "Sulawesi Selatan", "Sulawesi Tenggara", "Maluku", "Maluku Utara", "Papua", "Papua Barat", "Papua Selatan", "Papua Tengah", "Papua Pegunungan", "Papua Barat Daya",
-];
-
-const initialForm: PartnerForm = {
-  partner_type: "", legal_name: "", brand_name: "", entity_type: "", legal_document_number: "", legal_document_url: "",
-  established_year: "", branch_count: "", employee_count: "", pic_name: "", pic_position: "", email: "", whatsapp: "",
-  alternate_phone: "", digital_profile_url: "", address: "", province: "", city: "", district: "", postal_code: "",
-  service_coverage: "", services_offered: "", operation_hours: "", business_description: "", partnership_goal: "",
-  expected_timeline: "", monthly_customer_volume: "", existing_software: "", referral_source: "", terms_accepted: false,
-  data_consent: false, truth_declaration: false,
-};
-
-const steps = ["Profil partner", "PIC & kontak", "Lokasi & operasi", "Kebutuhan", "Konfirmasi"];
-
 const whatsappSupportMessage = encodeURIComponent(
   "Halo Tim Slivadoc, saya tertarik bergabung sebagai partner Slivadoc. Saya ingin mendapatkan informasi dan bantuan mengenai proses pendaftaran serta kebutuhan bisnis saya. Terima kasih.",
 );
@@ -173,7 +98,7 @@ const faqItems = [
   },
   {
     question: "Siapa saja yang dapat mendaftar sebagai partner?",
-    answer: "Klinik dan rumah sakit hewan, dokter hewan, pet shop, grooming, pet hotel, daycare, home service, trainer, apotek pet, laboratorium, shelter, komunitas, event organizer, pet-friendly venue, asuransi, brand, produsen, distributor, logistik, instansi, dan organisasi lain di ekosistem hewan dapat mendaftar.",
+    answer: "Klinik dan rumah sakit hewan, dokter hewan, pet shop, grooming, pet hotel, daycare, home service, pet academy, apotek pet, laboratorium, shelter, komunitas, event organizer, pet-friendly venue, asuransi, brand, produsen, distributor, logistik, instansi, dan organisasi lain di ekosistem hewan dapat mendaftar.",
   },
   {
     question: "Apakah usaha kecil, profesional individu, atau komunitas boleh bergabung?",
@@ -185,11 +110,11 @@ const faqItems = [
   },
   {
     question: "Data dan dokumen apa yang perlu disiapkan?",
-    answer: "Siapkan identitas usaha atau organisasi, nomor dan tautan dokumen legalitas yang dapat dilihat, data PIC, alamat operasional, area layanan, jam operasional, daftar layanan atau produk, serta penjelasan singkat mengenai kebutuhan bisnis Anda.",
+    answer: "Siapkan identitas usaha, profesi, atau organisasi; kontak penanggung jawab; area layanan; dan informasi sesuai kategori yang dipilih. Dokumen izin praktik atau usaha diminta bila relevan. Tautan dokumen pendukung dan profil publik dapat dilampirkan bila tersedia.",
   },
   {
     question: "Bagaimana jika dokumen legalitas saya belum lengkap?",
-    answer: "Hubungi Customer Support Slivadoc melalui WhatsApp sebelum mengirim formulir. Tim kami akan membantu mengecek dokumen yang sudah tersedia dan menjelaskan langkah yang perlu dilengkapi agar pendaftaran tidak membingungkan.",
+    answer: "Isi dokumen yang memang diwajibkan pada kategori Anda. Untuk komunitas, shelter, dan instansi, nomor registrasi boleh dikosongkan bila belum ada. Tautan dokumen pendukung bersifat opsional. Tim kami dapat membantu menjelaskan dokumen yang diperlukan saat review.",
   },
   {
     question: "Apa yang terjadi setelah formulir dikirim?",
@@ -234,141 +159,6 @@ const faqItems = [
 ] as const;
 
 export default function PartnerPortal() {
-  const [form, setForm] = useState<PartnerForm>(initialForm);
-  const [step, setStep] = useState(0);
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [submitting, setSubmitting] = useState(false);
-  const [serverError, setServerError] = useState("");
-  const [applicationNumber, setApplicationNumber] = useState("");
-  const formStarted = useRef(false);
-  const selectedCategory = useMemo(() => partnerCategories.find((item) => item.value === form.partner_type), [form.partner_type]);
-
-  function update<K extends keyof PartnerForm>(name: K, value: PartnerForm[K]) {
-    setForm((current) => ({ ...current, [name]: value }));
-    setErrors((current) => {
-      if (!current[name]) return current;
-      const next = { ...current };
-      delete next[name];
-      return next;
-    });
-  }
-
-  function trackFormStart(source: string) {
-    if (formStarted.current) return;
-    formStarted.current = true;
-    trackEvent("form_start", {
-      form_id: "partner_application",
-      form_name: "Slivadoc Partner Application",
-      source,
-    });
-  }
-
-  function scrollToForm(source?: string) {
-    if (source) trackFormStart(source);
-    document.getElementById("daftar")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function chooseCategory(value: string, continueToForm = false) {
-    update("partner_type", value);
-    trackEvent("select_partner_category", { partner_type: value });
-    if (continueToForm) scrollToForm("category_card");
-  }
-
-  function nextStep() {
-    const stepErrors = validatePartnerForm(form, step);
-    setErrors(stepErrors);
-    if (Object.keys(stepErrors).length) {
-      trackEvent("form_validation_error", {
-        form_id: "partner_application",
-        invalid_field_count: Object.keys(stepErrors).length,
-        step_number: step + 1,
-      });
-      return;
-    }
-    trackEvent("form_step_complete", {
-      form_id: "partner_application",
-      step_number: step + 1,
-      step_name: steps[step],
-    });
-    setStep((current) => Math.min(current + 1, steps.length - 1));
-    setServerError("");
-    scrollToForm();
-  }
-
-  function previousStep() {
-    setStep((current) => Math.max(0, current - 1));
-    setServerError("");
-    scrollToForm();
-  }
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const allErrors = Array.from({ length: steps.length }, (_, index) => validatePartnerForm(form, index)).reduce((result, item) => ({ ...result, ...item }), {});
-    if (Object.keys(allErrors).length) {
-      setErrors(allErrors);
-      const firstStep = firstInvalidStep(allErrors);
-      setStep(firstStep);
-      setServerError("Masih ada data yang perlu dilengkapi. Periksa kolom bertanda merah.");
-      trackEvent("form_validation_error", {
-        form_id: "partner_application",
-        invalid_field_count: Object.keys(allErrors).length,
-        step_number: firstStep + 1,
-      });
-      scrollToForm();
-      return;
-    }
-    setSubmitting(true);
-    setServerError("");
-    let responseStatus = 0;
-    try {
-      const response = await fetch("/api/partner-applications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          ...form,
-          established_year: Number(form.established_year),
-          branch_count: Number(form.branch_count),
-          employee_count: Number(form.employee_count),
-          services_offered: form.services_offered.split(",").map((item) => item.trim()).filter(Boolean),
-        }),
-      });
-      responseStatus = response.status;
-      const result = await response.json() as { application_number?: string; message?: string; fields?: FieldErrors };
-      if (!response.ok) {
-        if (result.fields) setErrors(result.fields);
-        throw new Error(result.message || "Pendaftaran belum dapat dikirim.");
-      }
-      setApplicationNumber(result.application_number || "PTR-SLIVADOC");
-      trackEvent("generate_lead", {
-        form_id: "partner_application",
-        lead_type: form.partner_type,
-        referral_source: form.referral_source,
-      });
-      trackEvent("form_submit", {
-        form_id: "partner_application",
-        form_name: "Slivadoc Partner Application",
-      });
-    } catch (error) {
-      setServerError(error instanceof Error ? error.message : "Pendaftaran belum dapat dikirim. Coba kembali beberapa saat lagi.");
-      trackEvent("form_submit_error", {
-        form_id: "partner_application",
-        status_code: responseStatus,
-        error_type: responseStatus ? "server" : "network",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  function resetForm() {
-    setForm(initialForm);
-    setStep(0);
-    setErrors({});
-    setApplicationNumber("");
-    setServerError("");
-    formStarted.current = false;
-  }
-
   return (
     <main className="partner-page">
       <header className="partner-header">
@@ -384,7 +174,7 @@ export default function PartnerPortal() {
           <a href="#proses">Cara bergabung</a>
         </nav>
         <LanguageSwitcher />
-        <button className="header-cta" onClick={() => scrollToForm("header_cta")}><span className="header-cta-full">Gabung ekosistem</span><span className="header-cta-short">Gabung</span></button>
+        <a className="header-cta" href="#kategori-partner"><span className="header-cta-full">Gabung ekosistem</span><span className="header-cta-short">Gabung</span></a>
       </header>
 
       <section className="partner-hero" id="beranda">
@@ -395,7 +185,7 @@ export default function PartnerPortal() {
           <h1>Dari bisnis lokal menjadi bagian dari <em>ekosistem besar.</em></h1>
           <p>Slivadoc menghubungkan pet owner, layanan, commerce, komunitas, pembayaran, dan pengiriman dalam satu perjalanan. Gunakan aplikasi POS petshop, klinik hewan, grooming, serta bisnis pet care secara gratis untuk lebih mudah ditemukan, dipilih, dan bertumbuh.</p>
           <div className="hero-actions">
-            <button className="button-primary" onClick={() => scrollToForm("hero_cta")}>Gabung ke ekosistem <span>→</span></button>
+            <a className="button-primary" href="#kategori-partner">Gabung ke ekosistem <span>→</span></a>
             <a className="button-secondary" href="#ekosistem">Jelajahi cara kerjanya</a>
           </div>
           <div className="hero-proof">
@@ -456,18 +246,23 @@ export default function PartnerPortal() {
 
       <section className="ecosystem-section" id="kategori-partner">
         <div className="section-heading">
-          <span className="section-label">18 pintu masuk ke ekosistem</span>
+          <span className="section-label">Jalur pendaftaran sesuai bidang Anda</span>
           <h2>Temukan posisi Anda.<br /><em>Bangun dampak bersama.</em></h2>
-          <p>Semua penyedia layanan, profesional, organisasi, brand, dan pendukung ekosistem dapat mendaftar. Pilih kategori untuk langsung membawanya ke formulir. Pet owner tetap menggunakan aplikasi khusus Pet Owner.</p>
+          <p>Semua penyedia layanan, profesional, organisasi, brand, dan pendukung ekosistem dapat mendaftar. Pilih kategori untuk membuka halaman pendaftaran khusus bidang Anda. Pet owner tetap menggunakan aplikasi khusus Pet Owner.</p>
         </div>
         <div className="category-grid">
-          {partnerCategories.map((item) => (
-            <button className={form.partner_type === item.value ? "category-card selected" : "category-card"} key={item.value} onClick={() => chooseCategory(item.value, true)}>
+          {partnershipCategories.map((item) => (
+            <Link className="category-card" key={item.value} href={partnershipCategoryPath(item.slug)}>
               <span className="category-icon"><Icon name={item.icon} /></span>
               <span><b>{item.label}</b><small>{item.description}</small></span>
               <i className="category-arrow">→</i>
-            </button>
+            </Link>
           ))}
+          <Link className="category-card" href="/pet-trainer">
+            <span className="category-icon"><Icon name="award" /></span>
+            <span><b>Pet Trainer Individu</b><small>Pengalaman, spesialisasi, metode training, dan jadwal</small></span>
+            <i className="category-arrow">→</i>
+          </Link>
         </div>
       </section>
 
@@ -491,7 +286,7 @@ export default function PartnerPortal() {
         </ol>
         <div className="value-flow-callout">
           <div><span><Icon name="paw" /></span><p><small>Nilai untuk partner</small><b>Ditemukan lebih mudah. Dioperasikan lebih rapi. Bertumbuh lebih terukur.</b></p></div>
-          <button className="button-primary" onClick={() => scrollToForm("value_flow_cta")}>Ambil bagian sekarang <span>→</span></button>
+          <a className="button-primary" href="#kategori-partner">Ambil bagian sekarang <span>→</span></a>
         </div>
       </section>
 
@@ -587,101 +382,6 @@ export default function PartnerPortal() {
         </div>
       </section>
 
-      <section className="registration-section" id="daftar">
-        <div className="registration-aside">
-          <span className="section-label light">Your place in the ecosystem</span>
-          <h2>Ambil posisi Anda di ekosistem yang sedang dibangun.</h2>
-          <p>Ceritakan bisnis dan tujuan Anda. Tim Operations akan memetakan peran, kebutuhan, serta peluang kolaborasi yang paling relevan.</p>
-          <div className="aside-checklist">
-            <span><i>✓</i><b>Semua data tersimpan aman</b><small>Hanya digunakan untuk proses partnership.</small></span>
-            <span><i>✓</i><b>Review langsung oleh Operations</b><small>Status masuk ke antrean dashboard Slivadoc.</small></span>
-            <span><i>✓</i><b>Seluruh akses partner 100% gratis</b><small>Tanpa biaya pendaftaran, onboarding, fitur, atau langganan. Pendampingan dari Slivadoc juga gratis.</small></span>
-          </div>
-          <a className="aside-support" href={whatsappSupportURL} target="_blank" rel="noopener noreferrer"><Icon name="chat" /><span><small>Butuh bantuan?</small><b>Chat WhatsApp Customer Support</b></span></a>
-        </div>
-        <div className="registration-card">
-          {applicationNumber ? (
-            <div className="success-state" role="status">
-              <span className="success-icon">✓</span>
-              <small>Pendaftaran berhasil diterima</small>
-              <h2>Selamat datang di langkah pertama pertumbuhan baru.</h2>
-              <p>Tim Operations Slivadoc akan meninjau data Anda. Simpan nomor aplikasi berikut untuk referensi.</p>
-              <strong>{applicationNumber}</strong>
-              <div><button className="button-primary" onClick={resetForm}>Daftarkan partner lain</button><a className="button-secondary" href="#beranda">Kembali ke atas</a></div>
-            </div>
-          ) : (
-            <form onSubmit={submit} onFocusCapture={() => trackFormStart("form_interaction")} noValidate>
-              <div className="form-heading">
-                <div>
-                  <small>Langkah <span className="notranslate" translate="no">{step + 1}</span> dari <span className="notranslate" translate="no">{steps.length}</span></small>
-                  <h3 key={`step-heading-${step}`}>{steps[step]}</h3>
-                </div>
-                <span className="notranslate" translate="no">{Math.round(((step + 1) / steps.length) * 100)}%</span>
-              </div>
-              <div className="form-progress"><i style={{ width: `${((step + 1) / steps.length) * 100}%` }} /></div>
-              <ol className="form-steps" aria-label="Tahapan pendaftaran">
-                {steps.map((item, index) => <li className={index === step ? "active" : index < step ? "done" : ""} key={item}><button type="button" onClick={() => index < step && setStep(index)}><span className="notranslate" translate="no">{index < step ? "✓" : index + 1}</span><small>{item}</small></button></li>)}
-              </ol>
-              {serverError && <div className="form-alert notranslate" role="alert" translate="no"><span>!</span>{serverError}</div>}
-
-              {step === 0 && <div className="form-panel" key="partner-profile-step">
-                <SelectField label="Kategori partner" name="partner_type" value={form.partner_type} onChange={(value) => update("partner_type", value)} error={errors.partner_type} options={partnerCategories.map((item) => ({ value: item.value, label: item.label }))} />
-                {selectedCategory && <div className="selected-partner"><span><Icon name={selectedCategory.icon} /></span><div><b>{selectedCategory.label}</b><small>{selectedCategory.description}</small></div></div>}
-                <div className="field-grid two"><TextField label="Nama legal badan/usaha" name="legal_name" value={form.legal_name} onChange={(value) => update("legal_name", value)} error={errors.legal_name} placeholder="Contoh: PT Sahabat Satwa Indonesia" /><TextField label="Nama brand/publik" name="brand_name" value={form.brand_name} onChange={(value) => update("brand_name", value)} error={errors.brand_name} placeholder="Contoh: Sahabat Satwa" /></div>
-                <div className="field-grid two"><SelectField label="Bentuk usaha/organisasi" name="entity_type" value={form.entity_type} onChange={(value) => update("entity_type", value)} error={errors.entity_type} options={[{value:"pt",label:"PT"},{value:"cv",label:"CV"},{value:"koperasi",label:"Koperasi"},{value:"yayasan",label:"Yayasan"},{value:"klinik_pribadi",label:"Klinik/praktik pribadi"},{value:"profesional_individu",label:"Profesional individu"},{value:"komunitas",label:"Komunitas"},{value:"instansi",label:"Instansi/asosiasi"},{value:"other",label:"Lainnya"}]} /><TextField label="Tahun berdiri" name="established_year" type="number" value={form.established_year} onChange={(value) => update("established_year", value)} error={errors.established_year} placeholder="2024" /></div>
-                <TextField label="Nomor legalitas/registrasi" name="legal_document_number" value={form.legal_document_number} onChange={(value) => update("legal_document_number", value)} error={errors.legal_document_number} placeholder="NIB, SIP, akta, atau nomor registrasi organisasi" />
-                <TextField label="Tautan dokumen legalitas" name="legal_document_url" type="url" value={form.legal_document_url} onChange={(value) => update("legal_document_url", value)} error={errors.legal_document_url} placeholder="https://drive.google.com/... (pastikan dapat dilihat)" hint="Gunakan tautan berizin lihat; jangan cantumkan password." />
-              </div>}
-
-              {step === 1 && <div className="form-panel" key="partner-contact-step">
-                <div className="field-grid two"><TextField label="Nama lengkap PIC" name="pic_name" value={form.pic_name} onChange={(value) => update("pic_name", value)} error={errors.pic_name} placeholder="Nama penanggung jawab" /><TextField label="Jabatan PIC" name="pic_position" value={form.pic_position} onChange={(value) => update("pic_position", value)} error={errors.pic_position} placeholder="Owner / Business Development" /></div>
-                <TextField label="Email bisnis" name="email" type="email" value={form.email} onChange={(value) => update("email", value)} error={errors.email} placeholder="partner@bisnis.com" />
-                <div className="field-grid two"><TextField label="Nomor WhatsApp aktif" name="whatsapp" type="tel" value={form.whatsapp} onChange={(value) => update("whatsapp", value)} error={errors.whatsapp} placeholder="081234567890" /><TextField label="Nomor kontak alternatif" name="alternate_phone" type="tel" value={form.alternate_phone} onChange={(value) => update("alternate_phone", value)} error={errors.alternate_phone} placeholder="081112223333" /></div>
-                <TextField label="Website atau profil bisnis" name="digital_profile_url" type="url" value={form.digital_profile_url} onChange={(value) => update("digital_profile_url", value)} error={errors.digital_profile_url} placeholder="https://instagram.com/brand atau website resmi" />
-              </div>}
-
-              {step === 2 && <div className="form-panel" key="partner-location-step">
-                <TextAreaField label="Alamat operasional lengkap" name="address" value={form.address} onChange={(value) => update("address", value)} error={errors.address} placeholder="Nama jalan, nomor, gedung, RT/RW, dan kelurahan" />
-                <div className="field-grid two"><SelectField label="Provinsi" name="province" value={form.province} onChange={(value) => update("province", value)} error={errors.province} options={provinces.map((item) => ({value:item,label:item}))} /><TextField label="Kabupaten/kota" name="city" value={form.city} onChange={(value) => update("city", value)} error={errors.city} placeholder="Jakarta Selatan" /></div>
-                <div className="field-grid two"><TextField label="Kecamatan" name="district" value={form.district} onChange={(value) => update("district", value)} error={errors.district} placeholder="Kebayoran Baru" /><TextField label="Kode pos" name="postal_code" inputMode="numeric" maxLength={5} value={form.postal_code} onChange={(value) => update("postal_code", value.replace(/\D/g, ""))} error={errors.postal_code} placeholder="12120" /></div>
-                <div className="field-grid two"><TextField label="Jumlah lokasi/cabang" name="branch_count" type="number" value={form.branch_count} onChange={(value) => update("branch_count", value)} error={errors.branch_count} placeholder="1" /><TextField label="Jumlah anggota tim" name="employee_count" type="number" value={form.employee_count} onChange={(value) => update("employee_count", value)} error={errors.employee_count} placeholder="5" /></div>
-                <TextField label="Area cakupan layanan" name="service_coverage" value={form.service_coverage} onChange={(value) => update("service_coverage", value)} error={errors.service_coverage} placeholder="Contoh: Jabodetabek / seluruh Indonesia" />
-                <TextField label="Jam operasional" name="operation_hours" value={form.operation_hours} onChange={(value) => update("operation_hours", value)} error={errors.operation_hours} placeholder="Senin–Minggu, 08.00–21.00" />
-              </div>}
-
-              {step === 3 && <div className="form-panel" key="partner-needs-step">
-                <TextField label="Layanan/produk utama" name="services_offered" value={form.services_offered} onChange={(value) => update("services_offered", value)} error={errors.services_offered} placeholder="Konsultasi, vaksinasi, grooming (pisahkan dengan koma)" />
-                <TextAreaField label="Ceritakan bisnis atau organisasi Anda" name="business_description" value={form.business_description} onChange={(value) => update("business_description", value)} error={errors.business_description} placeholder="Jelaskan fokus, pelanggan, keunggulan, dan layanan utama (minimal 30 karakter)." maxLength={2000} />
-                <TextAreaField label="Apa tujuan bergabung dengan Slivadoc?" name="partnership_goal" value={form.partnership_goal} onChange={(value) => update("partnership_goal", value)} error={errors.partnership_goal} placeholder="Jelaskan target, kendala, dan bentuk kolaborasi yang Anda harapkan (minimal 30 karakter)." maxLength={2000} />
-                <div className="field-grid two"><SelectField label="Target mulai" name="expected_timeline" value={form.expected_timeline} onChange={(value) => update("expected_timeline", value)} error={errors.expected_timeline} options={[{value:"secepatnya",label:"Secepatnya"},{value:"dalam_30_hari",label:"Dalam 30 hari"},{value:"1_3_bulan",label:"1–3 bulan"},{value:"3_6_bulan",label:"3–6 bulan"},{value:"eksplorasi",label:"Masih eksplorasi"}]} /><SelectField label="Customer/order per bulan" name="monthly_customer_volume" value={form.monthly_customer_volume} onChange={(value) => update("monthly_customer_volume", value)} error={errors.monthly_customer_volume} options={[{value:"prelaunch",label:"Belum beroperasi"},{value:"1-50",label:"1–50"},{value:"51-200",label:"51–200"},{value:"201-500",label:"201–500"},{value:"501-2000",label:"501–2.000"},{value:"2000+",label:"> 2.000"}]} /></div>
-                <div className="field-grid two"><TextField label="Sistem yang digunakan saat ini" name="existing_software" value={form.existing_software} onChange={(value) => update("existing_software", value)} error={errors.existing_software} placeholder="Belum ada / spreadsheet / POS lain" /><SelectField label="Mengetahui Slivadoc dari" name="referral_source" value={form.referral_source} onChange={(value) => update("referral_source", value)} error={errors.referral_source} options={["Instagram","TikTok","Google","Teman/partner","Event","Tim Slivadoc","Media lain"].map((item)=>({value:item,label:item}))} /></div>
-              </div>}
-
-              {step === 4 && <div className="form-panel confirmation-panel" key="partner-confirmation-step">
-                <div className="confirmation-summary"><span><Icon name={selectedCategory?.icon || "paw"} /></span><div><small>Kategori terpilih</small><b>{selectedCategory?.label || "Belum dipilih"}</b><p>{form.brand_name || "Nama partner"} · {form.city || "Lokasi"}</p></div></div>
-                <h4>Konfirmasi & persetujuan</h4>
-                <CheckField checked={form.terms_accepted} onChange={(value) => update("terms_accepted", value)} error={errors.terms_accepted} label="Saya menyetujui syarat pendaftaran dan proses kemitraan Slivadoc." />
-                <CheckField checked={form.data_consent} onChange={(value) => update("data_consent", value)} error={errors.data_consent} label="Saya menyetujui pemrosesan data untuk verifikasi, komunikasi, dan onboarding partner." />
-                <CheckField checked={form.truth_declaration} onChange={(value) => update("truth_declaration", value)} error={errors.truth_declaration} label="Saya menyatakan seluruh data dan dokumen yang dikirim benar serta dapat dipertanggungjawabkan." />
-                <div className="privacy-note"><Icon name="lock" /><span><b>Data Anda tidak dipublikasikan otomatis.</b><small>Tim Operations akan melakukan review sebelum profil partner atau layanan diaktifkan.</small></span></div>
-              </div>}
-
-              <div className="form-navigation">
-                {step > 0 ? <button className="button-back" type="button" onClick={previousStep} key="back-button">← Kembali</button> : <span key="back-button-placeholder" />}
-                {step < steps.length - 1 ? (
-                  <button className="button-primary" type="button" onClick={nextStep} key="continue-button">Lanjutkan <span>→</span></button>
-                ) : (
-                  <button className="button-primary submit-button" type="submit" disabled={submitting} aria-busy={submitting} key="submit-button">
-                    <span className="submit-content" hidden={submitting}>Kirim pendaftaran <span>→</span></span>
-                    <span className="submit-content notranslate" translate="no" hidden={!submitting}><i className="spinner" /> Mengirim data…</span>
-                  </button>
-                )}
-              </div>
-            </form>
-          )}
-        </div>
-      </section>
-
       <section className="faq-section" id="faq">
         <div className="section-heading compact"><span className="section-label">Pertanyaan umum</span><h2>Jawaban yang jelas sebelum Anda <em>bergabung.</em></h2><p>Kami merangkum hal-hal yang paling sering ditanyakan calon partner dengan bahasa sederhana. Jika masih ada yang belum jelas, tim Slivadoc siap membantu melalui WhatsApp.</p></div>
         <div className="faq-list">
@@ -689,7 +389,7 @@ export default function PartnerPortal() {
         </div>
       </section>
 
-      <section className="closing-cta"><span><PawMark /></span><div><small>Ekosistemnya sedang tumbuh</small><h2>Pastikan bisnis Anda ada di dalamnya.</h2></div><button className="button-white" onClick={() => scrollToForm("closing_cta")}>Gabung ke Slivadoc <span>→</span></button></section>
+      <section className="closing-cta"><span><PawMark /></span><div><small>Ekosistemnya sedang tumbuh</small><h2>Pastikan bisnis Anda ada di dalamnya.</h2></div><a className="button-white" href="#kategori-partner">Gabung ke Slivadoc <span>→</span></a></section>
 
       <footer className="partner-footer">
         <a className="partner-logo footer-logo notranslate" href="#beranda" aria-label="Slivadoc Partners" translate="no"><Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></a>
@@ -704,255 +404,6 @@ export default function PartnerPortal() {
       </a>
     </main>
   );
-}
-
-function validatePartnerForm(form: PartnerForm, step: number): FieldErrors {
-  const errors: FieldErrors = {};
-  const required = (name: keyof PartnerForm, label: string, min = 1) => {
-    const value = form[name];
-    if (typeof value !== "string" || value.trim().length < min) errors[name] = `${label} wajib diisi${min > 1 ? ` minimal ${min} karakter` : ""}.`;
-  };
-  const validURL = (value: string) => {
-    try { const parsed = new URL(value); return parsed.protocol === "https:" || parsed.protocol === "http:"; } catch { return false; }
-  };
-  const validPhone = (value: string) => /^(?:\+62|62|0)8[0-9\s().-]{7,16}$/.test(value.trim());
-  if (step === 0) {
-    required("partner_type", "Kategori partner"); required("legal_name", "Nama legal", 3); required("brand_name", "Nama brand", 2); required("entity_type", "Bentuk usaha"); required("legal_document_number", "Nomor legalitas", 3);
-    if (!validURL(form.legal_document_url)) errors.legal_document_url = "Gunakan tautan dokumen dengan format http:// atau https://.";
-    const year = Number(form.established_year); if (!Number.isInteger(year) || year < 1900 || year > new Date().getFullYear()) errors.established_year = `Masukkan tahun antara 1900–${new Date().getFullYear()}.`;
-  }
-  if (step === 1) {
-    required("pic_name", "Nama PIC", 3); required("pic_position", "Jabatan PIC", 2);
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = "Masukkan alamat email bisnis yang valid.";
-    if (!validPhone(form.whatsapp)) errors.whatsapp = "Masukkan nomor WhatsApp Indonesia yang valid.";
-    if (!validPhone(form.alternate_phone)) errors.alternate_phone = "Masukkan nomor alternatif Indonesia yang valid.";
-    if (!validURL(form.digital_profile_url)) errors.digital_profile_url = "Gunakan URL website atau profil bisnis yang valid.";
-  }
-  if (step === 2) {
-    required("address", "Alamat operasional", 10); required("province", "Provinsi"); required("city", "Kabupaten/kota", 3); required("district", "Kecamatan", 3); required("service_coverage", "Cakupan layanan", 3); required("operation_hours", "Jam operasional", 5);
-    if (!/^\d{5}$/.test(form.postal_code)) errors.postal_code = "Kode pos wajib terdiri dari 5 digit.";
-    if (Number(form.branch_count) < 1) errors.branch_count = "Jumlah lokasi minimal 1.";
-    if (Number(form.employee_count) < 1) errors.employee_count = "Jumlah anggota tim minimal 1.";
-  }
-  if (step === 3) {
-    required("services_offered", "Layanan/produk utama", 2); required("business_description", "Deskripsi bisnis", 30); required("partnership_goal", "Tujuan partnership", 30); required("expected_timeline", "Target mulai"); required("monthly_customer_volume", "Volume customer"); required("existing_software", "Sistem saat ini", 2); required("referral_source", "Sumber informasi");
-  }
-  if (step === 4) {
-    if (!form.terms_accepted) errors.terms_accepted = "Persetujuan syarat pendaftaran wajib diberikan.";
-    if (!form.data_consent) errors.data_consent = "Persetujuan pemrosesan data wajib diberikan.";
-    if (!form.truth_declaration) errors.truth_declaration = "Pernyataan kebenaran data wajib diberikan.";
-  }
-  return errors;
-}
-
-function firstInvalidStep(errors: FieldErrors) {
-  const groups = [
-    ["partner_type","legal_name","brand_name","entity_type","legal_document_number","legal_document_url","established_year"],
-    ["pic_name","pic_position","email","whatsapp","alternate_phone","digital_profile_url"],
-    ["address","province","city","district","postal_code","branch_count","employee_count","service_coverage","operation_hours"],
-    ["services_offered","business_description","partnership_goal","expected_timeline","monthly_customer_volume","existing_software","referral_source"],
-    ["terms_accepted","data_consent","truth_declaration"],
-  ];
-  const index = groups.findIndex((group) => group.some((field) => errors[field]));
-  return index >= 0 ? index : 0;
-}
-
-function TextField({ label, name, value, onChange, error, placeholder, type = "text", hint, inputMode, maxLength }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; placeholder:string; type?:string; hint?:string; inputMode?:"text"|"numeric"|"tel"|"email"|"url"; maxLength?:number }) {
-  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><input name={name} type={type} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} inputMode={inputMode || (type === "tel" ? "tel" : type === "email" ? "email" : type === "url" ? "url" : undefined)} maxLength={maxLength} aria-invalid={Boolean(error)} aria-describedby={error ? `${name}-error` : undefined} required />{hint && <small hidden={Boolean(error)}>{hint}</small>}<small id={`${name}-error`} className="field-error notranslate" translate="no" hidden={!error}>{error || ""}</small></label>;
-}
-
-function TextAreaField({ label, name, value, onChange, error, placeholder, maxLength = 1000 }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; placeholder:string; maxLength?:number }) {
-  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><textarea name={name} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} maxLength={maxLength} aria-invalid={Boolean(error)} required /> <small className={error ? "field-error field-counter notranslate" : "field-counter notranslate"} translate="no">{error || `${value.length}/${maxLength}`}</small></label>;
-}
-
-type SelectOption = { value:string; label:string };
-
-function SelectField({ label, name, value, onChange, error, options }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; options:Array<SelectOption> }) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [activeIndex, setActiveIndex] = useState(0);
-  const fieldId = useId();
-  const rootRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const labelId = `${fieldId}-label`;
-  const listId = `${fieldId}-list`;
-  const errorId = `${fieldId}-error`;
-  const searchable = options.length >= 10;
-  const selectedOption = options.find((option) => option.value === value);
-  const normalizedQuery = query.trim().toLocaleLowerCase("id");
-  const filteredOptions = normalizedQuery
-    ? options.filter((option) => option.label.toLocaleLowerCase("id").includes(normalizedQuery))
-    : options;
-  const activeOption = filteredOptions[activeIndex];
-  const activeOptionValue = activeOption?.value;
-
-  useEffect(() => {
-    if (!open) return;
-
-    function closeWhenClickingOutside(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
-    }
-
-    document.addEventListener("pointerdown", closeWhenClickingOutside);
-    return () => document.removeEventListener("pointerdown", closeWhenClickingOutside);
-  }, [open]);
-
-  useEffect(() => {
-    if (open && searchable) window.requestAnimationFrame(() => searchRef.current?.focus());
-  }, [open, searchable]);
-
-  useEffect(() => {
-    if (!open || !activeOptionValue) return;
-    document.getElementById(`${fieldId}-option-${activeOptionValue}`)?.scrollIntoView({ block: "nearest" });
-  }, [activeOptionValue, fieldId, open]);
-
-  function openMenu() {
-    const selectedIndex = options.findIndex((option) => option.value === value);
-    setQuery("");
-    setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
-    setOpen(true);
-  }
-
-  function closeAndFocus() {
-    setOpen(false);
-    setQuery("");
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
-  }
-
-  function choose(option: SelectOption) {
-    onChange(option.value);
-    closeAndFocus();
-  }
-
-  function moveActive(direction: 1 | -1) {
-    if (!filteredOptions.length) return;
-    setActiveIndex((current) => {
-      const next = current + direction;
-      if (next < 0) return filteredOptions.length - 1;
-      if (next >= filteredOptions.length) return 0;
-      return next;
-    });
-  }
-
-  function handleListKeyboard(event: KeyboardEvent<HTMLElement>) {
-    if (event.key === "ArrowDown") {
-      event.preventDefault();
-      moveActive(1);
-    } else if (event.key === "ArrowUp") {
-      event.preventDefault();
-      moveActive(-1);
-    } else if (event.key === "Home") {
-      event.preventDefault();
-      setActiveIndex(0);
-    } else if (event.key === "End") {
-      event.preventDefault();
-      setActiveIndex(Math.max(filteredOptions.length - 1, 0));
-    } else if (event.key === "Enter" && activeOption) {
-      event.preventDefault();
-      choose(activeOption);
-    } else if (event.key === "Escape") {
-      event.preventDefault();
-      closeAndFocus();
-    } else if (event.key === "Tab") {
-      setOpen(false);
-      setQuery("");
-    }
-  }
-
-  function handleTriggerKeyboard(event: KeyboardEvent<HTMLButtonElement>) {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault();
-      if (!open) openMenu();
-      else moveActive(event.key === "ArrowDown" ? 1 : -1);
-    } else if (open) {
-      handleListKeyboard(event);
-    }
-  }
-
-  return (
-    <div className={`${error ? "form-field select-field invalid" : "form-field select-field"}${open ? " open" : ""}`} ref={rootRef}>
-      <span id={labelId}>{label}<b>*</b></span>
-      <input type="hidden" name={name} value={value} />
-      <button
-        ref={triggerRef}
-        id={`${fieldId}-trigger`}
-        className="custom-select-trigger"
-        type="button"
-        role="combobox"
-        aria-expanded={open}
-        aria-haspopup="listbox"
-        aria-controls={listId}
-        aria-labelledby={`${labelId} ${fieldId}-trigger`}
-        aria-describedby={error ? errorId : undefined}
-        aria-invalid={Boolean(error)}
-        aria-required="true"
-        aria-activedescendant={open && activeOption ? `${fieldId}-option-${activeOption.value}` : undefined}
-        onClick={() => open ? closeAndFocus() : openMenu()}
-        onKeyDown={handleTriggerKeyboard}
-      >
-        <span className={selectedOption ? "custom-select-value" : "custom-select-value placeholder"} key={selectedOption?.value || "placeholder"}>{selectedOption?.label || `Pilih ${label.toLowerCase()}`}</span>
-        <span className="custom-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m5 7.5 5 5 5-5" /></svg></span>
-      </button>
-
-      {open && (
-        <>
-          <button className="custom-select-overlay" type="button" tabIndex={-1} aria-label={`Tutup pilihan ${label.toLowerCase()}`} onClick={closeAndFocus} />
-          <div className="custom-select-popover">
-            <div className="custom-select-heading"><span><b>Pilih {label.toLowerCase()}</b><small>{options.length} pilihan tersedia</small></span><button type="button" onClick={closeAndFocus} aria-label="Tutup dropdown">×</button></div>
-            {searchable && (
-              <label className="custom-select-search">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
-                <input
-                  ref={searchRef}
-                  type="search"
-                  value={query}
-                  onChange={(event) => {
-                    setQuery(event.target.value);
-                    setActiveIndex(0);
-                  }}
-                  onKeyDown={handleListKeyboard}
-                  placeholder={`Cari ${label.toLowerCase()}...`}
-                  role="combobox"
-                  aria-label={`Cari ${label.toLowerCase()}`}
-                  aria-expanded="true"
-                  aria-controls={listId}
-                  aria-autocomplete="list"
-                  aria-activedescendant={activeOption ? `${fieldId}-option-${activeOption.value}` : undefined}
-                />
-              </label>
-            )}
-            <div id={listId} className="custom-select-list" role="listbox" aria-labelledby={labelId} onKeyDown={searchable ? undefined : handleListKeyboard}>
-              {filteredOptions.length ? filteredOptions.map((option, index) => {
-                const selected = option.value === value;
-                const active = index === activeIndex;
-                return (
-                  <button
-                    id={`${fieldId}-option-${option.value}`}
-                    className={`custom-select-option${selected ? " selected" : ""}${active ? " active" : ""}`}
-                    type="button"
-                    role="option"
-                    aria-selected={selected}
-                    tabIndex={-1}
-                    key={option.value}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    onClick={() => choose(option)}
-                  >
-                    <span>{option.label}</span><i aria-hidden="true">{selected ? "✓" : ""}</i>
-                  </button>
-                );
-              }) : <div className="custom-select-empty"><span>⌕</span><b>Pilihan tidak ditemukan</b><small>Coba gunakan kata pencarian lain.</small></div>}
-            </div>
-          </div>
-        </>
-      )}
-      <small id={errorId} className="field-error notranslate" translate="no" hidden={!error}>{error || ""}</small>
-    </div>
-  );
-}
-
-function CheckField({ checked, onChange, error, label }: { checked:boolean; onChange:(value:boolean)=>void; error?:string; label:string }) {
-  return <label className={error ? "check-field invalid" : "check-field"}><input className="check-input" type="checkbox" checked={checked} onChange={(event)=>onChange(event.target.checked)} /><span className="check-control" aria-hidden="true">✓</span><span className="check-copy"><b>{label}</b><small className="notranslate" translate="no" hidden={!error}>{error || ""}</small></span></label>;
 }
 
 function PawMark() {
