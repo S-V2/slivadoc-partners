@@ -49,7 +49,7 @@ const partnerCategories = [
   { value: "pet_grooming", label: "Grooming & Salon", description: "Booking, groomer, dan paket layanan", icon: "sparkle" },
   { value: "pet_hotel_daycare", label: "Pet Hotel & Daycare", description: "Kamar, reservasi, dan care log", icon: "home" },
   { value: "home_service", label: "Home Service", description: "Dispatch, driver, dan bukti layanan", icon: "route" },
-  { value: "pet_academy_trainer", label: "Academy & Trainer", description: "Kelas, enrollment, dan progres", icon: "award" },
+  { value: "pet_academy_trainer", label: "Pet Academy", description: "Kelas, enrollment, dan progres", icon: "award" },
   { value: "pet_pharmacy", label: "Apotek Pet", description: "Produk kesehatan, stok, dan order", icon: "pill" },
   { value: "diagnostic_laboratory", label: "Laboratorium", description: "Lab order, hasil, dan rekam medis", icon: "lab" },
   { value: "shelter_rescue", label: "Shelter & Rescue", description: "Adopsi, moderasi, dan screening", icon: "heart" },
@@ -173,7 +173,7 @@ const faqItems = [
   },
   {
     question: "Siapa saja yang dapat mendaftar sebagai partner?",
-    answer: "Klinik dan rumah sakit hewan, dokter hewan, pet shop, grooming, pet hotel, daycare, home service, trainer, apotek pet, laboratorium, shelter, komunitas, event organizer, pet-friendly venue, asuransi, brand, produsen, distributor, logistik, instansi, dan organisasi lain di ekosistem hewan dapat mendaftar.",
+    answer: "Klinik dan rumah sakit hewan, dokter hewan, pet shop, grooming, pet hotel, daycare, home service, pet academy, apotek pet, laboratorium, shelter, komunitas, event organizer, pet-friendly venue, asuransi, brand, produsen, distributor, logistik, instansi, dan organisasi lain di ekosistem hewan dapat mendaftar.",
   },
   {
     question: "Apakah usaha kecil, profesional individu, atau komunitas boleh bergabung?",
