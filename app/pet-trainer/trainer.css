@@ -1,5 +1,6 @@
 .trainer-page { --t-ink:#103c53; --t-blue:#098ec9; --t-line:#d7edf6; color:var(--t-ink); background:#f7fcff; min-height:100vh; }
 .trainer-page * { box-sizing:border-box; }
+
 .trainer-header { position:relative; z-index:2; min-height:76px; max-width:1240px; margin:auto; padding:14px 28px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
 .trainer-brand { display:flex; align-items:center; gap:10px; text-decoration:none; font-weight:850; font-size:21px; letter-spacing:-.055em; color:#092f46; }
 .trainer-brand img { border-radius:11px; }
@@ -105,3 +106,13 @@
 @media(max-width:850px) { .trainer-hero-inner { grid-template-columns:1fr; gap:20px; padding:65px 28px 30px; }.trainer-hero-art { min-height:220px; }.trainer-orbit { width:260px; }.trainer-registration { grid-template-columns:1fr; gap:30px; padding-top:55px; }.trainer-aside { position:static; }.trainer-aside h2 { max-width:580px; }.trainer-aside-note { max-width:600px; margin-top:20px; } }
 @media(max-width:640px) { .trainer-header { padding:12px 18px; }.trainer-header nav { gap:0; }.trainer-header nav>a:not(.trainer-header-cta) { display:none; }.trainer-header-cta { padding:10px 12px; font-size:12px; }.trainer-brand { font-size:18px; }.trainer-brand small { font-size:9px; }.trainer-hero { margin:0 9px; border-radius:23px; }.trainer-hero-inner { padding:48px 22px 22px; }.trainer-hero h1 { font-size:clamp(40px,10.4vw,58px); }.trainer-hero p { font-size:15px; }.trainer-hero-art { min-height:210px; }.trainer-art-card { padding:20px; width:260px; }.trainer-art-card strong { font-size:24px; margin:12px 0; }.trainer-process { grid-template-columns:1fr; padding:17px 18px; gap:9px; }.trainer-process>div { padding:12px 15px; }.trainer-registration { padding:45px 16px 75px; }.trainer-form-card { border-radius:20px; }.trainer-form-card form { padding:23px 18px; }.trainer-form-top ol { margin-bottom:22px; }.trainer-form-top li button { flex-direction:column; align-items:center; text-align:center; }.trainer-form-top li small { font-size:9px; }.trainer-fields { grid-template-columns:1fr; gap:17px; }.trainer-actions button { font-size:13px; padding:10px 15px; }.trainer-success { padding:55px 20px; } }
 
+/* Registration pages share the homepage navigation, palette and support UI. */
+.trainer-page { background: var(--ecosystem-canvas, #f5fbff); }
+.trainer-page section[id] { scroll-margin-top: 108px; }
+.trainer-hero { margin-top: 112px; color: var(--navy); border: 1px solid #d7edf7; background: radial-gradient(circle at 84% 22%, rgba(96,210,255,.27), transparent 35%), linear-gradient(140deg,#fff,#effaff 62%,#ddf5ff); box-shadow: 0 28px 80px rgba(8,77,111,.1); }
+.trainer-eyebrow { color: var(--sky-600); border-color: #bce8f9; background: #ffffffc9; }
+.trainer-hero h1 em { color: var(--sky-500); }
+.trainer-hero p, .trainer-hero-actions { color: #587486; }
+.trainer-hero-actions a { color: white; background: linear-gradient(135deg,var(--sky-400),var(--sky-600)); }
+.trainer-orbit { border-color: #8ed7f4; box-shadow: 0 0 0 32px #a5e8ff32, 0 0 0 70px #a5e8ff18; }
+@media(max-width:640px) { .trainer-hero { margin: 98px 9px 0; } }

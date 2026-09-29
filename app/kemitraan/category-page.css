@@ -19,3 +19,16 @@
 .category-question-heading { margin: 8px 0 18px; padding: 17px 19px; border-radius: 14px; background: #eef8fd; color: #174965; }
 .category-question-heading strong { display: block; font-size: 16px; }
 .category-question-heading p { margin: 5px 0 0; font-size: 13px; line-height: 1.5; }
+
+/* Registration pages share the same sky-blue shell as the homepage. */
+.partner-category-page { background: var(--ecosystem-canvas, #f5fbff); }
+.partner-category-page section[id] { scroll-margin-top: 108px; }
+.partner-category-hero { margin-top: 112px; color: var(--navy); background: radial-gradient(circle at 80% 18%, rgba(96,210,255,.28),transparent 34%),linear-gradient(140deg,#fff,#effaff 62%,#ddf5ff); border: 1px solid #d7edf7; box-shadow: 0 28px 80px rgba(8,77,111,.1); }
+.partner-category-hero .partner-category-kicker { color: var(--sky-600); }
+.partner-category-hero h1 em { color: var(--sky-500); font-style: normal; }
+.partner-category-hero p { color: #587486; }
+.partner-category-actions a { color: var(--sky-600); }
+.partner-category-actions a:first-child { color: white; background: linear-gradient(135deg,var(--sky-400),var(--sky-600)); }
+.partner-category-hero-mark { transform: rotate(-2deg); }
+@media(max-width:850px) { .partner-category-hero { margin-top: 105px; } }
+@media(max-width:600px) { .partner-category-hero { margin: 98px 8px 0; } }

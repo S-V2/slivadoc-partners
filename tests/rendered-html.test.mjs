@@ -4,6 +4,8 @@ import test from "node:test";
 
 test("keeps the required Slivadoc Partners content", async () => {
   const html = await readFile(new URL("../app/partner-portal.tsx", import.meta.url), "utf8");
+  const chrome = await readFile(new URL("../app/partner-site-chrome.tsx", import.meta.url), "utf8");
+  const trainerPage = await readFile(new URL("../app/pet-trainer/trainer-form.tsx", import.meta.url), "utf8");
   const categoryForm = await readFile(new URL("../app/kemitraan/partnership-form.tsx", import.meta.url), "utf8");
   const categoryPage = await readFile(new URL("../app/kemitraan/[slug]/page.tsx", import.meta.url), "utf8");
   const categoryConfig = await readFile(new URL("../app/partnership-categories.ts", import.meta.url), "utf8");
@@ -76,7 +78,12 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /aplikasi POS petshop, klinik hewan, grooming/);
   assert.match(html, /Apakah Slivadoc menyediakan aplikasi POS untuk petshop dan klinik hewan/);
   assert.match(html, /brand\/slivadoc-logo\.png/);
-  assert.match(html, /LanguageSwitcher/);
+  assert.match(chrome, /LanguageSwitcher/);
+  for (const page of [html, categoryPage, trainerPage]) {
+    assert.match(page, /PartnerSiteHeader/);
+    assert.match(page, /PartnerSiteFooter/);
+    assert.match(page, /PartnerSupportWidget/);
+  }
   assert.match(html, /Gabung ke ekosistem/);
   assert.match(html, /<b>38<\/b><small>Provinsi di Indonesia<\/small>/);
   assert.doesNotMatch(html, /Provinsi terjangkau/);
@@ -85,8 +92,8 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /Semua partner terdaftar mendapatkan akses full gratis/);
   assert.match(categoryForm, /Tanpa biaya pendaftaran, onboarding, fitur, atau langganan/);
   assert.match(html, /Apakah bergabung dan menggunakan Slivadoc benar-benar gratis/);
-  assert.match(html, /Chat WhatsApp Customer Support Slivadoc/);
-  assert.match(html, /wa\.me\/6281977388341/);
+  assert.match(chrome, /Chat WhatsApp Customer Support Slivadoc/);
+  assert.match(chrome, /wa\.me\/6281977388341/);
   assert.match(html, /Partner Pengiriman/);
   assert.match(html, /Lion Parcel/);
   assert.match(html, /J&T Cargo/);

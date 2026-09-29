@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { partnershipCategories, partnershipCategoryPath } from "./partnership-categories";
-import LanguageSwitcher from "./language-switcher";
+import { PartnerSiteHeader, PartnerSiteFooter, PartnerSupportWidget, PawMark } from "./partner-site-chrome";
 
 const deliveryPartners = [
   { name: "Lion Parcel", slug: "lion-parcel", logo: "/partners/lion-parcel.svg", width: 170, height: 32 },
@@ -73,11 +73,6 @@ const valueFlow = [
   { number: "04", title: "Dipenuhi", description: "Layanan atau produk diselesaikan dengan dukungan operasional.", icon: "truck" },
   { number: "05", title: "Bertumbuh", description: "Data dan relasi pelanggan membuka peluang berikutnya.", icon: "trend" },
 ] as const;
-
-const whatsappSupportMessage = encodeURIComponent(
-  "Halo Tim Slivadoc, saya tertarik bergabung sebagai partner Slivadoc. Saya ingin mendapatkan informasi dan bantuan mengenai proses pendaftaran serta kebutuhan bisnis saya. Terima kasih.",
-);
-const whatsappSupportURL = `https://wa.me/6281977388341?text=${whatsappSupportMessage}`;
 
 const faqItems = [
   {
@@ -161,21 +156,7 @@ const faqItems = [
 export default function PartnerPortal() {
   return (
     <main className="partner-page">
-      <header className="partner-header">
-        <a className="partner-logo notranslate" href="#beranda" aria-label="Slivadoc Partners" translate="no">
-          <Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} priority />
-          <span>sliva<b>doc</b><small>partners</small></span>
-        </a>
-        <nav aria-label="Navigasi utama">
-          <a href="#ekosistem">Ekosistem</a>
-          <a href="#kategori-partner">Kategori</a>
-          <a href="#manfaat">Alur nilai</a>
-          <a href="#partner-strategis">Partner strategis</a>
-          <a href="#proses">Cara bergabung</a>
-        </nav>
-        <LanguageSwitcher />
-        <a className="header-cta" href="#kategori-partner"><span className="header-cta-full">Gabung ekosistem</span><span className="header-cta-short">Gabung</span></a>
-      </header>
+      <PartnerSiteHeader />
 
       <section className="partner-hero" id="beranda">
         <div className="hero-orb hero-orb-one" />
@@ -391,23 +372,10 @@ export default function PartnerPortal() {
 
       <section className="closing-cta"><span><PawMark /></span><div><small>Ekosistemnya sedang tumbuh</small><h2>Pastikan bisnis Anda ada di dalamnya.</h2></div><a className="button-white" href="#kategori-partner">Gabung ke Slivadoc <span>→</span></a></section>
 
-      <footer className="partner-footer">
-        <a className="partner-logo footer-logo notranslate" href="#beranda" aria-label="Slivadoc Partners" translate="no"><Image className="logo-mark" src="/brand/slivadoc-logo.png" alt="" aria-hidden="true" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></a>
-        <p>Ekosistem pet care Indonesia yang menghubungkan layanan, operasional, komunitas, dan pertumbuhan.</p>
-        <div><a href="mailto:support@slivadoc.com">support@slivadoc.com</a><a href={whatsappSupportURL} target="_blank" rel="noopener noreferrer">+62 819-7738-8341</a></div>
-        <small>© {new Date().getFullYear()} PT Sliva Technology Indonesia</small>
-      </footer>
-
-      <a className="support-widget" href={whatsappSupportURL} target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Customer Support Slivadoc">
-        <span className="support-widget-copy"><small>Customer Support</small><strong>Butuh bantuan? Chat kami</strong></span>
-        <span className="support-mascot" aria-hidden="true"><PawMark /><i /></span>
-      </a>
+      <PartnerSiteFooter />
+      <PartnerSupportWidget />
     </main>
   );
-}
-
-function PawMark() {
-  return <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 18.5c-5.9 0-11.7 5.3-11.7 10.7 0 4 3.4 6.3 7 5.1 1.7-.6 3.2-1 4.7-1s3 .4 4.7 1c3.6 1.2 7-1.1 7-5.1 0-5.4-5.8-10.7-11.7-10.7Z"/><ellipse cx="9.3" cy="15" rx="4.2" ry="5.4" transform="rotate(-27 9.3 15)"/><ellipse cx="30.7" cy="15" rx="4.2" ry="5.4" transform="rotate(27 30.7 15)"/><ellipse cx="17" cy="9" rx="4.1" ry="5.4" transform="rotate(-8 17 9)"/><ellipse cx="25" cy="9" rx="4.1" ry="5.4" transform="rotate(8 25 9)"/></svg>;
 }
 
 function Icon({ name }: { name:string }) {
