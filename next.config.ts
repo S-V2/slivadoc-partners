@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   // server and image optimizer; on our VM the container is the server, so Next
   // has to emit one.
   output: "standalone",
+  async redirects() {
+    return [{ source: "/pet-trainer/:category", destination: "/pet-trainer", permanent: true }];
+  },
 };
 
 export default nextConfig;

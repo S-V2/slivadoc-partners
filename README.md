@@ -5,8 +5,8 @@ Portal akuisisi partner untuk seluruh ekosistem pet care Slivadoc selain Pet Own
 ## Fitur
 
 - landing page sky-blue dengan 18 kategori partner
-- formulir pendaftaran wajib lima tahap dengan validasi client dan server
-- `/pet-trainer` sebagai pemilih kategori dan halaman formulir terpisah untuk trainer anjing, kucing, burung, kelinci, reptil, hewan kecil, kuda, serta pet lainnya di `/pet-trainer/<kategori>`
+- 18 halaman kemitraan `/kemitraan/<kategori>` dengan formulir lima tahap yang sudah terikat pada kategori masing-masing; kartu pada landing page langsung membuka halaman yang sesuai
+- halaman khusus `/pet-trainer` untuk trainer individu: keahlian, pengalaman, metode, jadwal, dan portofolio
 - penyimpanan pengajuan melalui API backend Slivadoc
 - nomor aplikasi dan penanganan duplikasi pengajuan
 - Google Analytics 4 untuk page view, funnel formulir, dan konversi partner
@@ -24,7 +24,15 @@ Salin `.env.example` menjadi `.env.local`, lalu arahkan `SLIVADOC_API_URL` ke ba
 
 Pendaftaran trainer dikirim melalui `/api/pet-trainer-applications` ke backend `POST /api/v1/public/pet-trainer-applications`. Jalankan migrasi backend terbaru terlebih dahulu agar tabel `pet_trainer_applications` tersedia. Setelah terkirim, data berstatus `submitted` dan dapat dibaca serta direview oleh Operations melalui endpoint internal `/api/v1/internal/operations/pet-trainer-applications`. Persetujuan pengajuan belum otomatis membuat akun trainer; aktivasi dilakukan pada onboarding.
 
-Setiap halaman kategori mengirim satu nilai `pet_types` sesuai URL. Migrasi backend untuk indeks unik per kategori diperlukan sebelum image frontend ini dipakai agar satu trainer dapat mendaftar pada beberapa jenis pet dengan email dan WhatsApp yang sama.
+Form kemitraan kategori mengirim `partner_type` sesuai URL melalui `/api/partner-applications`. Halaman Pet Trainer tetap satu formulir individu terpisah dan menggunakan endpoint pendaftaran trainer.
+URL lama `/pet-trainer/<jenis-pet>` dialihkan permanen ke `/pet-trainer` agar tautan yang sempat dibagikan tidak berakhir 404.
+
+## SEO kemitraan
+
+- Delapan belas halaman kategori dirender sebagai HTML statis, memiliki judul, deskripsi, canonical, Open Graph, konten yang spesifik, breadcrumb terstruktur, dan tautan dari daftar kategori pada beranda.
+- `sitemap.xml` memuat semua halaman kategori dan halaman trainer. URL kategori yang tidak dikenal menghasilkan 404.
+- `seo/partnership-keywords.csv` berisi **1.000 ide frasa unik** yang dipetakan ke target URL dan intent. Jalankan `node seo/generate-keyword-map.mjs` untuk regenerasi. Daftar ini adalah rencana editorial, tanpa klaim volume pencarian atau jaminan peringkat.
+- Frasa tersebut tidak dimasukkan massal ke `meta keywords` karena Google Search mengabaikan tag tersebut. Tambahkan konten baru hanya jika benar-benar membantu calon partner; hindari membuat halaman duplikat per variasi kata kunci atau kota.
 
 `NEXT_PUBLIC_GA_MEASUREMENT_ID` menggunakan Web Stream resmi Slivadoc (`G-1HBZTWHBPN`). Nilai ini dapat diganti per environment bila Slivadoc membuat stream terpisah di kemudian hari. Event analitik tidak memuat nama, email, nomor WhatsApp, dokumen, alamat, atau isi formulir partner.
 

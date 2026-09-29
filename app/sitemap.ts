@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { trainerCategories } from "./pet-trainer/categories";
+import { partnershipCategories, partnershipCategoryPath } from "./partnership-categories";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -9,10 +9,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     { url: "https://partners.slivadoc.com/pet-trainer", changeFrequency: "monthly", priority: 0.7 },
-    ...trainerCategories.map(({ slug }) => ({
-      url: `https://partners.slivadoc.com/pet-trainer/${slug}`,
+    ...partnershipCategories.map(({ slug }) => ({
+      url: `https://partners.slivadoc.com${partnershipCategoryPath(slug)}`,
       changeFrequency: "monthly" as const,
-      priority: 0.6,
+      priority: 0.75,
     })),
   ];
 }
