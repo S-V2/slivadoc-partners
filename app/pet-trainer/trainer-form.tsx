@@ -1,9 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { trackEvent } from "../analytics";
+import { PartnerSiteHeader, PartnerSiteFooter, PartnerSupportWidget } from "../partner-site-chrome";
 
 type TrainerFormData = {
   full_name: string; display_name: string; email: string; whatsapp: string;
@@ -190,8 +190,7 @@ export default function TrainerForm() {
   }
 
   return <main className="trainer-page">
-    <header className="trainer-header"><Link href="/" className="trainer-brand"><Image src="/brand/slivadoc-logo.png" alt="" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></Link>
-      <nav><Link href="/">Partnership</Link><a href="#alur">Alur seleksi</a><a className="trainer-header-cta" href="#daftar">Daftar trainer →</a></nav></header>
+    <PartnerSiteHeader registration trainer />
     <section className="trainer-hero"><div className="trainer-hero-inner"><div>
       <span className="trainer-eyebrow"><i /> Pendaftaran pet trainer Slivadoc</span>
       <h1>Bantu pet tumbuh, <em>satu sesi</em> pada satu waktu.</h1>
@@ -249,6 +248,7 @@ export default function TrainerForm() {
             <button type="submit" className="trainer-next" disabled={submitting} aria-busy={submitting}>{submitting ? "Mengirim…" : "Kirim pendaftaran →"}</button>}</div>
       </form>}
     </div></section>
-    <footer className="trainer-footer"><Link href="/">← Slivadoc Partners</Link><span>© {new Date().getFullYear()} PT Sliva Technology Indonesia</span><a href="mailto:support@slivadoc.com">Butuh bantuan?</a></footer>
+    <PartnerSiteFooter />
+    <PartnerSupportWidget />
   </main>;
 }
