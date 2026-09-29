@@ -4,11 +4,12 @@ import { FormEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { trackEvent } from "../analytics";
+import type { TrainerCategory } from "./categories";
 
 type TrainerFormData = {
   full_name: string; display_name: string; email: string; whatsapp: string;
   province: string; city: string; district: string; service_coverage: string;
-  pet_types: string[]; specialties: string[]; service_modes: string[];
+  other_pet_type: string; specialties: string[]; service_modes: string[];
   experience_years: string; education: string; certifications: string;
   certificate_url: string; portfolio_url: string; profile_url: string;
   bio: string; training_approach: string; availability: string; languages: string;
@@ -19,29 +20,35 @@ type TrainerFormData = {
 const initial: TrainerFormData = {
   full_name: "", display_name: "", email: "", whatsapp: "",
   province: "", city: "", district: "", service_coverage: "",
-  pet_types: [], specialties: [], service_modes: [], experience_years: "",
+  other_pet_type: "", specialties: [], service_modes: [], experience_years: "",
   education: "", certifications: "", certificate_url: "", portfolio_url: "", profile_url: "",
   bio: "", training_approach: "", availability: "", languages: "Bahasa Indonesia",
   onsite_radius_km: "0", session_fee_from: "", referral_source: "",
   terms_accepted: false, data_consent: false, truth_declaration: false,
 };
-const petOptions = [
-  ["anjing", "Anjing"], ["kucing", "Kucing"], ["burung", "Burung"], ["kelinci", "Kelinci"],
-  ["reptil", "Reptil"], ["hewan_kecil", "Hewan kecil"], ["kuda", "Kuda"], ["lainnya", "Lainnya"],
-];
 const specialtyOptions = [
   ["basic_obedience", "Basic obedience"], ["behavior", "Perilaku"], ["puppy_kitten", "Puppy & kitten"],
   ["socialization", "Sosialisasi"], ["agility", "Agility"], ["trick", "Trick training"],
   ["toilet_training", "Toilet training"], ["separation_anxiety", "Separation anxiety"],
   ["advanced", "Advanced training"], ["other", "Lainnya"],
 ];
+const specialtyOptionsByPet: Record<TrainerCategory["value"], string[]> = {
+  anjing: ["basic_obedience", "behavior", "puppy_kitten", "socialization", "agility", "trick", "toilet_training", "separation_anxiety", "advanced", "other"],
+  kucing: ["behavior", "puppy_kitten", "socialization", "trick", "toilet_training", "separation_anxiety", "advanced", "other"],
+  burung: ["behavior", "socialization", "trick", "advanced", "other"],
+  kelinci: ["behavior", "socialization", "toilet_training", "other"],
+  reptil: ["behavior", "socialization", "other"],
+  hewan_kecil: ["behavior", "socialization", "toilet_training", "other"],
+  kuda: ["basic_obedience", "behavior", "socialization", "agility", "advanced", "other"],
+  lainnya: ["basic_obedience", "behavior", "socialization", "trick", "toilet_training", "advanced", "other"],
+};
 const modeOptions = [
   ["online", "Konsultasi online"], ["home_visit", "Home visit"], ["training_location", "Di lokasi training"],
 ];
 const stepNames = ["Identitas", "Keahlian", "Layanan & portofolio", "Konfirmasi"];
 type Errors = Record<string, string>;
 
-function validate(form: TrainerFormData, step: number): Errors {
+function validate(form: TrainerFormData, step: number, category: TrainerCategory): Errors {
   const errors: Errors = {};
   const required = (field: keyof TrainerFormData, label: string, min = 3) => {
     const value = form[field];
@@ -65,11 +72,12 @@ function validate(form: TrainerFormData, step: number): Errors {
     if (!/^(?:\+62|62|0)8[0-9\s-]{8,14}$/.test(form.whatsapp.trim())) errors.whatsapp = "Isi nomor WhatsApp Indonesia aktif.";
   }
   if (step === 1) {
-    if (!form.pet_types.length) errors.pet_types = "Pilih minimal satu jenis hewan.";
+    if (category.value === "lainnya" && (form.other_pet_type.trim().length < 3 || form.other_pet_type.trim().length > 80)) errors.other_pet_type = "Sebutkan jenis pet dalam 3–80 karakter.";
     if (!form.specialties.length) errors.specialties = "Pilih minimal satu spesialisasi.";
     if (!form.service_modes.length) errors.service_modes = "Pilih minimal satu metode layanan.";
     if (form.experience_years === "" || !Number.isInteger(Number(form.experience_years)) || Number(form.experience_years) < 0 || Number(form.experience_years) > 80) errors.experience_years = "Isi pengalaman 0–80 tahun.";
     required("bio", "profil profesional", 30);
+    if (category.value === "lainnya" && `Jenis pet: ${form.other_pet_type.trim()}\n\n${form.bio.trim()}`.length > 2000) errors.bio = "Profil profesional terlalu panjang (maksimal 2.000 karakter termasuk jenis pet).";
     required("training_approach", "pendekatan training", 30);
   }
   if (step === 2) {
@@ -88,7 +96,7 @@ function validate(form: TrainerFormData, step: number): Errors {
   return errors;
 }
 
-export default function TrainerForm() {
+export default function TrainerForm({ category }: { category: TrainerCategory }) {
   const [form, setForm] = useState<TrainerFormData>(initial);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Errors>({});
@@ -101,12 +109,12 @@ export default function TrainerForm() {
     setErrors((current) => { const next = { ...current }; delete next[name]; return next; });
     setServerError("");
   }
-  function toggle(name: "pet_types" | "specialties" | "service_modes", value: string) {
+  function toggle(name: "specialties" | "service_modes", value: string) {
     update(name, form[name].includes(value) ? form[name].filter((item) => item !== value) : [...form[name], value]);
   }
   function navigate(next: number) {
     if (next > step) {
-      const found = validate(form, step);
+      const found = validate(form, step, category);
       setErrors(found);
       if (Object.keys(found).length) {
         document.querySelector(".trainer-form-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -122,7 +130,7 @@ export default function TrainerForm() {
     event.preventDefault();
     if (submitting) return;
     for (let index = 0; index < stepNames.length; index++) {
-      const found = validate(form, index);
+      const found = validate(form, index, category);
       if (Object.keys(found).length) {
         setErrors(found); setStep(index);
         document.querySelector(".trainer-form-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -135,7 +143,10 @@ export default function TrainerForm() {
         method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           ...form,
+          other_pet_type: undefined,
+          pet_types: [category.value],
           full_name: form.full_name.trim(), display_name: form.display_name.trim(),
+          bio: category.value === "lainnya" ? `Jenis pet: ${form.other_pet_type.trim()}\n\n${form.bio.trim()}` : form.bio.trim(),
           experience_years: Number(form.experience_years),
           onsite_radius_km: Number(form.onsite_radius_km),
           session_fee_from: form.session_fee_from === "" ? null : Number(form.session_fee_from),
@@ -146,7 +157,7 @@ export default function TrainerForm() {
       if (!response.ok) {
         if (result.fields) {
           setErrors(result.fields);
-          const target = stepNames.findIndex((_, index) => Object.keys(validate(form, index)).some((key) => result.fields?.[key]));
+          const target = result.fields.pet_types ? 1 : stepNames.findIndex((_, index) => Object.keys(validate(form, index, category)).some((key) => result.fields?.[key]));
           if (target >= 0) setStep(target);
         }
         throw new Error(result.message || "Pendaftaran belum dapat dikirim.");
@@ -174,7 +185,7 @@ export default function TrainerForm() {
       {errors[name] && <small className="trainer-error" id={`trainer-${name}-error`}>{errors[name]}</small>}
     </label>;
   }
-  function choices(name: "pet_types" | "specialties" | "service_modes", title: string, options: string[][]) {
+  function choices(name: "specialties" | "service_modes", title: string, options: string[][]) {
     return <fieldset className="trainer-choices"><legend>{title}<b> *</b></legend>
       <div className="trainer-chip-grid">{options.map(([value, label]) =>
         <label className={form[name].includes(value) ? "trainer-chip selected" : "trainer-chip"} key={value}>
@@ -191,16 +202,16 @@ export default function TrainerForm() {
 
   return <main className="trainer-page">
     <header className="trainer-header"><Link href="/" className="trainer-brand"><Image src="/brand/slivadoc-logo.png" alt="" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></Link>
-      <nav><Link href="/">Partnership</Link><a href="#alur">Alur seleksi</a><a className="trainer-header-cta" href="#daftar">Daftar trainer →</a></nav></header>
+      <nav><Link href="/pet-trainer">Semua kategori</Link><a href="#alur">Alur seleksi</a><a className="trainer-header-cta" href="#daftar">Daftar trainer →</a></nav></header>
     <section className="trainer-hero"><div className="trainer-hero-inner"><div>
-      <span className="trainer-eyebrow"><i /> Pendaftaran pet trainer Slivadoc</span>
-      <h1>Bantu pet tumbuh, <em>satu sesi</em> pada satu waktu.</h1>
-      <p>Ceritakan keahlian dan pendekatan Anda. Tim Slivadoc akan meninjau profil trainer sebelum layanan dapat ditampilkan dan dipesan oleh pet owner.</p>
+      <span className="trainer-eyebrow"><i /> Pendaftaran trainer {category.name.toLowerCase()} Slivadoc</span>
+      <h1>Keahlian untuk {category.name.toLowerCase()}, <em>dampak nyata.</em></h1>
+      <p>{category.focus} Ceritakan keahlian dan pendekatan Anda. Tim Slivadoc akan meninjau profil sebelum layanan ditampilkan kepada pet owner.</p>
       <div className="trainer-hero-actions"><a href="#daftar">Mulai pendaftaran <span>↗</span></a><span>Gratis • sekitar 8 menit</span></div>
     </div><div className="trainer-hero-art" aria-hidden="true"><div className="trainer-orbit"><span>✦</span><span>🐾</span><span>✳</span></div><div className="trainer-art-card"><span>TRAINER PROFILE</span><strong>Keahlianmu.<br />Dampak nyata.</strong><div><i>✓</i> Training <i>✓</i> Konsultasi <i>✓</i> Edukasi</div></div></div></div></section>
     <section className="trainer-process" id="alur"><div><span>01</span><b>Lengkapi profil</b><small>Identitas, pengalaman, dan bidang training.</small></div><div><span>02</span><b>Review tim Slivadoc</b><small>Tim memeriksa kelengkapan dan portofolio.</small></div><div><span>03</span><b>Onboarding</b><small>Pengaturan akun, jadwal, dan layanan setelah disetujui.</small></div></section>
     <section className="trainer-registration" id="daftar"><div className="trainer-aside"><span className="trainer-section-label">BERGABUNG SEBAGAI TRAINER</span><h2>Perkenalkan cara Anda <em>melatih dengan hati.</em></h2>
-      <p>Formulir ini untuk profesional individu. Jika Anda mengelola akademi atau badan usaha, gunakan <Link href="/#daftar">formulir partnership umum</Link>.</p>
+      <p>Formulir ini khusus trainer {category.name.toLowerCase()} individu. Untuk jenis pet lain, <Link href="/pet-trainer">pilih kategori pendaftaran lain</Link>. Jika Anda mengelola akademi atau badan usaha, gunakan <Link href="/#daftar">formulir partnership umum</Link>.</p>
       <div className="trainer-aside-note"><span>✦</span><div><b>Profil tetap privat selama review</b><small>Data kontak, dokumen, dan tarif hanya dipakai tim untuk verifikasi serta onboarding.</small></div></div>
     </div><div className="trainer-form-card">
       {applicationNumber ? <div className="trainer-success" role="status"><span>✓</span><h2>Pendaftaran diterima!</h2><p>Tim Slivadoc akan memeriksa profil Anda. Simpan nomor referensi ini untuk komunikasi lanjutan.</p><strong>{applicationNumber}</strong><Link href="/">Kembali ke partnership →</Link></div> :
@@ -218,8 +229,11 @@ export default function TrainerForm() {
           {field("service_coverage", "Area cakupan layanan", "Contoh: Jakarta Barat dan Tangerang")}
         </div>}
         {step === 1 && <div className="trainer-fields">
-          {choices("pet_types", "Jenis pet yang ditangani", petOptions)}
-          {choices("specialties", "Bidang spesialisasi", specialtyOptions)}
+          <div className="trainer-selected-category trainer-wide"><span aria-hidden="true">{category.icon}</span><div><small>JENIS PET DALAM PENDAFTARAN INI</small><strong>{category.name}</strong></div><Link href="/pet-trainer">Ubah kategori</Link></div>
+          {category.value === "lainnya" && field("other_pet_type", "Sebutkan jenis pet", "Contoh: Sugar glider")}
+          {errors.pet_types && <small className="trainer-error trainer-wide">{errors.pet_types}</small>}
+          {choices("specialties", "Bidang spesialisasi", specialtyOptions.filter(([value]) => specialtyOptionsByPet[category.value].includes(value)).map(([value, label]) =>
+            [value, value === "puppy_kitten" ? category.value === "anjing" ? "Puppy training" : "Kitten training" : label]))}
           {choices("service_modes", "Metode layanan", modeOptions)}
           {field("experience_years", "Pengalaman sebagai trainer (tahun)", "Contoh: 3", "number")}
           {field("education", "Pendidikan relevan", "Program atau institusi", "text", true)}
@@ -237,7 +251,7 @@ export default function TrainerForm() {
           {field("profile_url", "Media sosial profesional / website", "https://instagram.com/...", "url", true)}
           {field("referral_source", "Mengetahui Slivadoc dari", "Instagram / teman / event")}
         </div>}
-        {step === 3 && <div className="trainer-confirm"><div className="trainer-summary"><span>✦</span><div><small>PROFIL PENDAFTAR</small><b>{form.display_name || form.full_name}</b><p>{form.city} · {form.pet_types.length} jenis pet · {form.specialties.length} spesialisasi</p></div></div>
+        {step === 3 && <div className="trainer-confirm"><div className="trainer-summary"><span>{category.icon}</span><div><small>PROFIL PENDAFTAR · {category.name.toUpperCase()}</small><b>{form.display_name || form.full_name}</b><p>{form.city} · {form.specialties.length} spesialisasi</p></div></div>
           <h4>Konfirmasi dan persetujuan</h4>
           {consent("terms_accepted", "Saya menyetujui proses pendaftaran dan ketentuan kemitraan Slivadoc.")}
           {consent("data_consent", "Saya menyetujui penggunaan data untuk verifikasi, komunikasi, dan onboarding.")}
