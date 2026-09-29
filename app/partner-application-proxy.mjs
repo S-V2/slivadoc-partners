@@ -16,12 +16,15 @@ export function resolveSlivadocAPIURL(configuredURL, environment = process.env.N
   return environment === "production" ? DEFAULT_SLIVADOC_API_URL : "http://127.0.0.1:8080";
 }
 
-export async function forwardPartnerApplication({ apiURL, body, userAgent, clientIP, fetchImpl = fetch }) {
+export async function forwardPartnerApplication({ apiURL, body, userAgent, clientIP, fetchImpl = fetch, endpoint = "partner-applications" }) {
+  if (!["partner-applications", "pet-trainer-applications"].includes(endpoint)) {
+    throw new Error("Unsupported application endpoint");
+  }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12_000);
 
   try {
-    const response = await fetchImpl(`${apiURL.replace(/\/$/, "")}/api/v1/public/partner-applications`, {
+    const response = await fetchImpl(`${apiURL.replace(/\/$/, "")}/api/v1/public/${endpoint}`, {
       method: "POST",
       headers: {
         Accept: "application/json",

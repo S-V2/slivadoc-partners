@@ -2,6 +2,7 @@
 
 import { FormEvent, KeyboardEvent, ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { trackEvent } from "./analytics";
 import LanguageSwitcher from "./language-switcher";
 
@@ -379,6 +380,7 @@ export default function PartnerPortal() {
         <nav aria-label="Navigasi utama">
           <a href="#ekosistem">Ekosistem</a>
           <a href="#kategori-partner">Kategori</a>
+          <Link href="/pet-trainer">Daftar pet trainer</Link>
           <a href="#manfaat">Alur nilai</a>
           <a href="#partner-strategis">Partner strategis</a>
           <a href="#proses">Cara bergabung</a>
@@ -458,15 +460,23 @@ export default function PartnerPortal() {
         <div className="section-heading">
           <span className="section-label">18 pintu masuk ke ekosistem</span>
           <h2>Temukan posisi Anda.<br /><em>Bangun dampak bersama.</em></h2>
-          <p>Semua penyedia layanan, profesional, organisasi, brand, dan pendukung ekosistem dapat mendaftar. Pilih kategori untuk langsung membawanya ke formulir. Pet owner tetap menggunakan aplikasi khusus Pet Owner.</p>
+          <p>Semua penyedia layanan, profesional, organisasi, brand, dan pendukung ekosistem dapat mendaftar. Pet trainer individu memiliki halaman pendaftaran khusus. Pet owner tetap menggunakan aplikasi khusus Pet Owner.</p>
         </div>
         <div className="category-grid">
           {partnerCategories.map((item) => (
+            item.value === "pet_academy_trainer" ? (
+              <Link className="category-card" key={item.value} href="/pet-trainer" style={{ textDecoration: "none" }}>
+                <span className="category-icon"><Icon name={item.icon} /></span>
+                <span><b>Daftar Pet Trainer</b><small>Profil, spesialisasi, pengalaman, dan jadwal training</small></span>
+                <i className="category-arrow">→</i>
+              </Link>
+            ) : (
             <button className={form.partner_type === item.value ? "category-card selected" : "category-card"} key={item.value} onClick={() => chooseCategory(item.value, true)}>
               <span className="category-icon"><Icon name={item.icon} /></span>
               <span><b>{item.label}</b><small>{item.description}</small></span>
               <i className="category-arrow">→</i>
             </button>
+            )
           ))}
         </div>
       </section>

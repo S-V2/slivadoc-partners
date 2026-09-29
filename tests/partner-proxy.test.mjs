@@ -46,6 +46,22 @@ test("forwards a complete partner application to the Slivadoc API", async () => 
   assert.deepEqual(forwardedBody, payload);
 });
 
+test("forwards a trainer application to the dedicated endpoint", async () => {
+  const body = { full_name: "Dira Prameswari", pet_types: ["anjing"], terms_accepted: true };
+  const result = await forwardPartnerApplication({
+    apiURL: "http://127.0.0.1:8080",
+    endpoint: "pet-trainer-applications",
+    body,
+    fetchImpl: async (url, init) => {
+      assert.equal(String(url), "http://127.0.0.1:8080/api/v1/public/pet-trainer-applications");
+      assert.deepEqual(JSON.parse(String(init.body)), body);
+      return Response.json({ application_number: "TRN-ABC" }, { status: 201 });
+    },
+  });
+  assert.equal(result.status, 201);
+  assert.equal(result.payload.application_number, "TRN-ABC");
+});
+
 test("returns a gateway error when the upstream response is not JSON", async () => {
   const result = await forwardPartnerApplication({
     apiURL: "https://api.slivadoc.com",
