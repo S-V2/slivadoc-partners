@@ -110,11 +110,11 @@ const faqItems = [
   },
   {
     question: "Data dan dokumen apa yang perlu disiapkan?",
-    answer: "Siapkan identitas usaha atau organisasi, nomor dan tautan dokumen legalitas yang dapat dilihat, data PIC, alamat operasional, area layanan, jam operasional, daftar layanan atau produk, serta penjelasan singkat mengenai kebutuhan bisnis Anda.",
+    answer: "Siapkan identitas usaha, profesi, atau organisasi; kontak penanggung jawab; area layanan; dan informasi sesuai kategori yang dipilih. Dokumen izin praktik atau usaha diminta bila relevan. Tautan dokumen pendukung dan profil publik dapat dilampirkan bila tersedia.",
   },
   {
     question: "Bagaimana jika dokumen legalitas saya belum lengkap?",
-    answer: "Hubungi Customer Support Slivadoc melalui WhatsApp sebelum mengirim formulir. Tim kami akan membantu mengecek dokumen yang sudah tersedia dan menjelaskan langkah yang perlu dilengkapi agar pendaftaran tidak membingungkan.",
+    answer: "Isi dokumen yang memang diwajibkan pada kategori Anda. Untuk komunitas, shelter, dan instansi, nomor registrasi boleh dikosongkan bila belum ada. Tautan dokumen pendukung bersifat opsional. Tim kami dapat membantu menjelaskan dokumen yang diperlukan saat review.",
   },
   {
     question: "Apa yang terjadi setelah formulir dikirim?",
@@ -246,7 +246,7 @@ export default function PartnerPortal() {
 
       <section className="ecosystem-section" id="kategori-partner">
         <div className="section-heading">
-          <span className="section-label">18 pintu masuk ke ekosistem</span>
+          <span className="section-label">Jalur pendaftaran sesuai bidang Anda</span>
           <h2>Temukan posisi Anda.<br /><em>Bangun dampak bersama.</em></h2>
           <p>Semua penyedia layanan, profesional, organisasi, brand, dan pendukung ekosistem dapat mendaftar. Pilih kategori untuk membuka halaman pendaftaran khusus bidang Anda. Pet owner tetap menggunakan aplikasi khusus Pet Owner.</p>
         </div>
@@ -258,6 +258,11 @@ export default function PartnerPortal() {
               <i className="category-arrow">→</i>
             </Link>
           ))}
+          <Link className="category-card" href="/pet-trainer">
+            <span className="category-icon"><Icon name="award" /></span>
+            <span><b>Pet Trainer Individu</b><small>Pengalaman, spesialisasi, metode training, dan jadwal</small></span>
+            <i className="category-arrow">→</i>
+          </Link>
         </div>
       </section>
 

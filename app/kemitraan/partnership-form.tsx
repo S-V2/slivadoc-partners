@@ -3,6 +3,7 @@
 import { FormEvent, KeyboardEvent, ReactNode, useEffect, useId, useRef, useState } from "react";
 import { trackEvent } from "../analytics";
 import type { PartnershipCategory } from "../partnership-categories";
+import { categoryFields } from "./category-fields";
 
 type PartnerForm = {
   partner_type: string;
@@ -57,7 +58,17 @@ const initialForm: PartnerForm = {
   data_consent: false, truth_declaration: false,
 };
 
-const steps = ["Profil partner", "PIC & kontak", "Lokasi & operasi", "Kebutuhan", "Konfirmasi"];
+const individualTypes = new Set(["independent_veterinarian"]);
+const organizationTypes = new Set(["shelter_rescue", "pet_community", "government_association"]);
+function initialCategoryForm(category: PartnershipCategory): PartnerForm {
+  return {
+    ...initialForm,
+    partner_type: category.value,
+    ...(individualTypes.has(category.value) ? { entity_type: "profesional_individu", branch_count: "1", employee_count: "1" } : {}),
+  };
+}
+
+const steps = ["Profil & bidang", "PIC & kontak", "Lokasi & operasi", "Kebutuhan", "Konfirmasi"];
 const serviceExamples: Record<string, string> = {
   veterinary_clinic: "Konsultasi, vaksinasi, rawat inap",
   independent_veterinarian: "Konsultasi online, kunjungan rumah",
@@ -85,7 +96,8 @@ const whatsappSupportMessage = encodeURIComponent(
 const whatsappSupportURL = `https://wa.me/6281977388341?text=${whatsappSupportMessage}`;
 
 export default function PartnershipForm({ category }: { category: PartnershipCategory }) {
-  const [form, setForm] = useState<PartnerForm>({ ...initialForm, partner_type: category.value });
+  const [form, setForm] = useState<PartnerForm>(() => initialCategoryForm(category));
+  const [categoryDetails, setCategoryDetails] = useState<Record<string, string>>({});
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -93,6 +105,18 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
   const [applicationNumber, setApplicationNumber] = useState("");
   const formStarted = useRef(false);
   const selectedCategory = category;
+  const isIndividual = individualTypes.has(category.value);
+  const isOrganization = organizationTypes.has(category.value);
+
+  function updateDetail(key: string, value: string) {
+    setCategoryDetails((current) => ({ ...current, [key]: value }));
+    setErrors((current) => {
+      if (!current[`category_details.${key}`]) return current;
+      const next = { ...current };
+      delete next[`category_details.${key}`];
+      return next;
+    });
+  }
 
   function update<K extends keyof PartnerForm>(name: K, value: PartnerForm[K]) {
     setForm((current) => ({ ...current, [name]: value }));
@@ -120,7 +144,7 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
   }
 
   function nextStep() {
-    const stepErrors = validatePartnerForm(form, step);
+    const stepErrors = validatePartnerForm(form, step, category, categoryDetails);
     setErrors(stepErrors);
     if (Object.keys(stepErrors).length) {
       trackEvent("form_validation_error", {
@@ -148,7 +172,7 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const allErrors = Array.from({ length: steps.length }, (_, index) => validatePartnerForm(form, index)).reduce((result, item) => ({ ...result, ...item }), {});
+    const allErrors = Array.from({ length: steps.length }, (_, index) => validatePartnerForm(form, index, category, categoryDetails)).reduce((result, item) => ({ ...result, ...item }), {});
     if (Object.keys(allErrors).length) {
       setErrors(allErrors);
       const firstStep = firstInvalidStep(allErrors);
@@ -172,6 +196,7 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
         body: JSON.stringify({
           ...form,
           partner_type: category.value,
+          category_details: categoryDetails,
           established_year: Number(form.established_year),
           branch_count: Number(form.branch_count),
           employee_count: Number(form.employee_count),
@@ -207,7 +232,8 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
   }
 
   function resetForm() {
-    setForm({ ...initialForm, partner_type: category.value });
+    setForm(initialCategoryForm(category));
+    setCategoryDetails({});
     setStep(0);
     setErrors({});
     setApplicationNumber("");
@@ -256,34 +282,38 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
               {step === 0 && <div className="form-panel" key="partner-profile-step">
                 <input type="hidden" name="partner_type" value={category.value} />
                 {selectedCategory && <div className="selected-partner"><span><Icon name={selectedCategory.icon} /></span><div><b>{selectedCategory.label}</b><small>{selectedCategory.description}</small></div></div>}
-                <div className="field-grid two"><TextField label="Nama legal badan/usaha" name="legal_name" value={form.legal_name} onChange={(value) => update("legal_name", value)} error={errors.legal_name} placeholder="Contoh: PT Sahabat Satwa Indonesia" /><TextField label="Nama brand/publik" name="brand_name" value={form.brand_name} onChange={(value) => update("brand_name", value)} error={errors.brand_name} placeholder="Contoh: Sahabat Satwa" /></div>
-                <div className="field-grid two"><SelectField label="Bentuk usaha/organisasi" name="entity_type" value={form.entity_type} onChange={(value) => update("entity_type", value)} error={errors.entity_type} options={[{value:"pt",label:"PT"},{value:"cv",label:"CV"},{value:"koperasi",label:"Koperasi"},{value:"yayasan",label:"Yayasan"},{value:"klinik_pribadi",label:"Klinik/praktik pribadi"},{value:"profesional_individu",label:"Profesional individu"},{value:"komunitas",label:"Komunitas"},{value:"instansi",label:"Instansi/asosiasi"},{value:"other",label:"Lainnya"}]} /><TextField label="Tahun berdiri" name="established_year" type="number" value={form.established_year} onChange={(value) => update("established_year", value)} error={errors.established_year} placeholder="2024" /></div>
-                <TextField label="Nomor legalitas/registrasi" name="legal_document_number" value={form.legal_document_number} onChange={(value) => update("legal_document_number", value)} error={errors.legal_document_number} placeholder="NIB, SIP, akta, atau nomor registrasi organisasi" />
-                <TextField label="Tautan dokumen legalitas" name="legal_document_url" type="url" value={form.legal_document_url} onChange={(value) => update("legal_document_url", value)} error={errors.legal_document_url} placeholder="https://drive.google.com/... (pastikan dapat dilihat)" hint="Gunakan tautan berizin lihat; jangan cantumkan password." />
+                <div className="category-question-heading"><strong>Informasi khusus {category.label}</strong><p>Pertanyaan ini mengikuti bidang Anda dan akan tersimpan dalam pengajuan.</p></div>
+                {categoryFields[category.value].map((field) => field.type === "textarea" ?
+                  <TextAreaField key={field.key} label={field.label} name={`category_details.${field.key}`} value={categoryDetails[field.key] || ""} onChange={(value) => updateDetail(field.key, value)} error={errors[`category_details.${field.key}`]} placeholder={field.placeholder} maxLength={1000} /> :
+                  <TextField key={field.key} label={field.label} name={`category_details.${field.key}`} value={categoryDetails[field.key] || ""} onChange={(value) => updateDetail(field.key, value)} error={errors[`category_details.${field.key}`]} placeholder={field.placeholder} type={field.type || "text"} maxLength={300} />)}
+                <div className="field-grid two"><TextField label={isIndividual ? "Nama lengkap sesuai identitas" : isOrganization ? "Nama resmi organisasi" : "Nama legal badan/usaha"} name="legal_name" value={form.legal_name} onChange={(value) => update("legal_name", value)} error={errors.legal_name} placeholder={isIndividual ? "Nama sesuai dokumen identitas" : "Contoh: PT Sahabat Satwa Indonesia"} /><TextField label={isIndividual ? "Nama profil/praktik" : isOrganization ? "Nama organisasi yang dikenal publik" : "Nama brand/publik"} name="brand_name" value={form.brand_name} onChange={(value) => update("brand_name", value)} error={errors.brand_name} placeholder={isIndividual ? "Contoh: drh. Dira" : "Contoh: Sahabat Satwa"} /></div>
+                <div className="field-grid two">{!isIndividual && <SelectField label="Bentuk usaha/organisasi" name="entity_type" value={form.entity_type} onChange={(value) => update("entity_type", value)} error={errors.entity_type} options={[{value:"pt",label:"PT"},{value:"cv",label:"CV"},{value:"koperasi",label:"Koperasi"},{value:"yayasan",label:"Yayasan"},{value:"klinik_pribadi",label:"Klinik/praktik pribadi"},{value:"profesional_individu",label:"Profesional individu"},{value:"komunitas",label:"Komunitas"},{value:"instansi",label:"Instansi/asosiasi"},{value:"other",label:"Lainnya"}]} />}<TextField label={isIndividual ? "Tahun mulai praktik" : isOrganization ? "Tahun mulai berkegiatan" : "Tahun berdiri"} name="established_year" type="number" value={form.established_year} onChange={(value) => update("established_year", value)} error={errors.established_year} placeholder="2024" /></div>
+                <TextField label={isIndividual ? "Nomor izin praktik (SIP)" : isOrganization ? "Nomor registrasi organisasi (jika ada)" : "Nomor legalitas/registrasi"} name="legal_document_number" value={form.legal_document_number} onChange={(value) => update("legal_document_number", value)} error={errors.legal_document_number} placeholder={isIndividual ? "Nomor SIP dokter hewan" : "NIB, akta, atau nomor registrasi"} required={!isOrganization} />
+                <TextField label="Tautan dokumen pendukung (jika ada)" name="legal_document_url" type="url" value={form.legal_document_url} onChange={(value) => update("legal_document_url", value)} error={errors.legal_document_url} placeholder="https://drive.google.com/..." hint="Gunakan tautan berizin lihat; jangan cantumkan password." required={false} />
               </div>}
 
               {step === 1 && <div className="form-panel" key="partner-contact-step">
                 <div className="field-grid two"><TextField label="Nama lengkap PIC" name="pic_name" value={form.pic_name} onChange={(value) => update("pic_name", value)} error={errors.pic_name} placeholder="Nama penanggung jawab" /><TextField label="Jabatan PIC" name="pic_position" value={form.pic_position} onChange={(value) => update("pic_position", value)} error={errors.pic_position} placeholder="Owner / Business Development" /></div>
                 <TextField label="Email bisnis" name="email" type="email" value={form.email} onChange={(value) => update("email", value)} error={errors.email} placeholder="partner@bisnis.com" />
-                <div className="field-grid two"><TextField label="Nomor WhatsApp aktif" name="whatsapp" type="tel" value={form.whatsapp} onChange={(value) => update("whatsapp", value)} error={errors.whatsapp} placeholder="081234567890" /><TextField label="Nomor kontak alternatif" name="alternate_phone" type="tel" value={form.alternate_phone} onChange={(value) => update("alternate_phone", value)} error={errors.alternate_phone} placeholder="081112223333" /></div>
-                <TextField label="Website atau profil bisnis" name="digital_profile_url" type="url" value={form.digital_profile_url} onChange={(value) => update("digital_profile_url", value)} error={errors.digital_profile_url} placeholder="https://instagram.com/brand atau website resmi" />
+                <div className="field-grid two"><TextField label="Nomor WhatsApp aktif" name="whatsapp" type="tel" value={form.whatsapp} onChange={(value) => update("whatsapp", value)} error={errors.whatsapp} placeholder="081234567890" /><TextField label="Nomor kontak alternatif (jika ada)" name="alternate_phone" type="tel" value={form.alternate_phone} onChange={(value) => update("alternate_phone", value)} error={errors.alternate_phone} placeholder="081112223333" required={false} /></div>
+                <TextField label="Website atau profil publik (jika ada)" name="digital_profile_url" type="url" value={form.digital_profile_url} onChange={(value) => update("digital_profile_url", value)} error={errors.digital_profile_url} placeholder="https://instagram.com/brand atau website resmi" required={false} />
               </div>}
 
               {step === 2 && <div className="form-panel" key="partner-location-step">
                 <TextAreaField label="Alamat operasional lengkap" name="address" value={form.address} onChange={(value) => update("address", value)} error={errors.address} placeholder="Nama jalan, nomor, gedung, RT/RW, dan kelurahan" />
                 <div className="field-grid two"><SelectField label="Provinsi" name="province" value={form.province} onChange={(value) => update("province", value)} error={errors.province} options={provinces.map((item) => ({value:item,label:item}))} /><TextField label="Kabupaten/kota" name="city" value={form.city} onChange={(value) => update("city", value)} error={errors.city} placeholder="Jakarta Selatan" /></div>
                 <div className="field-grid two"><TextField label="Kecamatan" name="district" value={form.district} onChange={(value) => update("district", value)} error={errors.district} placeholder="Kebayoran Baru" /><TextField label="Kode pos" name="postal_code" inputMode="numeric" maxLength={5} value={form.postal_code} onChange={(value) => update("postal_code", value.replace(/\D/g, ""))} error={errors.postal_code} placeholder="12120" /></div>
-                <div className="field-grid two"><TextField label="Jumlah lokasi/cabang" name="branch_count" type="number" value={form.branch_count} onChange={(value) => update("branch_count", value)} error={errors.branch_count} placeholder="1" /><TextField label="Jumlah anggota tim" name="employee_count" type="number" value={form.employee_count} onChange={(value) => update("employee_count", value)} error={errors.employee_count} placeholder="5" /></div>
+                {!isIndividual && <div className="field-grid two"><TextField label={isOrganization ? "Jumlah lokasi/pos kegiatan" : "Jumlah lokasi/cabang"} name="branch_count" type="number" value={form.branch_count} onChange={(value) => update("branch_count", value)} error={errors.branch_count} placeholder="1" /><TextField label={isOrganization ? "Jumlah pengurus/relawan aktif" : "Jumlah anggota tim"} name="employee_count" type="number" value={form.employee_count} onChange={(value) => update("employee_count", value)} error={errors.employee_count} placeholder="5" /></div>}
                 <TextField label="Area cakupan layanan" name="service_coverage" value={form.service_coverage} onChange={(value) => update("service_coverage", value)} error={errors.service_coverage} placeholder="Contoh: Jabodetabek / seluruh Indonesia" />
                 <TextField label="Jam operasional" name="operation_hours" value={form.operation_hours} onChange={(value) => update("operation_hours", value)} error={errors.operation_hours} placeholder="Senin–Minggu, 08.00–21.00" />
               </div>}
 
               {step === 3 && <div className="form-panel" key="partner-needs-step">
                 <TextField label="Layanan/produk utama" name="services_offered" value={form.services_offered} onChange={(value) => update("services_offered", value)} error={errors.services_offered} placeholder={`${serviceExamples[category.value]} (pisahkan dengan koma)`} />
-                <TextAreaField label="Ceritakan bisnis atau organisasi Anda" name="business_description" value={form.business_description} onChange={(value) => update("business_description", value)} error={errors.business_description} placeholder="Jelaskan fokus, pelanggan, keunggulan, dan layanan utama (minimal 30 karakter)." maxLength={2000} />
+                <TextAreaField label={isIndividual ? "Ceritakan pengalaman praktik Anda" : isOrganization ? "Ceritakan kegiatan organisasi Anda" : "Ceritakan bisnis atau organisasi Anda"} name="business_description" value={form.business_description} onChange={(value) => update("business_description", value)} error={errors.business_description} placeholder="Jelaskan fokus, pengalaman, dan layanan utama (minimal 30 karakter)." maxLength={2000} />
                 <TextAreaField label="Apa tujuan bergabung dengan Slivadoc?" name="partnership_goal" value={form.partnership_goal} onChange={(value) => update("partnership_goal", value)} error={errors.partnership_goal} placeholder="Jelaskan target, kendala, dan bentuk kolaborasi yang Anda harapkan (minimal 30 karakter)." maxLength={2000} />
-                <div className="field-grid two"><SelectField label="Target mulai" name="expected_timeline" value={form.expected_timeline} onChange={(value) => update("expected_timeline", value)} error={errors.expected_timeline} options={[{value:"secepatnya",label:"Secepatnya"},{value:"dalam_30_hari",label:"Dalam 30 hari"},{value:"1_3_bulan",label:"1–3 bulan"},{value:"3_6_bulan",label:"3–6 bulan"},{value:"eksplorasi",label:"Masih eksplorasi"}]} /><SelectField label="Customer/order per bulan" name="monthly_customer_volume" value={form.monthly_customer_volume} onChange={(value) => update("monthly_customer_volume", value)} error={errors.monthly_customer_volume} options={[{value:"prelaunch",label:"Belum beroperasi"},{value:"1-50",label:"1–50"},{value:"51-200",label:"51–200"},{value:"201-500",label:"201–500"},{value:"501-2000",label:"501–2.000"},{value:"2000+",label:"> 2.000"}]} /></div>
-                <div className="field-grid two"><TextField label="Sistem yang digunakan saat ini" name="existing_software" value={form.existing_software} onChange={(value) => update("existing_software", value)} error={errors.existing_software} placeholder="Belum ada / spreadsheet / POS lain" /><SelectField label="Mengetahui Slivadoc dari" name="referral_source" value={form.referral_source} onChange={(value) => update("referral_source", value)} error={errors.referral_source} options={["Instagram","TikTok","Google","Teman/partner","Event","Tim Slivadoc","Media lain"].map((item)=>({value:item,label:item}))} /></div>
+                <div className="field-grid two"><SelectField label="Target mulai" name="expected_timeline" value={form.expected_timeline} onChange={(value) => update("expected_timeline", value)} error={errors.expected_timeline} options={[{value:"secepatnya",label:"Secepatnya"},{value:"dalam_30_hari",label:"Dalam 30 hari"},{value:"1_3_bulan",label:"1–3 bulan"},{value:"3_6_bulan",label:"3–6 bulan"},{value:"eksplorasi",label:"Masih eksplorasi"}]} /><SelectField label={isOrganization ? "Jangkauan kegiatan per bulan" : category.value === "pet_event_organizer" ? "Peserta acara per bulan" : "Customer/order per bulan"} name="monthly_customer_volume" value={form.monthly_customer_volume} onChange={(value) => update("monthly_customer_volume", value)} error={errors.monthly_customer_volume} options={[{value:"prelaunch",label:"Belum beroperasi"},{value:"1-50",label:"1–50"},{value:"51-200",label:"51–200"},{value:"201-500",label:"201–500"},{value:"501-2000",label:"501–2.000"},{value:"2000+",label:"> 2.000"}]} /></div>
+                <div className="field-grid two"><TextField label="Sistem yang digunakan saat ini (jika ada)" name="existing_software" value={form.existing_software} onChange={(value) => update("existing_software", value)} error={errors.existing_software} placeholder="Spreadsheet / POS / belum ada" required={false} /><SelectField label="Mengetahui Slivadoc dari" name="referral_source" value={form.referral_source} onChange={(value) => update("referral_source", value)} error={errors.referral_source} options={["Instagram","TikTok","Google","Teman/partner","Event","Tim Slivadoc","Media lain"].map((item)=>({value:item,label:item}))} /></div>
               </div>}
 
               {step === 4 && <div className="form-panel confirmation-panel" key="partner-confirmation-step">
@@ -314,7 +344,7 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
   );
 }
 
-function validatePartnerForm(form: PartnerForm, step: number): FieldErrors {
+function validatePartnerForm(form: PartnerForm, step: number, category: PartnershipCategory, categoryDetails: Record<string, string>): FieldErrors {
   const errors: FieldErrors = {};
   const required = (name: keyof PartnerForm, label: string, min = 1) => {
     const value = form[name];
@@ -325,16 +355,24 @@ function validatePartnerForm(form: PartnerForm, step: number): FieldErrors {
   };
   const validPhone = (value: string) => /^(?:\+62|62|0)8[0-9\s().-]{7,16}$/.test(value.trim());
   if (step === 0) {
-    required("partner_type", "Kategori partner"); required("legal_name", "Nama legal", 3); required("brand_name", "Nama brand", 2); required("entity_type", "Bentuk usaha"); required("legal_document_number", "Nomor legalitas", 3);
-    if (!validURL(form.legal_document_url)) errors.legal_document_url = "Gunakan tautan dokumen dengan format http:// atau https://.";
+    required("partner_type", "Kategori partner"); required("legal_name", "Nama legal", 3); required("brand_name", "Nama brand", 2); required("entity_type", "Bentuk usaha");
+    if (!organizationTypes.has(category.value)) required("legal_document_number", "Nomor legalitas", 3);
+    if (form.legal_document_url.trim() && !validURL(form.legal_document_url)) errors.legal_document_url = "Gunakan tautan dokumen dengan format http:// atau https://.";
     const year = Number(form.established_year); if (!Number.isInteger(year) || year < 1900 || year > new Date().getFullYear()) errors.established_year = `Masukkan tahun antara 1900–${new Date().getFullYear()}.`;
+    for (const field of categoryFields[category.value]) {
+      const answer = categoryDetails[field.key]?.trim() || "";
+      const key = `category_details.${field.key}`;
+      if (!answer) errors[key] = `${field.label} wajib diisi.`;
+      else if (answer.length > (field.type === "textarea" ? 1000 : 300)) errors[key] = "Jawaban terlalu panjang.";
+      else if (field.type === "number" && (!/^\d+$/.test(answer) || Number(answer) > 1000000)) errors[key] = "Masukkan angka 0 sampai 1.000.000.";
+    }
   }
   if (step === 1) {
     required("pic_name", "Nama PIC", 3); required("pic_position", "Jabatan PIC", 2);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = "Masukkan alamat email bisnis yang valid.";
     if (!validPhone(form.whatsapp)) errors.whatsapp = "Masukkan nomor WhatsApp Indonesia yang valid.";
-    if (!validPhone(form.alternate_phone)) errors.alternate_phone = "Masukkan nomor alternatif Indonesia yang valid.";
-    if (!validURL(form.digital_profile_url)) errors.digital_profile_url = "Gunakan URL website atau profil bisnis yang valid.";
+    if (form.alternate_phone.trim() && !validPhone(form.alternate_phone)) errors.alternate_phone = "Masukkan nomor alternatif Indonesia yang valid.";
+    if (form.digital_profile_url.trim() && !validURL(form.digital_profile_url)) errors.digital_profile_url = "Gunakan URL website atau profil bisnis yang valid.";
   }
   if (step === 2) {
     required("address", "Alamat operasional", 10); required("province", "Provinsi"); required("city", "Kabupaten/kota", 3); required("district", "Kecamatan", 3); required("service_coverage", "Cakupan layanan", 3); required("operation_hours", "Jam operasional", 5);
@@ -343,7 +381,7 @@ function validatePartnerForm(form: PartnerForm, step: number): FieldErrors {
     if (Number(form.employee_count) < 1) errors.employee_count = "Jumlah anggota tim minimal 1.";
   }
   if (step === 3) {
-    required("services_offered", "Layanan/produk utama", 2); required("business_description", "Deskripsi bisnis", 30); required("partnership_goal", "Tujuan partnership", 30); required("expected_timeline", "Target mulai"); required("monthly_customer_volume", "Volume customer"); required("existing_software", "Sistem saat ini", 2); required("referral_source", "Sumber informasi");
+    required("services_offered", "Layanan/produk utama", 2); required("business_description", "Deskripsi bisnis", 30); required("partnership_goal", "Tujuan partnership", 30); required("expected_timeline", "Target mulai"); required("monthly_customer_volume", "Volume customer"); required("referral_source", "Sumber informasi");
   }
   if (step === 4) {
     if (!form.terms_accepted) errors.terms_accepted = "Persetujuan syarat pendaftaran wajib diberikan.";
@@ -355,7 +393,7 @@ function validatePartnerForm(form: PartnerForm, step: number): FieldErrors {
 
 function firstInvalidStep(errors: FieldErrors) {
   const groups = [
-    ["partner_type","legal_name","brand_name","entity_type","legal_document_number","legal_document_url","established_year"],
+    ["partner_type","legal_name","brand_name","entity_type","legal_document_number","legal_document_url","established_year", ...Object.keys(errors).filter((key) => key.startsWith("category_details."))],
     ["pic_name","pic_position","email","whatsapp","alternate_phone","digital_profile_url"],
     ["address","province","city","district","postal_code","branch_count","employee_count","service_coverage","operation_hours"],
     ["services_offered","business_description","partnership_goal","expected_timeline","monthly_customer_volume","existing_software","referral_source"],
@@ -365,8 +403,8 @@ function firstInvalidStep(errors: FieldErrors) {
   return index >= 0 ? index : 0;
 }
 
-function TextField({ label, name, value, onChange, error, placeholder, type = "text", hint, inputMode, maxLength }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; placeholder:string; type?:string; hint?:string; inputMode?:"text"|"numeric"|"tel"|"email"|"url"; maxLength?:number }) {
-  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}<b>*</b></span><input name={name} type={type} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} inputMode={inputMode || (type === "tel" ? "tel" : type === "email" ? "email" : type === "url" ? "url" : undefined)} maxLength={maxLength} aria-invalid={Boolean(error)} aria-describedby={error ? `${name}-error` : undefined} required />{hint && <small hidden={Boolean(error)}>{hint}</small>}<small id={`${name}-error`} className="field-error notranslate" translate="no" hidden={!error}>{error || ""}</small></label>;
+function TextField({ label, name, value, onChange, error, placeholder, type = "text", hint, inputMode, maxLength, required = true }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; placeholder:string; type?:string; hint?:string; inputMode?:"text"|"numeric"|"tel"|"email"|"url"; maxLength?:number; required?:boolean }) {
+  return <label className={error ? "form-field invalid" : "form-field"}><span>{label}{required && <b>*</b>}</span><input name={name} type={type} value={value} onChange={(event)=>onChange(event.target.value)} placeholder={placeholder} inputMode={inputMode || (type === "tel" ? "tel" : type === "email" ? "email" : type === "url" ? "url" : undefined)} maxLength={maxLength} aria-invalid={Boolean(error)} aria-describedby={error ? `${name}-error` : undefined} required={required} />{hint && <small hidden={Boolean(error)}>{hint}</small>}<small id={`${name}-error`} className="field-error notranslate" translate="no" hidden={!error}>{error || ""}</small></label>;
 }
 
 function TextAreaField({ label, name, value, onChange, error, placeholder, maxLength = 1000 }: { label:string; name:string; value:string; onChange:(value:string)=>void; error?:string; placeholder:string; maxLength?:number }) {
