@@ -24,7 +24,7 @@ Salin `.env.example` menjadi `.env.local`, lalu arahkan `SLIVADOC_API_URL` ke ba
 
 Pendaftaran trainer dikirim melalui `/api/pet-trainer-applications` ke backend `POST /api/v1/public/pet-trainer-applications`. Jalankan migrasi backend terbaru terlebih dahulu agar tabel `pet_trainer_applications` tersedia. Setelah terkirim, data berstatus `submitted` dan dapat dibaca serta direview oleh Operations melalui endpoint internal `/api/v1/internal/operations/pet-trainer-applications`. Persetujuan pengajuan belum otomatis membuat akun trainer; aktivasi dilakukan pada onboarding.
 
-Form kemitraan kategori mengirim `partner_type` sesuai URL melalui `/api/partner-applications`. Halaman Pet Trainer tetap satu formulir individu terpisah dan menggunakan endpoint pendaftaran trainer.
+Form kemitraan kategori mengirim `partner_type` sesuai URL serta jawaban khusus kategori sebagai `category_details` melalui `/api/partner-applications`. Pertanyaan dan label disesuaikan dengan jenis mitra; tautan dokumen pendukung, profil publik, kontak alternatif, dan software saat ini opsional. Jawaban tersimpan dalam kolom JSONB dan tersedia untuk Operations melalui API serta ringkasan email. Pet Trainer individu muncul langsung pada daftar kategori dan tetap memakai formulir khusus `/pet-trainer` melalui endpoint pendaftaran trainer.
 URL lama `/pet-trainer/<jenis-pet>` dialihkan permanen ke `/pet-trainer` agar tautan yang sempat dibagikan tidak berakhir 404.
 
 ## SEO kemitraan
