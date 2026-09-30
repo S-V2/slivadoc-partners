@@ -3,11 +3,11 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   DEFAULT_LANGUAGE,
+  LANGUAGE_COOKIE_KEY,
+  LANGUAGE_STORAGE_KEY,
   LANGUAGES,
   isSupportedLanguage,
-  languageFromBrowser,
-  languageFromCountry,
-  languageFromCountryHeaders,
+  getLanguage,
 } from "../app/language-config.mjs";
 
 test("offers a broad, unique language list with Indonesian as default", () => {
@@ -19,31 +19,21 @@ test("offers a broad, unique language list with Indonesian as default", () => {
   assert.equal(isSupportedLanguage("unknown"), false);
 });
 
-test("maps visitor countries and browser languages to supported languages", () => {
-  assert.equal(languageFromCountry("ID"), "id");
-  assert.equal(languageFromCountry("JP"), "ja");
-  assert.equal(languageFromCountry("BR"), "pt");
-  assert.equal(languageFromCountry("US"), "en");
-  assert.equal(languageFromCountry(null), "id");
-  assert.equal(languageFromBrowser(["zh-Hant-TW", "en-US"]), "zh-TW");
-  assert.equal(languageFromBrowser(["id-ID"]), "id");
-  assert.equal(languageFromBrowser([]), "id");
-});
-
-test("reads Vercel country headers without caching a shared location", () => {
-  const detected = languageFromCountryHeaders(new Headers({ "x-vercel-ip-country": "KR" }));
-  assert.deepEqual(detected, { country: "KR", language: "ko", detected: true });
-  assert.deepEqual(languageFromCountryHeaders(new Headers()), { country: null, language: "id", detected: false });
+test("uses only an explicit choice with Indonesian as the initial language", () => {
+  assert.equal(getLanguage("unknown").code, "id");
+  assert.equal(getLanguage("ko").googleCode, "ko");
+  assert.equal(LANGUAGE_STORAGE_KEY, "slivadoc_partner_language_v2");
+  assert.equal(LANGUAGE_COOKIE_KEY, "slivadoc_partner_selected_language");
 });
 
 test("language switcher persists preference and uses the custom translation layer", async () => {
   const source = await readFile(new URL("../app/language-switcher.tsx", import.meta.url), "utf8");
-  const route = await readFile(new URL("../app/api/locale/route.ts", import.meta.url), "utf8");
   assert.match(source, /LANGUAGE_STORAGE_KEY/);
   assert.match(source, /translate\.google\.com\/translate_a\/element\.js/);
   assert.match(source, /role="listbox"/);
   assert.match(source, /window\.localStorage\.setItem/);
-  assert.match(route, /private, no-store/);
+  assert.doesNotMatch(source, /\/api\/locale|navigator\.languages|languageFromCountry/);
+  assert.match(source, /ready && <Script/);
 });
 
 test("translated copy remains responsive when labels become longer", async () => {
