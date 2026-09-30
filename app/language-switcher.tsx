@@ -9,7 +9,6 @@ import {
   LANGUAGES,
   getLanguage,
   isSupportedLanguage,
-  languageFromBrowser,
 } from "./language-config.mjs";
 
 type GoogleTranslateConstructor = new (
@@ -35,16 +34,34 @@ function readCookie(name: string) {
 }
 
 function writePreference(language: string) {
-  window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  try { window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language); } catch { /* The cookie still preserves the choice. */ }
   document.cookie = `${LANGUAGE_COOKIE_KEY}=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
 }
 
+function readPreference() {
+  try {
+    const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (isSupportedLanguage(stored)) return stored || "";
+  } catch { /* Storage may be disabled in a private browser. */ }
+  return readCookie(LANGUAGE_COOKIE_KEY);
+}
+
+function writeGoogleCookie(value: string, maxAge: number) {
+  const suffixes = [""];
+  if (window.location.hostname === "slivadoc.com" || window.location.hostname.endsWith(".slivadoc.com")) {
+    suffixes.push("; Domain=.slivadoc.com");
+  }
+  for (const suffix of suffixes) {
+    document.cookie = `${GOOGLE_COOKIE_KEY}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${suffix}`;
+  }
+}
+
 function setGoogleCookie(googleCode: string) {
-  document.cookie = `${GOOGLE_COOKIE_KEY}=${encodeURIComponent(`/id/${googleCode}`)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+  writeGoogleCookie(encodeURIComponent(`/id/${googleCode}`), 31536000);
 }
 
 function clearGoogleCookie() {
-  document.cookie = `${GOOGLE_COOKIE_KEY}=; Path=/; Max-Age=0; SameSite=Lax`;
+  writeGoogleCookie("", 0);
 }
 
 function updateDocumentLanguage(languageCode: string) {
@@ -79,47 +96,16 @@ export default function LanguageSwitcher() {
 
   useEffect(() => {
     let cancelled = false;
-
-    async function resolveLanguage() {
-      const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY) || readCookie(LANGUAGE_COOKIE_KEY);
-      if (isSupportedLanguage(storedLanguage)) {
-        await Promise.resolve();
-        if (cancelled) return;
-        setLanguageCode(storedLanguage);
-        updateDocumentLanguage(storedLanguage);
-        const stored = getLanguage(storedLanguage);
-        if (stored.code !== DEFAULT_LANGUAGE) setGoogleCookie(stored.googleCode);
-        setReady(true);
-        return;
-      }
-
-      let detectedLanguage = DEFAULT_LANGUAGE;
-      try {
-        const response = await fetch("/api/locale", { cache: "no-store", headers: { Accept: "application/json" } });
-        if (response.ok) {
-          const result = await response.json() as { language?: string; detected?: boolean };
-          const remoteLanguage = result.language;
-          detectedLanguage = result.detected && typeof remoteLanguage === "string" && isSupportedLanguage(remoteLanguage)
-            ? remoteLanguage
-            : languageFromBrowser(Array.from(window.navigator.languages || [window.navigator.language]));
-        } else {
-          detectedLanguage = languageFromBrowser(Array.from(window.navigator.languages || [window.navigator.language]));
-        }
-      } catch {
-        detectedLanguage = languageFromBrowser(Array.from(window.navigator.languages || [window.navigator.language]));
-      }
-
+    queueMicrotask(() => {
       if (cancelled) return;
-      const selected = isSupportedLanguage(detectedLanguage) ? detectedLanguage : DEFAULT_LANGUAGE;
+      const saved = readPreference();
+      const selected = isSupportedLanguage(saved) ? saved : DEFAULT_LANGUAGE;
       setLanguageCode(selected);
-      writePreference(selected);
       updateDocumentLanguage(selected);
-      const detected = getLanguage(selected);
-      if (detected.code !== DEFAULT_LANGUAGE) setGoogleCookie(detected.googleCode);
+      if (selected === DEFAULT_LANGUAGE) clearGoogleCookie();
+      else setGoogleCookie(getLanguage(selected).googleCode);
       setReady(true);
-    }
-
-    void resolveLanguage();
+    });
     return () => { cancelled = true; };
   }, []);
 
@@ -141,11 +127,13 @@ export default function LanguageSwitcher() {
   const initializeGoogleTranslate = useCallback(() => {
     const TranslateElement = window.google?.translate?.TranslateElement;
     const container = document.getElementById("google_translate_element");
-    if (!TranslateElement || !container || container.dataset.initialized === "true") return;
-    container.dataset.initialized = "true";
-    new TranslateElement({ pageLanguage: "id", includedLanguages: INCLUDED_LANGUAGES, autoDisplay: false }, "google_translate_element");
+    if (!ready || !TranslateElement || !container) return;
+    if (container.dataset.initialized !== "true") {
+      container.dataset.initialized = "true";
+      new TranslateElement({ pageLanguage: "id", includedLanguages: INCLUDED_LANGUAGES, autoDisplay: false }, "google_translate_element");
+    }
     if (activeLanguage.code !== DEFAULT_LANGUAGE) syncGoogleSelect(activeLanguage.googleCode);
-  }, [activeLanguage.code, activeLanguage.googleCode]);
+  }, [activeLanguage.code, activeLanguage.googleCode, ready]);
 
   function selectLanguage(nextCode: string) {
     if (!isSupportedLanguage(nextCode)) return;
@@ -164,7 +152,6 @@ export default function LanguageSwitcher() {
     }
 
     setGoogleCookie(next.googleCode);
-    syncGoogleSelect(next.googleCode);
   }
 
   useEffect(() => {
@@ -185,7 +172,7 @@ export default function LanguageSwitcher() {
         >
           <span className="language-flag" aria-hidden="true">{activeLanguage.flag}</span>
           <span className="language-trigger-copy">
-            <small>{ready ? "Bahasa" : "Mendeteksi"}</small>
+            <small>Bahasa</small>
             <strong>{activeLanguage.code.toUpperCase()}</strong>
           </span>
           <svg className={open ? "language-chevron open" : "language-chevron"} viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5" /></svg>
@@ -218,13 +205,13 @@ export default function LanguageSwitcher() {
       </div>
 
       <div id="google_translate_element" aria-hidden="true" />
-      <Script
+      {ready && <Script
         id="slivadoc-google-translate"
         src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
         strategy="afterInteractive"
         onLoad={initializeGoogleTranslate}
         onReady={initializeGoogleTranslate}
-      />
+      />}
     </>
   );
 }

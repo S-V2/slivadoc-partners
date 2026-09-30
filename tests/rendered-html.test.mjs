@@ -23,9 +23,6 @@ test("keeps the required Slivadoc Partners content", async () => {
     "lion-parcel.svg",
     "jne.svg",
     "jnt-cargo.svg",
-    "sicepat.svg",
-    "idexpress.svg",
-    "batpay.webp",
     "ocbc.png",
     "cimb.svg",
     "mandiri.png",
@@ -97,19 +94,17 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /Partner Pengiriman/);
   assert.match(html, /Lion Parcel/);
   assert.match(html, /J&T Cargo/);
-  assert.match(html, /SiCepat Express/);
-  assert.match(html, /IDExpress/);
+  assert.doesNotMatch(html, /SiCepat Express|IDExpress/);
   assert.match(html, /Partner Pembayaran/);
-  assert.match(html, /BatPay/);
+  assert.match(html, /name: "BRI", slug: "bri"/);
+  assert.doesNotMatch(html, /BatPay/);
   assert.match(html, /OCBC/);
   assert.match(html, /CIMB/);
   assert.match(html, /Mandiri/);
   assert.match(html, /partners\/lion-parcel\.svg/);
   assert.match(html, /partners\/jne\.svg/);
   assert.match(html, /partners\/jnt-cargo\.svg/);
-  assert.match(html, /partners\/sicepat\.svg/);
-  assert.match(html, /partners\/idexpress\.svg/);
-  assert.match(html, /partners\/batpay\.webp/);
+  assert.match(html, /partner-brand-wordmark/);
   assert.match(html, /partners\/ocbc\.png/);
   assert.match(html, /partners\/cimb\.svg/);
   assert.match(html, /partners\/mandiri\.png/);

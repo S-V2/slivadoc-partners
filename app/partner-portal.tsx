@@ -10,12 +10,10 @@ const deliveryPartners = [
   { name: "Lion Parcel", slug: "lion-parcel", logo: "/partners/lion-parcel.svg", width: 170, height: 32 },
   { name: "JNE", slug: "jne", logo: "/partners/jne.svg", width: 116, height: 48 },
   { name: "J&T Cargo", slug: "jnt-cargo", logo: "/partners/jnt-cargo.svg", width: 223, height: 52 },
-  { name: "SiCepat Express", slug: "sicepat", logo: "/partners/sicepat.svg", width: 120, height: 32 },
-  { name: "IDExpress", slug: "idexpress", logo: "/partners/idexpress.svg", width: 1599, height: 1335 },
 ] as const;
 
 const paymentPartners = [
-  { name: "BatPay", slug: "batpay", logo: "/partners/batpay.webp", width: 1024, height: 353 },
+  { name: "BRI", slug: "bri", logo: null, width: 0, height: 0 },
   { name: "OCBC", slug: "ocbc", logo: "/partners/ocbc.png", width: 1452, height: 392 },
   { name: "CIMB Niaga", slug: "cimb", logo: "/partners/cimb.svg", width: 1445, height: 221 },
   { name: "Mandiri", slug: "mandiri", logo: "/partners/mandiri.png", width: 400, height: 117 },
@@ -309,14 +307,14 @@ export default function PartnerPortal() {
               {paymentPartners.map((partner) => (
                 <li className={`partner-brand partner-brand-${partner.slug} notranslate`} key={partner.name} translate="no" title={partner.name}>
                   <span className="partner-brand-logo-shell">
-                    <Image
+                    {partner.logo ? <Image
                       className="partner-brand-logo"
                       src={partner.logo}
                       alt={`Logo ${partner.name}`}
                       width={partner.width}
                       height={partner.height}
                       sizes="150px"
-                    />
+                    /> : <strong className="partner-brand-wordmark" aria-label="BRI">BRI</strong>}
                   </span>
                 </li>
               ))}
