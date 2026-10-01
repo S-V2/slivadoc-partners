@@ -77,4 +77,8 @@ Build container dipulihkan pada 2026-09-03.
 npm run lint
 npm test
 npm run build
+npx playwright install chromium
+npm run test:e2e
 ```
+
+`npm run test:e2e` menjalankan smoke test Playwright dan pemeriksaan axe di atas build produksi (`npm run build` harus dijalankan lebih dulu). Pelanggaran axe `serious`/`critical` yang sudah ada tercatat di `e2e/known-a11y-violations.json`; pelanggaran baru membuat CI gagal, dan entri yang sudah diperbaiki wajib dihapus dari daftar itu.
