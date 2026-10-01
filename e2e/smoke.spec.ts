@@ -5,7 +5,9 @@ import { partnershipCategories, partnershipCategoryPath } from "../app/partnersh
 // Serious/critical axe findings present on main when this gate landed, as
 // "<page> <rule> <element>". Anything else fails the run, and so does an entry
 // that no longer occurs: delete it when the markup is fixed.
-import knownViolations from "./known-a11y-violations.json" with { type: "json" };
+import knownViolationsJson from "./known-a11y-violations.json" with { type: "json" };
+
+const knownViolations: string[] = knownViolationsJson;
 
 const categoryPages = partnershipCategories.map(({ slug }) => partnershipCategoryPath(slug));
 const pages = ["/", "/pet-trainer", ...categoryPages];
