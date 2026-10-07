@@ -1,6 +1,7 @@
 export const DEFAULT_LANGUAGE = "id";
-export const LANGUAGE_STORAGE_KEY = "slivadoc_partner_language_v1";
-export const LANGUAGE_COOKIE_KEY = "slivadoc_partner_language";
+// Earlier values could be set by IP detection; only explicit choices use v2.
+export const LANGUAGE_STORAGE_KEY = "slivadoc_partner_language_v2";
+export const LANGUAGE_COOKIE_KEY = "slivadoc_partner_selected_language";
 
 export const LANGUAGES = Object.freeze([
   { code: "id", googleCode: "id", flag: "🇮🇩", name: "Bahasa Indonesia", region: "Indonesia", rtl: false },
@@ -25,28 +26,6 @@ export const LANGUAGES = Object.freeze([
   { code: "tl", googleCode: "tl", flag: "🇵🇭", name: "Filipino", region: "Pilipinas", rtl: false },
 ]);
 
-const COUNTRY_LANGUAGE = Object.freeze({
-  ID: "id",
-  MY: "ms", BN: "ms",
-  CN: "zh-CN",
-  TW: "zh-TW", HK: "zh-TW", MO: "zh-TW",
-  JP: "ja",
-  KR: "ko",
-  SA: "ar", AE: "ar", QA: "ar", KW: "ar", BH: "ar", OM: "ar", YE: "ar", JO: "ar", LB: "ar", IQ: "ar", SY: "ar", EG: "ar", LY: "ar", DZ: "ar", MA: "ar", TN: "ar", SD: "ar",
-  ES: "es", MX: "es", AR: "es", BO: "es", CL: "es", CO: "es", CR: "es", CU: "es", DO: "es", EC: "es", SV: "es", GT: "es", HN: "es", NI: "es", PA: "es", PY: "es", PE: "es", PR: "es", UY: "es", VE: "es",
-  FR: "fr", MC: "fr", SN: "fr", CI: "fr", CM: "fr", ML: "fr", BF: "fr", NE: "fr", TD: "fr", GA: "fr", CG: "fr", CD: "fr", MG: "fr",
-  DE: "de", AT: "de", CH: "de", LI: "de",
-  BR: "pt", PT: "pt", AO: "pt", MZ: "pt",
-  TH: "th",
-  VN: "vi",
-  IN: "hi",
-  RU: "ru", BY: "ru", KZ: "ru", KG: "ru",
-  TR: "tr",
-  NL: "nl", BE: "nl",
-  IT: "it", SM: "it", VA: "it",
-  PH: "tl",
-});
-
 const supportedCodes = new Set(LANGUAGES.map((language) => language.code));
 
 export function isSupportedLanguage(value) {
@@ -55,31 +34,4 @@ export function isSupportedLanguage(value) {
 
 export function getLanguage(value) {
   return LANGUAGES.find((language) => language.code === value) || LANGUAGES[0];
-}
-
-export function languageFromCountry(country) {
-  if (!country) return DEFAULT_LANGUAGE;
-  return COUNTRY_LANGUAGE[String(country).trim().toUpperCase()] || "en";
-}
-
-export function languageFromBrowser(browserLanguages = []) {
-  for (const browserLanguage of browserLanguages) {
-    const normalized = String(browserLanguage || "").trim().toLowerCase();
-    if (!normalized) continue;
-    if (normalized.startsWith("zh-tw") || normalized.startsWith("zh-hk") || normalized.startsWith("zh-hant")) return "zh-TW";
-    if (normalized.startsWith("zh")) return "zh-CN";
-    const match = LANGUAGES.find((language) => normalized === language.code.toLowerCase() || normalized.startsWith(`${language.code.toLowerCase()}-`));
-    if (match) return match.code;
-  }
-  return DEFAULT_LANGUAGE;
-}
-
-export function languageFromCountryHeaders(headers) {
-  const country = headers.get("x-vercel-ip-country") || headers.get("cf-ipcountry") || headers.get("x-country-code") || "";
-  const normalizedCountry = country.trim().toUpperCase();
-  return {
-    country: normalizedCountry || null,
-    language: normalizedCountry ? languageFromCountry(normalizedCountry) : DEFAULT_LANGUAGE,
-    detected: Boolean(normalizedCountry),
-  };
 }

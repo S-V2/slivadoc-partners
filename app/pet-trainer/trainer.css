@@ -1,5 +1,6 @@
 .trainer-page { --t-ink:#103c53; --t-blue:#098ec9; --t-line:#d7edf6; color:var(--t-ink); background:#f7fcff; min-height:100vh; }
 .trainer-page * { box-sizing:border-box; }
+
 .trainer-header { position:relative; z-index:2; min-height:76px; max-width:1240px; margin:auto; padding:14px 28px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
 .trainer-brand { display:flex; align-items:center; gap:10px; text-decoration:none; font-weight:850; font-size:21px; letter-spacing:-.055em; color:#092f46; }
 .trainer-brand img { border-radius:11px; }
@@ -31,26 +32,26 @@
 .trainer-art-card i { font-style:normal; color:#18b690; margin-left:5px; }
 .trainer-process { max-width:1180px; margin:0 auto; padding:36px 24px 28px; display:grid; grid-template-columns:repeat(3,1fr); gap:15px; }
 .trainer-process>div { display:grid; grid-template-columns:42px 1fr; column-gap:14px; align-content:start; border:1px solid #e1f0f6; padding:20px; border-radius:18px; background:#fff; box-shadow:0 8px 28px #317da20b; }
-.trainer-process span { grid-row:span 2; display:grid; place-items:center; width:40px; height:40px; background:#ddf4ff; color:#078bc5; border-radius:12px; font-weight:900; }
-.trainer-process b { font-size:14px; }.trainer-process small { font-size:12px; color:#68899b; line-height:1.5; }
+.trainer-process span { grid-row:span 2; display:grid; place-items:center; width:40px; height:40px; background:#ddf4ff; color:#0673a4; border-radius:12px; font-weight:900; }
+.trainer-process b { font-size:14px; }.trainer-process small { font-size:12px; color:#5c7989; line-height:1.5; }
 .trainer-registration { max-width:1180px; margin:auto; padding:75px 24px 110px; display:grid; grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr); gap:70px; align-items:start; scroll-margin-top:20px; }
 .trainer-aside { position:sticky; top:35px; }
-.trainer-section-label { color:#129ad4; font-size:11px; font-weight:900; letter-spacing:.17em; }
+.trainer-section-label { color:#0e79a6; font-size:11px; font-weight:900; letter-spacing:.17em; }
 .trainer-aside h2 { font-size:clamp(34px,4vw,54px); line-height:1.12; letter-spacing:-.06em; margin:18px 0 20px; }
-.trainer-aside h2 em { color:#1ca8df; }
-.trainer-aside>p { color:#658495; line-height:1.8; }
-.trainer-aside>p a { color:#078bc5; font-weight:800; }
+.trainer-aside h2 em { color:#1998ca; }
+.trainer-aside>p { color:#597584; line-height:1.8; }
+.trainer-aside>p a { color:#0673a4; font-weight:800; }
 .trainer-aside-note { display:flex; gap:14px; margin-top:38px; padding:19px; border-radius:19px; background:#e8f8ff; }
 .trainer-aside-note>span { color:#0b9fdf; font-size:23px; }.trainer-aside-note div { display:grid; gap:4px; }
-.trainer-aside-note b { font-size:14px; }.trainer-aside-note small { color:#5a7f90; line-height:1.5; }
+.trainer-aside-note b { font-size:14px; }.trainer-aside-note small { color:#527483; line-height:1.5; }
 .trainer-form-card { overflow:hidden; border:1px solid #dcecf4; border-radius:28px; background:#fff; box-shadow:0 24px 80px #245d7b1a; scroll-margin-top:24px; }
 .trainer-form-card form { padding:34px; }
-.trainer-form-top>span { color:#0c9dd4; font-size:11px; font-weight:900; letter-spacing:.16em; }
+.trainer-form-top>span { color:#0a7eaa; font-size:11px; font-weight:900; letter-spacing:.16em; }
 .trainer-form-top h3 { margin:5px 0 22px; font-size:27px; line-height:1.2; letter-spacing:-.04em; }
 .trainer-progress { height:7px; border-radius:99px; background:#e9f4f9; overflow:hidden; }
 .trainer-progress i { display:block; height:100%; background:linear-gradient(90deg,#13b7f2,#1685ca); border-radius:99px; transition:width .25s; }
 .trainer-form-top ol { display:flex; justify-content:space-between; gap:6px; list-style:none; padding:0; margin:20px 0 30px; }
-.trainer-form-top li { flex:1; min-width:0; }.trainer-form-top li button { width:100%; padding:0; display:flex; align-items:center; gap:7px; text-align:left; border:0; background:none; color:#7c98a5; font-size:11px; font-weight:700; }
+.trainer-form-top li { flex:1; min-width:0; }.trainer-form-top li button { width:100%; padding:0; display:flex; align-items:center; gap:7px; text-align:left; border:0; background:none; color:#627882; font-size:11px; font-weight:700; }
 .trainer-form-top li span { flex:none; display:grid; place-items:center; width:27px; height:27px; border-radius:50%; background:#e9f2f7; font-weight:900; }
 .trainer-form-top li.active button,.trainer-form-top li.done button { color:#0d78aa; }
 .trainer-form-top li.active span,.trainer-form-top li.done span { color:#fff; background:#0a9bd2; }
@@ -93,7 +94,7 @@
 .trainer-actions { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:30px; border-top:1px solid #ecf3f6; padding-top:26px; }
 .trainer-actions button { min-height:46px; padding:10px 20px; border:0; border-radius:12px; font-weight:800; font-size:14px; }
 .trainer-back { color:#517687; background:#edf5f9; }
-.trainer-next { color:#fff; background:#078ac5; box-shadow:0 10px 26px #0c9bd438; }
+.trainer-next { color:#fff; background:#067cb1; box-shadow:0 10px 26px #0c9bd438; }
 .trainer-next:hover:not(:disabled) { background:#076fa4; }.trainer-next:disabled { opacity:.65; cursor:wait; }
 .trainer-success { display:flex; flex-direction:column; align-items:center; text-align:center; padding:80px 45px; }
 .trainer-success>span { display:grid; place-items:center; width:70px; height:70px; border-radius:22px; color:#0eaa7e; background:#dcfaee; font-size:34px; }
@@ -104,3 +105,14 @@
 .trainer-footer a { color:#2e738f; text-decoration:none; font-weight:750; }
 @media(max-width:850px) { .trainer-hero-inner { grid-template-columns:1fr; gap:20px; padding:65px 28px 30px; }.trainer-hero-art { min-height:220px; }.trainer-orbit { width:260px; }.trainer-registration { grid-template-columns:1fr; gap:30px; padding-top:55px; }.trainer-aside { position:static; }.trainer-aside h2 { max-width:580px; }.trainer-aside-note { max-width:600px; margin-top:20px; } }
 @media(max-width:640px) { .trainer-header { padding:12px 18px; }.trainer-header nav { gap:0; }.trainer-header nav>a:not(.trainer-header-cta) { display:none; }.trainer-header-cta { padding:10px 12px; font-size:12px; }.trainer-brand { font-size:18px; }.trainer-brand small { font-size:9px; }.trainer-hero { margin:0 9px; border-radius:23px; }.trainer-hero-inner { padding:48px 22px 22px; }.trainer-hero h1 { font-size:clamp(40px,10.4vw,58px); }.trainer-hero p { font-size:15px; }.trainer-hero-art { min-height:210px; }.trainer-art-card { padding:20px; width:260px; }.trainer-art-card strong { font-size:24px; margin:12px 0; }.trainer-process { grid-template-columns:1fr; padding:17px 18px; gap:9px; }.trainer-process>div { padding:12px 15px; }.trainer-registration { padding:45px 16px 75px; }.trainer-form-card { border-radius:20px; }.trainer-form-card form { padding:23px 18px; }.trainer-form-top ol { margin-bottom:22px; }.trainer-form-top li button { flex-direction:column; align-items:center; text-align:center; }.trainer-form-top li small { font-size:9px; }.trainer-fields { grid-template-columns:1fr; gap:17px; }.trainer-actions button { font-size:13px; padding:10px 15px; }.trainer-success { padding:55px 20px; } }
+
+/* Registration pages share the homepage navigation, palette and support UI. */
+.trainer-page { background: var(--ecosystem-canvas, #f5fbff); }
+.trainer-page section[id] { scroll-margin-top: 108px; }
+.trainer-hero { margin-top: 112px; color: var(--navy); border: 1px solid #d7edf7; background: radial-gradient(circle at 84% 22%, rgba(96,210,255,.27), transparent 35%), linear-gradient(140deg,#fff,#effaff 62%,#ddf5ff); box-shadow: 0 28px 80px rgba(8,77,111,.1); }
+.trainer-eyebrow { color: var(--sky-600); border-color: #bce8f9; background: #ffffffc9; }
+.trainer-hero h1 em { color: var(--sky-500); }
+.trainer-hero p, .trainer-hero-actions { color: #587486; }
+.trainer-hero-actions a { color: white; background: linear-gradient(135deg,var(--sky-400),var(--sky-600)); }
+.trainer-orbit { border-color: #8ed7f4; box-shadow: 0 0 0 32px #a5e8ff32, 0 0 0 70px #a5e8ff18; }
+@media(max-width:640px) { .trainer-hero { margin: 98px 9px 0; } }

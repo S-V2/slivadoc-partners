@@ -1,10 +1,15 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { seoKeywords } from "../app/seo-keywords.mjs";
 
 test("keeps the required Slivadoc Partners content", async () => {
   const html = await readFile(new URL("../app/partner-portal.tsx", import.meta.url), "utf8");
+  const chrome = await readFile(new URL("../app/partner-site-chrome.tsx", import.meta.url), "utf8");
+  const trainerPage = await readFile(new URL("../app/pet-trainer/trainer-form.tsx", import.meta.url), "utf8");
+  const categoryForm = await readFile(new URL("../app/kemitraan/partnership-form.tsx", import.meta.url), "utf8");
+  const categoryPage = await readFile(new URL("../app/kemitraan/[slug]/page.tsx", import.meta.url), "utf8");
+  const categoryConfig = await readFile(new URL("../app/partnership-categories.ts", import.meta.url), "utf8");
+  const keywordMap = await readFile(new URL("../seo/partnership-keywords.csv", import.meta.url), "utf8");
   const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
   const manifest = await readFile(new URL("../app/manifest.ts", import.meta.url), "utf8");
   const svgFavicon = await readFile(new URL("../public/favicon.svg", import.meta.url), "utf8");
@@ -18,9 +23,6 @@ test("keeps the required Slivadoc Partners content", async () => {
     "lion-parcel.svg",
     "jne.svg",
     "jnt-cargo.svg",
-    "sicepat.svg",
-    "idexpress.svg",
-    "batpay.webp",
     "ocbc.png",
     "cimb.svg",
     "mandiri.png",
@@ -29,14 +31,18 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(layout, /Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis/);
   assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
   assert.match(layout, /canonical: "\/"/);
-  assert.match(layout, /keywords: seoKeywords/);
+  assert.doesNotMatch(layout, /keywords: seoKeywords/);
   assert.match(layout, /summary_large_image/);
   assert.match(layout, /slivadoc-ecosystem-hero\.webp/);
-  assert.equal(seoKeywords.length, 500);
-  assert.equal(new Set(seoKeywords).size, 500);
-  assert.ok(seoKeywords.includes("aplikasi kasir petshop gratis"));
-  assert.ok(seoKeywords.includes("aplikasi POS klinik hewan Indonesia"));
-  assert.ok(seoKeywords.includes("aplikasi barcode petshop terintegrasi"));
+  const keywords = keywordMap.trim().split("\n").slice(1).map((line) => line.split('","')[0].slice(1));
+  assert.equal(keywords.length, 1000);
+  assert.equal(new Set(keywords).size, 1000);
+  assert.ok(keywords.includes("daftar mitra petshop Slivadoc"));
+  assert.match(categoryConfig, /slug: "petshop"/);
+  assert.equal((categoryConfig.match(/slug: "/g) || []).length, 18);
+  assert.match(categoryPage, /generateStaticParams/);
+  assert.match(categoryPage, /canonical: path/);
+  assert.match(categoryPage, /PartnershipForm category=\{category\}/);
   assert.match(layout, /"@type": "SoftwareApplication"/);
   assert.match(robots, /partners\.slivadoc\.com\/sitemap\.xml/);
   assert.match(sitemap, /https:\/\/partners\.slivadoc\.com/);
@@ -69,33 +75,36 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(html, /aplikasi POS petshop, klinik hewan, grooming/);
   assert.match(html, /Apakah Slivadoc menyediakan aplikasi POS untuk petshop dan klinik hewan/);
   assert.match(html, /brand\/slivadoc-logo\.png/);
-  assert.match(html, /LanguageSwitcher/);
+  assert.match(chrome, /LanguageSwitcher/);
+  for (const page of [html, categoryPage, trainerPage]) {
+    assert.match(page, /PartnerSiteHeader/);
+    assert.match(page, /PartnerSiteFooter/);
+    assert.match(page, /PartnerSupportWidget/);
+  }
   assert.match(html, /Gabung ke ekosistem/);
   assert.match(html, /<b>38<\/b><small>Provinsi di Indonesia<\/small>/);
   assert.doesNotMatch(html, /Provinsi terjangkau/);
   assert.match(html, /Pet owner tetap menggunakan aplikasi khusus Pet Owner/);
   assert.match(html, /100% Gratis/);
   assert.match(html, /Semua partner terdaftar mendapatkan akses full gratis/);
-  assert.match(html, /Tanpa biaya pendaftaran, onboarding, fitur, atau langganan/);
+  assert.match(categoryForm, /Tanpa biaya pendaftaran, onboarding, fitur, atau langganan/);
   assert.match(html, /Apakah bergabung dan menggunakan Slivadoc benar-benar gratis/);
-  assert.match(html, /Chat WhatsApp Customer Support Slivadoc/);
-  assert.match(html, /wa\.me\/6281977388341/);
+  assert.match(chrome, /Chat WhatsApp Customer Support Slivadoc/);
+  assert.match(chrome, /wa\.me\/6281977388341/);
   assert.match(html, /Partner Pengiriman/);
   assert.match(html, /Lion Parcel/);
   assert.match(html, /J&T Cargo/);
-  assert.match(html, /SiCepat Express/);
-  assert.match(html, /IDExpress/);
+  assert.doesNotMatch(html, /SiCepat Express|IDExpress/);
   assert.match(html, /Partner Pembayaran/);
-  assert.match(html, /BatPay/);
+  assert.match(html, /name: "BRI", slug: "bri"/);
+  assert.doesNotMatch(html, /BatPay/);
   assert.match(html, /OCBC/);
   assert.match(html, /CIMB/);
   assert.match(html, /Mandiri/);
   assert.match(html, /partners\/lion-parcel\.svg/);
   assert.match(html, /partners\/jne\.svg/);
   assert.match(html, /partners\/jnt-cargo\.svg/);
-  assert.match(html, /partners\/sicepat\.svg/);
-  assert.match(html, /partners\/idexpress\.svg/);
-  assert.match(html, /partners\/batpay\.webp/);
+  assert.match(html, /partner-brand-wordmark/);
   assert.match(html, /partners\/ocbc\.png/);
   assert.match(html, /partners\/cimb\.svg/);
   assert.match(html, /partners\/mandiri\.png/);
@@ -117,18 +126,18 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.match(styles, /\.partner-brand-logo-shell/);
   assert.ok(warehouseAsset.length > 50_000);
   assert.ok(ecosystemHeroAsset.length > 100_000);
-  assert.match(html, /className="custom-select-trigger"/);
-  assert.match(html, /role="listbox"/);
-  assert.match(html, /Cari \$\{label\.toLowerCase\(\)\}/);
-  assert.match(html, /className="check-control"/);
-  assert.match(html, /key="partner-confirmation-step"/);
-  assert.match(html, /className="submit-content" hidden=\{submitting\}/);
-  assert.match(html, /className="submit-content notranslate" translate="no" hidden=\{!submitting\}/);
-  assert.match(html, /trackEvent\("generate_lead"/);
-  assert.match(html, /trackEvent\("form_step_complete"/);
-  assert.doesNotMatch(html, /trackEvent\([^)]*(email|whatsapp|pic_name|legal_name)/s);
-  assert.doesNotMatch(html, /submitting \? <><i className="spinner"/);
-  assert.doesNotMatch(html, /<select name=/);
+  assert.match(categoryForm, /className="custom-select-trigger"/);
+  assert.match(categoryForm, /role="listbox"/);
+  assert.match(categoryForm, /Cari \$\{label\.toLowerCase\(\)\}/);
+  assert.match(categoryForm, /className="check-control"/);
+  assert.match(categoryForm, /key="partner-confirmation-step"/);
+  assert.match(categoryForm, /className="submit-content" hidden=\{submitting\}/);
+  assert.match(categoryForm, /className="submit-content notranslate" translate="no" hidden=\{!submitting\}/);
+  assert.match(categoryForm, /trackEvent\("generate_lead"/);
+  assert.match(categoryForm, /trackEvent\("form_step_complete"/);
+  assert.doesNotMatch(categoryForm, /trackEvent\([^)]*(email|whatsapp|pic_name|legal_name)/s);
+  assert.doesNotMatch(categoryForm, /submitting \? <><i className="spinner"/);
+  assert.doesNotMatch(categoryForm, /<select name=/);
   assert.doesNotMatch(html, /akses dasar untuk memulai gratis/i);
   assert.doesNotMatch(html, /codex-preview/);
 });

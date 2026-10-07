@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import GoogleAnalytics from "./google-analytics";
-import { seoKeywords } from "./seo-keywords.mjs";
 
 const siteUrl = "https://partners.slivadoc.com";
 const title = "Slivadoc Partners: Aplikasi POS Petshop & Klinik Hewan Gratis";
@@ -22,7 +21,6 @@ export const metadata: Metadata = {
   creator: "Slivadoc",
   publisher: "PT Sliva Technology Indonesia",
   category: "Pet care business software",
-  keywords: seoKeywords.slice(0, 20),
   alternates: {
     canonical: "/",
   },
@@ -118,7 +116,7 @@ export default function RootLayout({
           price: "0",
           priceCurrency: "IDR",
           availability: "https://schema.org/InStock",
-          url: `${siteUrl}/#daftar`,
+          url: `${siteUrl}/#kategori-partner`,
         },
         featureList: [
           "POS dan kasir petshop",

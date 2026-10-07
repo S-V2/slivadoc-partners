@@ -1,9 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { trackEvent } from "../analytics";
+import { PartnerSiteHeader, PartnerSiteFooter, PartnerSupportWidget } from "../partner-site-chrome";
 
 type TrainerFormData = {
   full_name: string; display_name: string; email: string; whatsapp: string;
@@ -190,8 +190,7 @@ export default function TrainerForm() {
   }
 
   return <main className="trainer-page">
-    <header className="trainer-header"><Link href="/" className="trainer-brand"><Image src="/brand/slivadoc-logo.png" alt="" width={38} height={38} /><span>sliva<b>doc</b><small>partners</small></span></Link>
-      <nav><Link href="/">Partnership</Link><a href="#alur">Alur seleksi</a><a className="trainer-header-cta" href="#daftar">Daftar trainer →</a></nav></header>
+    <PartnerSiteHeader registration trainer />
     <section className="trainer-hero"><div className="trainer-hero-inner"><div>
       <span className="trainer-eyebrow"><i /> Pendaftaran pet trainer Slivadoc</span>
       <h1>Bantu pet tumbuh, <em>satu sesi</em> pada satu waktu.</h1>
@@ -200,11 +199,11 @@ export default function TrainerForm() {
     </div><div className="trainer-hero-art" aria-hidden="true"><div className="trainer-orbit"><span>✦</span><span>🐾</span><span>✳</span></div><div className="trainer-art-card"><span>TRAINER PROFILE</span><strong>Keahlianmu.<br />Dampak nyata.</strong><div><i>✓</i> Training <i>✓</i> Konsultasi <i>✓</i> Edukasi</div></div></div></div></section>
     <section className="trainer-process" id="alur"><div><span>01</span><b>Lengkapi profil</b><small>Identitas, pengalaman, dan bidang training.</small></div><div><span>02</span><b>Review tim Slivadoc</b><small>Tim memeriksa kelengkapan dan portofolio.</small></div><div><span>03</span><b>Onboarding</b><small>Pengaturan akun, jadwal, dan layanan setelah disetujui.</small></div></section>
     <section className="trainer-registration" id="daftar"><div className="trainer-aside"><span className="trainer-section-label">BERGABUNG SEBAGAI TRAINER</span><h2>Perkenalkan cara Anda <em>melatih dengan hati.</em></h2>
-      <p>Formulir ini untuk profesional individu. Jika Anda mengelola akademi atau badan usaha, gunakan <Link href="/#daftar">formulir partnership umum</Link>.</p>
+      <p>Formulir ini untuk profesional individu. Jika Anda mengelola akademi atau badan usaha, gunakan <Link href="/kemitraan/pet-academy">formulir kemitraan Pet Academy</Link>.</p>
       <div className="trainer-aside-note"><span>✦</span><div><b>Profil tetap privat selama review</b><small>Data kontak, dokumen, dan tarif hanya dipakai tim untuk verifikasi serta onboarding.</small></div></div>
     </div><div className="trainer-form-card">
       {applicationNumber ? <div className="trainer-success" role="status"><span>✓</span><h2>Pendaftaran diterima!</h2><p>Tim Slivadoc akan memeriksa profil Anda. Simpan nomor referensi ini untuk komunikasi lanjutan.</p><strong>{applicationNumber}</strong><Link href="/">Kembali ke partnership →</Link></div> :
-      <form onSubmit={submit} noValidate><div className="trainer-form-top"><span>LANGKAH {step + 1} / {stepNames.length}</span><h3>{stepNames[step]}</h3><div className="trainer-progress" role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={4}><i style={{ width: `${((step + 1) / stepNames.length) * 100}%` }} /></div>
+      <form onSubmit={submit} noValidate><div className="trainer-form-top"><span>LANGKAH {step + 1} / {stepNames.length}</span><h3>{stepNames[step]}</h3><div className="trainer-progress" role="progressbar" aria-label="Progres pendaftaran" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={4}><i style={{ width: `${((step + 1) / stepNames.length) * 100}%` }} /></div>
         <ol>{stepNames.map((name, index) => <li key={name} className={index === step ? "active" : index < step ? "done" : ""}><button type="button" onClick={() => index < step && navigate(index)} aria-current={index === step ? "step" : undefined}><span>{index < step ? "✓" : index + 1}</span><small>{name}</small></button></li>)}</ol></div>
         {serverError && <div className="trainer-alert" role="alert">{serverError}</div>}
         {step === 0 && <div className="trainer-fields">
@@ -249,6 +248,7 @@ export default function TrainerForm() {
             <button type="submit" className="trainer-next" disabled={submitting} aria-busy={submitting}>{submitting ? "Mengirim…" : "Kirim pendaftaran →"}</button>}</div>
       </form>}
     </div></section>
-    <footer className="trainer-footer"><Link href="/">← Slivadoc Partners</Link><span>© {new Date().getFullYear()} PT Sliva Technology Indonesia</span><a href="mailto:support@slivadoc.com">Butuh bantuan?</a></footer>
+    <PartnerSiteFooter />
+    <PartnerSupportWidget />
   </main>;
 }
