@@ -36,3 +36,11 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
+
+# Local preview and build output
+/.sites-runtime/
+/.wrangler/
+/dist/
+/test-results/
+/playwright-report/
+*.tsbuildinfo

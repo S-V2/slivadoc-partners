@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   creator: "Slivadoc",
   publisher: "PT Sliva Technology Indonesia",
   category: "Pet care business software",
-  keywords: seoKeywords,
+  keywords: seoKeywords.slice(0, 20),
   alternates: {
     canonical: "/",
   },
