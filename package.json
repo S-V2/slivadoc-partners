@@ -15,7 +15,8 @@
     "start": "next start",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern .next",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.3.6",
@@ -35,5 +36,8 @@
     "typescript": "5.9.3"
   },
   "type": "module",
-  "displayName": "Slivadoc Partners"
+  "displayName": "Slivadoc Partners",
+  "overrides": {
+    "sharp": "0.35.5"
+  }
 }
