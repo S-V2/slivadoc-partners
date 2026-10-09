@@ -168,7 +168,7 @@ export default function PartnerPortal() {
             <a className="button-secondary" href="#ekosistem">Jelajahi cara kerjanya</a>
           </div>
           <div className="hero-proof">
-            <span><b>18</b><small>Kategori partner</small></span>
+            <span><b>{partnershipCategories.length}</b><small>Kategori partner</small></span>
             <span><b>38</b><small>Provinsi di Indonesia</small></span>
             <span><b>100% Gratis</b><small>Seluruh fitur partner</small></span>
           </div>
@@ -207,7 +207,7 @@ export default function PartnerPortal() {
             <small className="notranslate" translate="no">Slivadoc Ecosystem</small>
             <h3>Satu pusat.<br />Semua terhubung.</h3>
             <p>Discovery, operasional, transaksi, relasi, dan pertumbuhan.</p>
-            <div><span>18 kategori</span><span>38 provinsi</span></div>
+            <div><span>{partnershipCategories.length} kategori</span><span>38 provinsi</span></div>
           </div>
           {ecosystemPillars.map((pillar, index) => (
             <article className={`ecosystem-pillar ecosystem-pillar-${index + 1}`} key={pillar.title}>

@@ -39,7 +39,7 @@ test("keeps the required Slivadoc Partners content", async () => {
   assert.equal(new Set(keywords).size, 1000);
   assert.ok(keywords.includes("daftar mitra petshop Slivadoc"));
   assert.match(categoryConfig, /slug: "petshop"/);
-  assert.equal((categoryConfig.match(/slug: "/g) || []).length, 18);
+  assert.equal((categoryConfig.match(/slug: "/g) || []).length, 19);
   assert.match(categoryPage, /generateStaticParams/);
   assert.match(categoryPage, /canonical: path/);
   assert.match(categoryPage, /PartnershipForm category=\{category\}/);

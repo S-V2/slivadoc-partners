@@ -11,6 +11,13 @@ export type CategoryField = {
 // Every question here is shown only on its own category page. The API stores
 // answers in category_details so Operations receives the actual answers.
 export const categoryFields: Record<PartnershipCategory["value"], readonly CategoryField[]> = {
+  pet_sitter: [
+    {key:"sitting_experience",label:"Pengalaman dan referensi",placeholder:"Lama pengalaman, pelatihan, dan referensi yang dapat dihubungi",type:"textarea"},
+    {key:"species_handled",label:"Jenis pet dan kebutuhan yang dikuasai",placeholder:"Kucing, anjing kecil, senior pet; jelaskan batas kemampuan"},
+    {key:"care_routine",label:"Rencana perawatan harian",placeholder:"Makan, air minum, bermain, kebersihan, jalan, laporan foto",type:"textarea"},
+    {key:"emergency_protocol",label:"Langkah saat kondisi darurat",placeholder:"Hubungi owner, dokter hewan, dan rencana transportasi",type:"textarea"},
+    {key:"service_area",label:"Area dan durasi kunjungan",placeholder:"Kecamatan, radius perjalanan, jam dan durasi tersedia"},
+  ],
   veterinary_clinic: [
     { key: "clinical_services", label: "Layanan klinis utama", placeholder: "Konsultasi, vaksinasi, bedah, rawat inap" },
     { key: "veterinarians_count", label: "Jumlah dokter hewan yang praktik", placeholder: "3", type: "number" },

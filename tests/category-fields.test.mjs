@@ -13,10 +13,10 @@ test("every partnership category has its own relevant questions", async () => {
   const schemas = context.exports.categoryFields;
   const categoryValues = [...definitions.matchAll(/\{ value: "([^"]+)", slug:/g)].map((match) => match[1]);
 
-  assert.equal(categoryValues.length, 18);
+  assert.equal(categoryValues.length, 19);
   assert.deepEqual(Object.keys(schemas).sort(), [...categoryValues].sort());
   for (const [category, fields] of Object.entries(schemas)) {
-    assert.equal(fields.length, 3, category);
+    assert.equal(fields.length, category === "pet_sitter" ? 5 : 3, category);
     assert.equal(new Set(fields.map((field) => field.key)).size, fields.length, category);
     for (const field of fields) {
       assert.match(field.key, /^[a-z_]+$/);

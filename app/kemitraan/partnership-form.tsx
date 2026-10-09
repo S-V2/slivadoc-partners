@@ -58,7 +58,7 @@ const initialForm: PartnerForm = {
   data_consent: false, truth_declaration: false,
 };
 
-const individualTypes = new Set(["independent_veterinarian"]);
+const individualTypes = new Set(["independent_veterinarian", "pet_sitter"]);
 const organizationTypes = new Set(["shelter_rescue", "pet_community", "government_association"]);
 function initialCategoryForm(category: PartnershipCategory): PartnerForm {
   return {
@@ -70,6 +70,7 @@ function initialCategoryForm(category: PartnershipCategory): PartnerForm {
 
 const steps = ["Profil & bidang", "PIC & kontak", "Lokasi & operasi", "Kebutuhan", "Konfirmasi"];
 const serviceExamples: Record<string, string> = {
+  pet_sitter: "Kunjungan harian, paket 7 hari, dog walking",
   veterinary_clinic: "Konsultasi, vaksinasi, rawat inap",
   independent_veterinarian: "Konsultasi online, kunjungan rumah",
   pet_shop: "Makanan hewan, aksesori, kebutuhan harian",
@@ -105,6 +106,7 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
   const [applicationNumber, setApplicationNumber] = useState("");
   const formStarted = useRef(false);
   const selectedCategory = category;
+  const isSitter = category.value === "pet_sitter";
   const isIndividual = individualTypes.has(category.value);
   const isOrganization = organizationTypes.has(category.value);
 
@@ -286,15 +288,15 @@ export default function PartnershipForm({ category }: { category: PartnershipCat
                 {categoryFields[category.value].map((field) => field.type === "textarea" ?
                   <TextAreaField key={field.key} label={field.label} name={`category_details.${field.key}`} value={categoryDetails[field.key] || ""} onChange={(value) => updateDetail(field.key, value)} error={errors[`category_details.${field.key}`]} placeholder={field.placeholder} maxLength={1000} /> :
                   <TextField key={field.key} label={field.label} name={`category_details.${field.key}`} value={categoryDetails[field.key] || ""} onChange={(value) => updateDetail(field.key, value)} error={errors[`category_details.${field.key}`]} placeholder={field.placeholder} type={field.type || "text"} maxLength={300} />)}
-                <div className="field-grid two"><TextField label={isIndividual ? "Nama lengkap sesuai identitas" : isOrganization ? "Nama resmi organisasi" : "Nama legal badan/usaha"} name="legal_name" value={form.legal_name} onChange={(value) => update("legal_name", value)} error={errors.legal_name} placeholder={isIndividual ? "Nama sesuai dokumen identitas" : "Contoh: PT Sahabat Satwa Indonesia"} /><TextField label={isIndividual ? "Nama profil/praktik" : isOrganization ? "Nama organisasi yang dikenal publik" : "Nama brand/publik"} name="brand_name" value={form.brand_name} onChange={(value) => update("brand_name", value)} error={errors.brand_name} placeholder={isIndividual ? "Contoh: drh. Dira" : "Contoh: Sahabat Satwa"} /></div>
-                <div className="field-grid two">{!isIndividual && <SelectField label="Bentuk usaha/organisasi" name="entity_type" value={form.entity_type} onChange={(value) => update("entity_type", value)} error={errors.entity_type} options={[{value:"pt",label:"PT"},{value:"cv",label:"CV"},{value:"koperasi",label:"Koperasi"},{value:"yayasan",label:"Yayasan"},{value:"klinik_pribadi",label:"Klinik/praktik pribadi"},{value:"profesional_individu",label:"Profesional individu"},{value:"komunitas",label:"Komunitas"},{value:"instansi",label:"Instansi/asosiasi"},{value:"other",label:"Lainnya"}]} />}<TextField label={isIndividual ? "Tahun mulai praktik" : isOrganization ? "Tahun mulai berkegiatan" : "Tahun berdiri"} name="established_year" type="number" value={form.established_year} onChange={(value) => update("established_year", value)} error={errors.established_year} placeholder="2024" /></div>
-                <TextField label={isIndividual ? "Nomor izin praktik (SIP)" : isOrganization ? "Nomor registrasi organisasi (jika ada)" : "Nomor legalitas/registrasi"} name="legal_document_number" value={form.legal_document_number} onChange={(value) => update("legal_document_number", value)} error={errors.legal_document_number} placeholder={isIndividual ? "Nomor SIP dokter hewan" : "NIB, akta, atau nomor registrasi"} required={!isOrganization} />
-                <TextField label="Tautan dokumen pendukung (jika ada)" name="legal_document_url" type="url" value={form.legal_document_url} onChange={(value) => update("legal_document_url", value)} error={errors.legal_document_url} placeholder="https://drive.google.com/..." hint="Gunakan tautan berizin lihat; jangan cantumkan password." required={false} />
+                <div className="field-grid two"><TextField label={isIndividual ? "Nama lengkap sesuai identitas" : isOrganization ? "Nama resmi organisasi" : "Nama legal badan/usaha"} name="legal_name" value={form.legal_name} onChange={(value) => update("legal_name", value)} error={errors.legal_name} placeholder={isIndividual ? "Nama sesuai dokumen identitas" : "Contoh: PT Sahabat Satwa Indonesia"} /><TextField label={isSitter ? "Nama profil Pet Sitter" : isIndividual ? "Nama profil/praktik" : isOrganization ? "Nama organisasi yang dikenal publik" : "Nama brand/publik"} name="brand_name" value={form.brand_name} onChange={(value) => update("brand_name", value)} error={errors.brand_name} placeholder={isSitter ? "Contoh: Rani Pet Care" : isIndividual ? "Contoh: drh. Dira" : "Contoh: Sahabat Satwa"} /></div>
+                <div className="field-grid two">{!isIndividual && <SelectField label="Bentuk usaha/organisasi" name="entity_type" value={form.entity_type} onChange={(value) => update("entity_type", value)} error={errors.entity_type} options={[{value:"pt",label:"PT"},{value:"cv",label:"CV"},{value:"koperasi",label:"Koperasi"},{value:"yayasan",label:"Yayasan"},{value:"klinik_pribadi",label:"Klinik/praktik pribadi"},{value:"profesional_individu",label:"Profesional individu"},{value:"komunitas",label:"Komunitas"},{value:"instansi",label:"Instansi/asosiasi"},{value:"other",label:"Lainnya"}]} />}<TextField label={isSitter ? "Tahun mulai merawat pet" : isIndividual ? "Tahun mulai praktik" : isOrganization ? "Tahun mulai berkegiatan" : "Tahun berdiri"} name="established_year" type="number" value={form.established_year} onChange={(value) => update("established_year", value)} error={errors.established_year} placeholder="2024" /></div>
+                <TextField label={isSitter ? "Nomor sertifikat pelatihan (jika ada)" : isIndividual ? "Nomor izin praktik (SIP)" : isOrganization ? "Nomor registrasi organisasi (jika ada)" : "Nomor legalitas/registrasi"} name="legal_document_number" value={form.legal_document_number} onChange={(value) => update("legal_document_number", value)} error={errors.legal_document_number} placeholder={isSitter ? "Opsional, jika pernah mengikuti pelatihan" : isIndividual ? "Nomor SIP dokter hewan" : "NIB, akta, atau nomor registrasi"} required={!isOrganization && !isSitter} />
+                <TextField label="Tautan dokumen pendukung (jika ada)" name="legal_document_url" type="url" value={form.legal_document_url} onChange={(value) => update("legal_document_url", value)} error={errors.legal_document_url} placeholder="https://drive.google.com/..." hint={isSitter ? "Portofolio atau sertifikat saja. Verifikasi identitas dilakukan oleh tim Operasional setelah review; jangan unggah KTP ke tautan publik." : "Gunakan tautan berizin lihat; jangan cantumkan password."} required={false} />
               </div>}
 
               {step === 1 && <div className="form-panel" key="partner-contact-step">
-                <div className="field-grid two"><TextField label="Nama lengkap PIC" name="pic_name" value={form.pic_name} onChange={(value) => update("pic_name", value)} error={errors.pic_name} placeholder="Nama penanggung jawab" /><TextField label="Jabatan PIC" name="pic_position" value={form.pic_position} onChange={(value) => update("pic_position", value)} error={errors.pic_position} placeholder="Owner / Business Development" /></div>
-                <TextField label="Email bisnis" name="email" type="email" value={form.email} onChange={(value) => update("email", value)} error={errors.email} placeholder="partner@bisnis.com" />
+                <div className="field-grid two"><TextField label="Nama lengkap PIC" name="pic_name" value={form.pic_name} onChange={(value) => update("pic_name", value)} error={errors.pic_name} placeholder="Nama penanggung jawab" /><TextField label={isSitter ? "Peran Anda" : "Jabatan PIC"} name="pic_position" value={form.pic_position} onChange={(value) => update("pic_position", value)} error={errors.pic_position} placeholder={isSitter ? "Pet Sitter mandiri" : "Owner / Business Development"} /></div>
+                <TextField label={isSitter ? "Email pribadi aktif" : "Email bisnis"} name="email" type="email" value={form.email} onChange={(value) => update("email", value)} error={errors.email} placeholder="partner@bisnis.com" />
                 <div className="field-grid two"><TextField label="Nomor WhatsApp aktif" name="whatsapp" type="tel" value={form.whatsapp} onChange={(value) => update("whatsapp", value)} error={errors.whatsapp} placeholder="081234567890" /><TextField label="Nomor kontak alternatif (jika ada)" name="alternate_phone" type="tel" value={form.alternate_phone} onChange={(value) => update("alternate_phone", value)} error={errors.alternate_phone} placeholder="081112223333" required={false} /></div>
                 <TextField label="Website atau profil publik (jika ada)" name="digital_profile_url" type="url" value={form.digital_profile_url} onChange={(value) => update("digital_profile_url", value)} error={errors.digital_profile_url} placeholder="https://instagram.com/brand atau website resmi" required={false} />
               </div>}
@@ -356,7 +358,7 @@ function validatePartnerForm(form: PartnerForm, step: number, category: Partners
   const validPhone = (value: string) => /^(?:\+62|62|0)8[0-9\s().-]{7,16}$/.test(value.trim());
   if (step === 0) {
     required("partner_type", "Kategori partner"); required("legal_name", "Nama legal", 3); required("brand_name", "Nama brand", 2); required("entity_type", "Bentuk usaha");
-    if (!organizationTypes.has(category.value)) required("legal_document_number", "Nomor legalitas", 3);
+    if (category.value !== "pet_sitter" && !organizationTypes.has(category.value)) required("legal_document_number", "Nomor legalitas", 3);
     if (form.legal_document_url.trim() && !validURL(form.legal_document_url)) errors.legal_document_url = "Gunakan tautan dokumen dengan format http:// atau https://.";
     const year = Number(form.established_year); if (!Number.isInteger(year) || year < 1900 || year > new Date().getFullYear()) errors.established_year = `Masukkan tahun antara 1900–${new Date().getFullYear()}.`;
     for (const field of categoryFields[category.value]) {
